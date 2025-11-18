@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donation Portal | Purposeful Living Church</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+    color: #222;
+  }
+
+  header {
+    background: #f9e79f; /* Light Gold */
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    color: #222;
+  }
+
+  header img {
+    height: 60px;
+    object-fit: contain;
+  }
+
+  header .home-btn {
+    padding: 10px 20px;
+    background: #ffd700; /* Gold */
+    color: #222;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  header .home-btn:hover {
+    background: #e6c200;
+  }
+
+  h1 {
+    margin: 10px 0 5px 0;
+    font-size: 28px;
+    flex: 1 1 100%;
+    text-align: center;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+  }
+
+  h2 {
+    margin-bottom: 20px;
+    color: #f9e79f; /* Light Gold for headings */
+    text-align: center;
+  }
+
+  p {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  /* CATEGORY GRID */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .category {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+    color: #222;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  .category img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s;
+    border-radius: 15px;
+  }
+
+  .category:hover img {
+    transform: scale(1.05);
+  }
+
+  .category-overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(249, 231, 159, 0.7); /* Light Gold overlay */
+    padding: 10px 0;
+    border-radius: 0 0 15px 15px;
+    color: #222;
+  }
+
+  .category.selected .category-overlay {
+    background: gold;
+    color: #222;
+  }
+
+  /* DONATE BUTTON */
+  .donate-btn {
+    display: block;
+    width: 200px;
+    margin: 0 auto 50px;
+    padding: 15px;
+    background: #ffd700; /* Gold */
+    color: #222;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+  }
+
+  .donate-btn:hover {
+    background: #e6c200;
+  }
+  
+  /* ================= FOOTER================= */
+
+.main-footer {
+    background: #e5e5e5;  /* Light-Medium Gray */
+    color: #333;          /* Dark text for contrast */
+    padding: 40px 20px;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: space-between;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-section h3 {
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.footer-section ul li {
+    list-style: none;
+    margin: 6px 0;
+}
+
+.footer-section a {
+    color: #333;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-section a:hover {
+    color: #000;
+}
+
+.footer-section i {
+    margin-right: 8px;
+    color: #555; /* Subtle gray icon color */
+}
+
+.social-icons {
+    margin-top: 15px;
+}
+
+.social-icons .social-link {
+    font-size: 20px;
+    margin-right: 15px;
+    color: #333;
+    transition: 0.3s;
+}
+
+.social-icons .social-link:hover {
+    color: #000;
+}
+
+.map-container {
+    margin-top: 10px;
+    background: #d4d4d4; /* Slight contrast */
+    padding: 5px;
+    border-radius: 8px;
+}
+
+copyright {
+    text-align: center;
+    margin-top: 25px;
+    color: #444;
+    border-top: 1px solid #bbb;
+    padding-top: 15px;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg?updatedAt=1763291178317" alt="Church Logo">
+  <a href="index.html" class="home-btn">Home</a>
+  <h1>Support the Ministry</h1>
+</header>
+
+<div class="container">
+
+  <h2>Select a Giving Category</h2>
+  <p>Click on a category to donate:</p>
+
+  <div class="category-grid">
+    <div class="category" data-link="https://donate.example.com/tithe">
+      <img src="https://ik.imagekit.io/s95tumxuk/church-gallery/water.jpg" alt="Clean Water">
+      <div class="category-overlay">Clean Water</div>
+    </div>
+    <div class="category" data-link="https://donate.example.com/offering">
+      <img src="https://ik.imagekit.io/s95tumxuk/church-gallery/image1.jpg?updatedAt=1763382071604" alt="Food">
+      <div class="category-overlay">Food</div>
+    </div>
+    <div class="category" data-link="https://donate.example.com/seed">
+      <img src="https://ik.imagekit.io/s95tumxuk/church-gallery/image23.jpg?updatedAt=1763389978401" alt="Clothes">
+      <div class="category-overlay">Clothes</div>
+    </div>
+    <div class="category" data-link="https://donate.example.com/youth">
+      <img src="https://ik.imagekit.io/s95tumxuk/PLC/Living-Conditions-in-Africa-1030x687.jpg " alt="Shelter">
+      <div class="category-overlay">Shelter</div>
+    </div>
+  </div>
+
+  <a id="donateButton" href="#" class="donate-btn" target="_blank">Donate Now</a>
+
+</div>
+
+<script>
+  const categories = document.querySelectorAll(".category");
+  const donateButton = document.getElementById("donateButton");
+
+  categories.forEach(cat => {
+    cat.addEventListener("click", () => {
+      // Remove selected from all categories
+      categories.forEach(c => c.classList.remove("selected"));
+      // Add selected class to clicked category
+      cat.classList.add("selected");
+      // Update donation button link
+      donateButton.href = cat.getAttribute("data-link");
+    });
+  });
+</script>
+
+<!-- ================= FOOTER ================= -->
+<footer id="contact" class="main-footer">
+    <div class="footer-content">
+
+        <!-- Church Info -->
+        <div class="footer-section">
+            <h4>Purposeful Living Church</h4>
+            <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
+        </div>
+
+        <!-- Address Section -->
+        <div class="footer-section">
+            <h4>Address</h4>
+            <ul>
+                <li><i class="fas fa-map-marker-alt"></i> Kulambiro Kisaasi, Kampala Uganda</li>
+            </ul>
+
+            <!-- Google Map -->
+            <div class="map-container">
+    <iframe 
+        width="100%" 
+        height="180" 
+        frameborder="0"
+        style="border:0; border-radius:10px;"
+        allowfullscreen 
+        src="https://www.google.com/maps/embed?pb=https://maps.app.goo.gl/kNhgd4dEfZjvHsQQ6">
+    </iframe>
+
+    <div style="text-align:center; margin-top:10px;">
+        <a 
+            href="https://maps.app.goo.gl/qjw1Tn7ZRuhBAtHx6" 
+            target="_blank" 
+            style="
+                padding: 10px 20px;
+                background: #e67e22;
+                color: #fff;
+                border-radius: 6px;
+                font-weight: bold;
+                text-decoration: none;
+            ">
+            View on Google Maps
+        </a>
+    </div>
+</div>
+
+                
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="footer-section">
+            <h4>Reach Out</h4>
+            <ul>
+                <li><i class="fas fa-phone"></i> +(256) 75227 5855</li>
+                <li><i class="fas fa-envelope"></i> info@purposefullivingchurch.org</li>
+            </ul>
+
+            <!-- Social Media Icons -->
+            <div class="social-icons">
+                <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+    <p class="copyright">&copy; <span id="year"></span> Purposeful Living Church. All rights reserved.</p>
+</footer>
+</body>
+</html>

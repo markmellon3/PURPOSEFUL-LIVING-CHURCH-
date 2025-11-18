@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kids Ministry | Purposeful Living Church</title>
+<link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  /* Base & Fonts */
+  body { font-family: 'Comic Neue', cursive; margin:0; padding:0; background:#fff8f0; color:#333; }
+  a { text-decoration:none; }
+
+ /* Navigation Bar */
+header {
+  width:100%;
+  background:#f39c12;
+  padding:15px 0;
+  position:sticky;
+  top:0;
+  z-index:999;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Navigation Container */
+.main-nav {
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:18px;
+}
+
+/* Navigation Buttons */
+.main-nav a {
+  color:white;
+  font-weight:bold;
+  padding:10px 18px;
+  border-radius:30px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(4px);
+  transition:0.3s ease-in-out;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+}
+
+/* Hover Animation */
+.main-nav a:hover {
+  background:white;
+  color:#e67e22;
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Active/Clicked State */
+.main-nav a:active {
+  transform:scale(0.95);
+}
+
+/* Glow Effect on Hover */
+.main-nav a:hover {
+  animation:glow 0.6s ease-in-out forwards;
+}
+
+@keyframes glow {
+  0% { box-shadow:0 0 0px rgba(255,255,255,0.5); }
+  100% { box-shadow:0 0 15px rgba(255,255,255,0.9); }
+}
+
+/* ================= FOOTER================= */
+
+
+.main-footer {
+    background: #e5e5e5;  /* Light-Medium Gray */
+    color: #333;          /* Dark text for contrast */
+    padding: 40px 20px;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: space-between;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-section h3 {
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.footer-section ul li {
+    list-style: none;
+    margin: 6px 0;
+}
+
+.footer-section a {
+    color: #333;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-section a:hover {
+    color: #000;
+}
+
+.footer-section i {
+    margin-right: 8px;
+    color: #555; /* Subtle gray icon color */
+}
+
+.social-icons {
+    margin-top: 15px;
+}
+
+.social-icons .social-link {
+    font-size: 20px;
+    margin-right: 15px;
+    color: #333;
+    transition: 0.3s;
+}
+
+.social-icons .social-link:hover {
+    color: #000;
+}
+
+.map-container {
+    margin-top: 10px;
+    background: #d4d4d4; /* Slight contrast */
+    padding: 5px;
+    border-radius: 8px;
+}
+
+copyright {
+    text-align: center;
+    margin-top: 25px;
+    color: #444;
+    border-top: 1px solid #bbb;
+    padding-top: 15px;
+}
+  /* Container */
+  .container { max-width: 1200px; margin: auto; padding: 20px; }
+
+  h1, h2 { text-align: center; color:#f39c12; }
+  h2 { margin-top:40px; margin-bottom:20px; }
+
+  /* Hero Section */
+  .hero { background: linear-gradient(135deg, #ffe29f, #ffb347); padding:60px 20px; text-align:center; border-bottom:5px solid #f39c12; border-radius:0 0 50px 50px; animation:fadeIn 1s ease-in-out; }
+  .hero h1 { font-size:3em; margin-bottom:20px; }
+  .hero p { font-size:1.2em; max-width:800px; margin:auto; color:#5d4037; }
+
+  /* Info Cards */
+  .info-cards { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px; margin-top:30px; }
+  .card { background:#fff3e0; padding:25px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; text-align:center; }
+  .card:hover { transform: translateY(-5px); box-shadow:0 15px 30px rgba(0,0,0,0.15); }
+  .card h3 { margin-bottom:15px; color:#e67e22; }
+
+  /* Icons */
+  .card-icon { font-size:50px; margin-bottom:15px; color:#f39c12; animation:bounce 2s infinite; }
+
+  /* Gallery */
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top:30px; }
+  .gallery-item { position: relative; cursor: pointer; overflow: hidden; border-radius: 15px; transition: transform 0.3s; }
+  .gallery-item img, .gallery-item video { width: 100%; height: 150px; object-fit: cover; border-radius: 15px; transition: transform 0.3s; }
+  .gallery-item:hover img, .gallery-item:hover video { transform: scale(1.05); }
+
+  /* Popup */
+  #imagePopup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; justify-content:center; align-items:center; z-index:9999; background:rgba(0,0,0,0.7); }
+  #popupBox { background:#fff; padding:20px; border-radius:20px; max-width:700px; width:90%; text-align:center; animation:popupZoom 0.3s ease-in-out; }
+  #popupImg { width:100%; max-height:450px; object-fit:cover; border-radius:12px; margin-bottom:10px; }
+  #popupCaption { font-size:16px; color:#333; margin-bottom:10px; }
+  #closePopup { position:absolute; top:20px; right:20px; font-size:40px; cursor:pointer; font-weight:bold; color:#fff; }
+
+  /* Footer */
+  footer { text-align:center; padding:20px; margin-top:50px; background:#f39c12; color:#fff; font-weight:bold; }
+
+  /* Animations */
+  @keyframes bounce { 0%, 100% { transform: translateY(0);} 50% { transform: translateY(-10px);} }
+  @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+  @keyframes popupZoom { from { transform: scale(0.7); opacity:0;} to { transform: scale(1); opacity:1;} }
+</style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+<header>
+  <nav id="mainNav" class="main-nav">
+    <a href="index.html">Home</a>
+    
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>🎉 Kids Ministry 🎉</h1>
+  <p>Welcome to the Kids Ministry at Purposeful Living Church! Here, children explore faith through fun activities, exciting Bible lessons, music, arts, and community events.</p>
+</section>
+
+<div class="container">
+
+  <!-- INFO CARDS -->
+  <h2>Our Programs</h2>
+  <div class="info-cards">
+    <div class="card">
+      <div class="card-icon">📖</div>
+      <h3>Bible Lessons</h3>
+      <p>Engaging stories from the Bible that help children grow in faith and understand God's love.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🎨</div>
+      <h3>Arts & Crafts</h3>
+      <p>Creative fun that teaches Bible principles through drawing, painting, and craft-making.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">⚽</div>
+      <h3>Games & Activities</h3>
+      <p>Fun games that build teamwork, friendships, and positive character.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🎉</div>
+      <h3>Special Events</h3>
+      <p>Holiday programs, retreats, and ministry events that strengthen faith and create lasting memories.</p>
+    </div>
+  </div>
+
+<!-- GALLERY -->
+<h2>Gallery</h2>
+<div class="gallery" id="gallery">
+  <!-- Images will load here dynamically -->
+</div>
+
+<!-- Pagination Buttons -->
+<div style="text-align:center; margin-top:20px;">
+  <button id="prevBtn" onclick="prevPage()" style="padding:10px 20px; margin-right:10px; background:#f39c12; color:#fff; border:none; border-radius:6px; cursor:pointer;">Previous</button>
+  <button id="nextBtn" onclick="nextPage()" style="padding:10px 20px; background:#f39c12; color:#fff; border:none; border-radius:6px; cursor:pointer;">Next</button>
+</div>
+
+<!-- LIGHTBOX POPUP -->
+<div id="lightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
+  <div style="position:relative; max-width:800px; width:90%; text-align:center; animation:popupZoom 0.3s ease-in-out; background:#fff; border-radius:20px; padding:20px;">
+    <span onclick="closeLightbox()" style="position:absolute; top:10px; right:15px; font-size:40px; cursor:pointer; font-weight:bold; color:#333;">&times;</span>
+    <img id="lightboxImg" style="width:100%; max-height:500px; object-fit:cover; border-radius:12px;">
+  </div>
+</div>
+
+<script>
+let currentPage = 1;
+const imagesPerPage = 20;
+let allImages = [];
+const folderURL = "https://ik.imagekit.io/s95tumxuk/Kids-gallery/";
+
+// Check if an image exists
+function checkImage(url) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = url;
+  });
+}
+
+// Automatically discover images
+async function discoverImages() {
+  let index = 1;
+  let newImages = [];
+  while (true) {
+    const url = `${folderURL}image${index}.jpg?updatedAt=${Date.now()}`;
+    const exists = await checkImage(url);
+    if (!exists) break;
+    if (!allImages.find(img => img.url === url)) newImages.push({url});
+    index++;
+  }
+  allImages = allImages.concat(newImages);
+  displayPage(currentPage);
+}
+
+// Display images for current page
+function displayPage(page) {
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
+  currentPage = page;
+
+  const start = (page - 1) * imagesPerPage;
+  const end = start + imagesPerPage;
+  const pageImages = allImages.slice(start, end);
+
+  pageImages.forEach((file, i) => {
+    const img = document.createElement("img");
+    img.src = file.url;
+    img.style.width = "100%";
+    img.style.borderRadius = "15px";
+    img.style.marginBottom = "15px";
+    img.style.cursor = "pointer";
+    img.onclick = () => openLightbox(file.url);
+    gallery.appendChild(img);
+    setTimeout(() => img.classList.add('show'), i * 100);
+  });
+
+  const totalPages = Math.ceil(allImages.length / imagesPerPage);
+  document.getElementById("prevBtn").disabled = currentPage === 1;
+  document.getElementById("nextBtn").disabled = currentPage === totalPages;
+}
+
+// Pagination functions
+function nextPage() {
+  const totalPages = Math.ceil(allImages.length / imagesPerPage);
+  if (currentPage < totalPages) displayPage(currentPage + 1);
+}
+function prevPage() {
+  if (currentPage > 1) displayPage(currentPage - 1);
+}
+
+// Lightbox functions
+function openLightbox(url) {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  lbImg.src = url;
+  lb.style.display = "flex";
+}
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  lb.style.display = "none";
+}
+
+// Refresh every 60s to detect new images
+setInterval(discoverImages, 60000);
+
+// Start automatically
+discoverImages();
+</script>
+
+<footer>
+  &copy; 2025 Purposeful Living Church | All Rights Reserved
+</footer>
+
+<script>
+  const popup = document.getElementById("imagePopup");
+  const popupImg = document.getElementById("popupImg");
+  const popupCaption = document.getElementById("popupCaption");
+  const closePopup = document.getElementById("closePopup");
+
+  document.querySelectorAll(".gallery-item img").forEach(item => {
+    item.addEventListener("click", () => {
+      popup.style.display = "flex";
+      popupImg.src = item.src;
+      popupCaption.textContent = item.alt || "";
+    });
+  });
+
+  closePopup.addEventListener("click", () => popup.style.display = "none");
+
+  popup.addEventListener("click", e => { 
+    if(e.target === popup) popup.style.display = "none"; 
+  });
+</script>
+<!-- ================= FOOTER ================= -->
+<footer id="contact" class="main-footer">
+    <div class="footer-content">
+
+        <!-- Church Info -->
+        <div class="footer-section">
+            <h4>Purposeful Living Church</h4>
+            <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
+        </div>
+
+        <!-- Address Section -->
+        <div class="footer-section">
+            <h4>Address</h4>
+            <ul>
+                <li><i class="fas fa-map-marker-alt"></i> Kulambiro Kisaasi, Kampala Uganda</li>
+            </ul>
+
+            <!-- Google Map -->
+            <div class="map-container">
+    <iframe 
+        width="100%" 
+        height="180" 
+        frameborder="0"
+        style="border:0; border-radius:10px;"
+        allowfullscreen 
+        src="https://www.google.com/maps/embed?pb=https://maps.app.goo.gl/kNhgd4dEfZjvHsQQ6">
+    </iframe>
+
+    <div style="text-align:center; margin-top:10px;">
+        <a 
+            href="https://maps.app.goo.gl/qjw1Tn7ZRuhBAtHx6" 
+            target="_blank" 
+            style="
+                padding: 10px 20px;
+                background: #e67e22;
+                color: #fff;
+                border-radius: 6px;
+                font-weight: bold;
+                text-decoration: none;
+            ">
+            View on Google Maps
+        </a>
+    </div>
+</div>
+
+                
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="footer-section">
+            <h4>Reach Out</h4>
+            <ul>
+                <li><i class="fas fa-phone"></i> +(256) 75227 5855</li>
+                <li><i class="fas fa-envelope"></i> info@purposefullivingchurch.org</li>
+            </ul>
+
+            <!-- Social Media Icons -->
+            <div class="social-icons">
+                <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+    <p class="copyright">&copy; <span id="year"></span> Purposeful Living Church. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

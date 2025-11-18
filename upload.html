@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Images | Purposeful Living Church</title>
+
+<script src="https://cdn.jsdelivr.net/npm/imagekit-javascript/dist/imagekit.min.js"></script>
+
+<style>
+    body { font-family:Arial; background:#f4f4f4; margin:0; }
+
+    .upload-box {
+        width:90%; max-width:450px; margin:40px auto;
+        background:white; padding:25px; border-radius:10px;
+        box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    input { width:100%; padding:10px; margin-top:10px; }
+    button {
+        width:100%; padding:12px; margin-top:15px;
+        background:#000; color:white; border:none; border-radius:5px;
+    }
+</style>
+</head>
+<body>
+
+<div class="upload-box" id="loginBox">
+    <h3>Admin Login</h3>
+    <input type="password" id="adminPass" placeholder="Enter admin password">
+    <button onclick="login()">Login</button>
+    <p id="msg"></p>
+</div>
+
+<div class="upload-box" id="uploadPage" style="display:none;">
+    <h3>Upload Image</h3>
+    <input type="file" id="file1">
+    <button onclick="uploadImage()">Upload</button>
+    <p id="uploadStatus"></p>
+</div>
+
+<script>
+var imagekit = new ImageKit({
+    publicKey: "public_Wtxut315Z0CGGHPREsPDm98QX6s=",
+    urlEndpoint: "https://ik.imagekit.io/s95tumxuk",
+    authenticationEndpoint: "YOUR_AUTH_ENDPOINT"
+});
+
+// Admin login
+function login() {
+    const pass = document.getElementById("adminPass").value;
+    if (pass === "admin123") { // change password
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("uploadPage").style.display = "block";
+    } else {
+        document.getElementById("msg").innerHTML = "Incorrect password.";
+    }
+}
+
+// Upload function
+function uploadImage() {
+    var file = document.getElementById("file1");
+    var status = document.getElementById("uploadStatus");
+
+    if (file.files.length === 0) {
+        status.innerHTML = "Select an image.";
+        return;
+    }
+
+    status.innerHTML = "Uploading...";
+
+    imagekit.upload({
+        file: file.files[0],
+        fileName: Date.now() + "-" + file.files[0].name
+    },
+    function(err, result) {
+        if (err) status.innerHTML = "Upload failed.";
+        else status.innerHTML = "Upload complete!";
+    });
+}
+</script>
+
+</body>
+</html>

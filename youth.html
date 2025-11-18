@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Youth Ministry | Purposeful Living Church</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin:0;
+    padding:0;
+    background:#f4f4f4;
+    color:#333;
+  }
+
+  /* SIMPLE CLEAN HEADER WITH HOME BUTTON */
+  .top-nav {
+    background:white;
+    padding:15px 20px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    display:flex;
+    align-items:center;
+  }
+  .top-nav a {
+    text-decoration:none;
+    font-size:18px;
+    font-weight:bold;
+    color:#ff4d79;
+    transition:0.3s;
+  }
+  .top-nav a:hover {
+    color:#ff884d;
+  }
+
+  /* CLEAN TITLE (Hero) - NO BACKGROUND COLOR */
+  .hero {
+    padding:50px 20px;
+    text-align:center;
+  }
+  .hero h1 {
+    font-size:42px;
+    margin-bottom:10px;
+    font-weight:900;
+    letter-spacing:1px;
+    color:#ff4d79;
+  }
+  .hero p {
+    font-size:18px;
+    max-width:700px;
+    margin:auto;
+    color:#444;
+  }
+
+  .container {
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+  }
+
+  /* SECTION TITLES */
+  .section-title {
+    text-align:center;
+    font-size:28px;
+    margin:40px 0 20px;
+    font-weight:700;
+    color:#ff4d79;
+  }
+
+  /* ABOUT YOUTH */
+  .about {
+    background:white;
+    border-radius:15px;
+    padding:25px;
+    margin-bottom:40px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+  }
+  .about p { font-size:17px; line-height:1.7; }
+
+  /* PROGRAMS SECTION */
+  .programs {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap:20px;
+  }
+  .program-box {
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+    transition:0.3s;
+    text-align:center;
+  }
+  .program-box:hover {
+    transform:translateY(-5px);
+  }
+  .program-box h3 {
+    margin-bottom:10px;
+    color:#ff4d79;
+  }
+
+  /* GALLERY */
+  .gallery-title {
+    text-align:center;
+    font-size:26px;
+    margin:50px 0 20px;
+    font-weight:700;
+    color:#ff4d79;
+  }
+
+  .gallery {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+    gap:15px;
+  }
+
+  .gallery-item {
+    position: relative;
+    cursor:pointer;
+    overflow:hidden;
+    border-radius:12px;
+    height:180px;
+  }
+
+  .gallery-item img, .gallery-item video {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:0.3s;
+  }
+  .gallery-item:hover img, .gallery-item:hover video {
+    transform: scale(1.1);
+  }
+
+  /* POPUP */
+  #imagePopup {
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,0.7);
+    z-index:10000;
+  }
+
+  #popupBox {
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    width:90%;
+    max-width:700px;
+    animation: popupZoom 0.3s ease-in-out;
+    text-align:center;
+  }
+
+  #popupImg {
+    width:100%;
+    border-radius:12px;
+    max-height:450px;
+    object-fit:cover;
+  }
+
+  #closePopup {
+    font-size:30px;
+    color:#ff4d79;
+    cursor:pointer;
+    font-weight:bold;
+    float:right;
+  }
+
+  @keyframes popupZoom {
+    from { transform:scale(0.7); opacity:0; }
+    to { transform:scale(1); opacity:1; }
+  }
+
+  /* CLEAN FOOTER (NO BACKGROUND COLOR) */
+  .cta {
+    text-align:center;
+    padding:40px 20px;
+    background:white;
+    color:#333;
+    margin-top:50px;
+  }
+  .cta h2 { font-size:30px; margin-bottom:10px; color:#ff4d79; }
+  .cta p { font-size:18px; margin-bottom:20px; color:#444; }
+  .cta a {
+    display:inline-block;
+    padding:12px 25px;
+    background:#ff4d79;
+    color:white;
+    border-radius:30px;
+    text-decoration:none;
+    font-weight:bold;
+    transition:0.3s;
+  }
+  .cta a:hover { background:#ff884d; }
+</style>
+</head>
+
+<body>
+
+<!-- HOME NAVIGATION BUTTON -->
+<div class="top-nav">
+  <a href="index.html">&larr; Home</a>
+</div>
+
+<!-- TITLE AREA (No Background) -->
+<section class="hero">
+  <h1>Purposeful Youth</h1>
+  <p>Empowering young people to grow in faith, discover their identity, and become leaders with purpose.</p>
+</section>
+
+<div class="container">
+
+  <!-- ABOUT -->
+  <div class="about">
+    <h2 class="section-title">About Our Youth Ministry</h2>
+    <p>
+      The Purposeful Living Youth Ministry is a vibrant community for teenagers and young adults.
+      We create a safe, fun, and spiritually uplifting atmosphere where young people can connect,
+      grow, and build a strong foundation in Christ.
+    </p>
+  </div>
+
+  <!-- PROGRAMS -->
+  <h2 class="section-title">Youth Programs & Activities</h2>
+  <div class="programs">
+    <div class="program-box">
+      <h3>Weekly Youth Service</h3>
+      <p>Dynamic worship, teachings, and discussions for today's youth.</p>
+    </div>
+    <div class="program-box">
+      <h3>Talent & Skills Trainings</h3>
+      <p>Music, dance, media, leadership, and more.</p>
+    </div>
+    <div class="program-box">
+      <h3>Youth Hangouts</h3>
+      <p>Fun, games, bonding, and real friendships.</p>
+    </div>
+    <div class="program-box">
+      <h3>Community Outreach</h3>
+      <p>Serving the community through youth-led mission work.</p>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <h2 class="gallery-title">Youth Moments Gallery</h2>
+  <div class="gallery">
+    <div class="gallery-item"><img src="YOUTH_IMAGE1.jpg" alt="Youth Ministry 1"></div>
+    <div class="gallery-item"><img src="YOUTH_IMAGE2.jpg" alt="Youth Ministry 2"></div>
+    <div class="gallery-item"><img src="YOUTH_IMAGE3.jpg" alt="Youth Ministry 3"></div>
+    <div class="gallery-item"><img src="YOUTH_IMAGE4.jpg" alt="Youth Ministry 4"></div>
+    <div class="gallery-item"><img src="YOUTH_IMAGE5.jpg" alt="Youth Ministry 5"></div>
+
+    <div class="gallery-item">
+      <video src="YOUTH_VIDEO1.mp4" controls></video>
+    </div>
+  </div>
+
+</div>
+
+<!-- CLEAN FOOTER (NO COLOR BACKGROUND) -->
+<section class="cta">
+  <h2>Join the Youth Movement!</h2>
+  <p>Be part of a family that grows, learns, and transforms together.</p>
+  <a href="#contact">Get Connected</a>
+</section>
+
+<!-- POPUP SCRIPT -->
+<div id="imagePopup">
+  <div id="popupBox">
+    <span id="closePopup">&times;</span>
+    <img id="popupImg"/>
+    <div id="popupCaption"></div>
+  </div>
+</div>
+
+<script>
+const popup = document.getElementById("imagePopup");
+const popupImg = document.getElementById("popupImg");
+const caption = document.getElementById("popupCaption");
+const closePopup = document.getElementById("closePopup");
+
+document.querySelectorAll(".gallery-item img").forEach(img => {
+  img.addEventListener("click", () => {
+    popup.style.display = "flex";
+    popupImg.src = img.src;
+    caption.textContent = img.alt || "";
+  });
+});
+
+closePopup.addEventListener("click", () => popup.style.display = "none");
+
+popup.addEventListener("click", e => {
+  if (e.target === popup) popup.style.display = "none";
+});
+</script>
+
+</body>
+</html>
