@@ -1578,8 +1578,6 @@ const toggle = document.getElementById("mobileToggle");
 const nav = document.getElementById("mainNav");
 toggle.onclick = () => nav.classList.toggle("show");
 </script>
-
-
 <!-- ===================== MAINTENANCE OVERLAY ===================== -->
 <div id="plc-maintenance-overlay">
   <!-- Church Logo -->
@@ -1622,109 +1620,109 @@ toggle.onclick = () => nav.classList.toggle("show");
 </div>
 
 <style>
-  /* Overlay */
-  #plc-maintenance-overlay {
-    display: none;
-    position: fixed;
-    top:0; left:0;
-    width:100%;
-    height:100%;
-    background: url('https://ik.imagekit.io/s95tumxuk/pay.jpg') no-repeat center center / cover;
-    color: white;
-    text-align: center;
-    overflow-y: auto;
-    font-family: Arial, sans-serif;
-    padding: 60px 20px;
-    z-index: 99999999;
-  }
+/* Overlay */
+#plc-maintenance-overlay {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  background: url('https://ik.imagekit.io/s95tumxuk/pay.jpg') no-repeat center center / cover;
+  color: white;
+  text-align: center;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+  padding: 60px 20px;
+  z-index: 99999999;
+}
 
-  #plc-logo {
-    max-width:120px;
-    margin-bottom: 20px;
-  }
+#plc-maintenance-overlay #plc-logo {
+  max-width:120px;
+  margin-bottom: 20px;
+}
 
-  h1 { font-size:28px; margin-bottom:8px; }
-  h2 { font-size:18px; color:#ffcc00; margin-bottom:20px; }
+#plc-maintenance-overlay h1 { font-size:28px; margin-bottom:8px; }
+#plc-maintenance-overlay h2 { font-size:18px; color:#ffcc00; margin-bottom:20px; }
 
-  .loader {
-    border:6px solid rgba(255,255,255,0.2);
-    border-top:6px solid #ffcc00;
-    border-radius:50%;
-    width:60px;
-    height:60px;
-    margin: 20px auto 30px;
-    animation: spin 1.5s linear infinite;
-  }
+#plc-maintenance-overlay .loader {
+  border:6px solid rgba(255,255,255,0.2);
+  border-top:6px solid #ffcc00;
+  border-radius:50%;
+  width:60px;
+  height:60px;
+  margin: 20px auto 30px;
+  animation: spin 1.5s linear infinite;
+}
 
-  @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+@keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
 
-  p { font-size:14px; margin-bottom:30px; opacity:0.9; }
+#plc-maintenance-overlay p { font-size:14px; margin-bottom:30px; opacity:0.9; }
 
-  /* Cards */
-  .card {
-    max-width: 400px;
-    width: 100%;
-    margin: 0 auto 20px;
-    background: rgba(0,0,0,0.75);
-    padding: 20px;
-    border-radius: 12px;
-    text-align: left;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  }
+/* Cards */
+#plc-maintenance-overlay .card {
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto 20px;
+  background: rgba(0,0,0,0.75);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
 
-  .card h3 { color:#ffcc00; text-align:center; margin-bottom:15px; }
+#plc-maintenance-overlay .card h3 { color:#ffcc00; text-align:center; margin-bottom:15px; }
 
-  .card input {
-    width:100%; padding:12px; margin-bottom:12px;
-    border-radius:8px; border:none; font-size:14px;
-  }
+#plc-maintenance-overlay .card input {
+  width:100%; padding:12px; margin-bottom:12px;
+  border-radius:8px; border:none; font-size:14px;
+}
 
-  .card button {
-    width:100%; padding:14px; font-size:16px;
-    background:#ffcc00; color:#000; font-weight:bold;
-    border:none; border-radius:8px; cursor:pointer;
-  }
-  .card button:hover { background:#e6b800; }
+#plc-maintenance-overlay .card button {
+  width:100%; padding:14px; font-size:16px;
+  background:#ffcc00; color:#000; font-weight:bold;
+  border:none; border-radius:8px; cursor:pointer;
+}
+#plc-maintenance-overlay .card button:hover { background:#e6b800; }
 
-  .show-password { margin-bottom:15px; font-size:12px; }
+#plc-maintenance-overlay .show-password { margin-bottom:15px; font-size:12px; }
 
-  footer { font-size:12px; opacity:0.6; text-align:center; margin-top:20px; }
+#plc-maintenance-overlay footer { font-size:12px; opacity:0.6; text-align:center; margin-top:20px; }
 
-  /* Secure Payment Banner */
-  #secure-payment-banner {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.85);
-    color: #ffcc00;
-    padding: 10px 20px;
-    border-radius: 20px 20px 0 0;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    text-align: center;
-    z-index: 100000000;
-    opacity: 0;
-    animation: fadeInUp 1s forwards;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.5);
-  }
+/* Secure Payment Banner */
+#plc-maintenance-overlay #secure-payment-banner {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  color: #ffcc00;
+  padding: 10px 20px;
+  border-radius: 20px 20px 0 0;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  z-index: 100000000;
+  opacity: 0;
+  animation: fadeInUp 1s forwards;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.5);
+}
 
-  @keyframes fadeInUp {
-    0% { transform: translateX(-50%) translateY(50px); opacity:0; }
-    100% { transform: translateX(-50%) translateY(0); opacity:1; }
-  }
+@keyframes fadeInUp {
+  0% { transform: translateX(-50%) translateY(50px); opacity:0; }
+  100% { transform: translateX(-50%) translateY(0); opacity:1; }
+}
 
-  /* Mobile adjustments */
-  @media (max-width:500px){
-    #plc-logo { max-width:100px; }
-    h1 { font-size:24px; }
-    h2 { font-size:16px; }
-    .card { padding:15px; }
-    .card input { padding:10px; font-size:13px; }
-    .card button { padding:12px; font-size:14px; }
-    .loader { width:50px; height:50px; border-width:5px; }
-    #secure-payment-banner { font-size:12px; padding:8px 16px; }
-  }
+/* Mobile adjustments */
+@media (max-width:500px){
+  #plc-maintenance-overlay #plc-logo { max-width:100px; }
+  #plc-maintenance-overlay h1 { font-size:24px; }
+  #plc-maintenance-overlay h2 { font-size:16px; }
+  #plc-maintenance-overlay .card { padding:15px; }
+  #plc-maintenance-overlay .card input { padding:10px; font-size:13px; }
+  #plc-maintenance-overlay .card button { padding:12px; font-size:14px; }
+  #plc-maintenance-overlay .loader { width:50px; height:50px; border-width:5px; }
+  #plc-maintenance-overlay #secure-payment-banner { font-size:12px; padding:8px 16px; }
+}
 </style>
 
 <script type="module">
@@ -1823,5 +1821,6 @@ toggle.onclick = () => nav.classList.toggle("show");
       window.open(paymentUrl, "_blank");
   });
 </script>
+
 </body>
 </html>
