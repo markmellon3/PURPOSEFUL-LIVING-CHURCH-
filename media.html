@@ -57,6 +57,26 @@ footer {
   font-size:0.95rem;
 }
 
+/* ================= LOADER ================= */
+#loader {
+  border: 8px solid #f3f3f3; /* Light gray */
+  border-top: 8px solid #0b63ff; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  display: none;
+}
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 /* ================= GALLERY ================= */
 .gallery {
   display:grid;
@@ -153,7 +173,10 @@ footer {
   <a href="#">Outreach Ministry</a>
 </nav>
 
-<header>PURPOSEFUL LIVING CHURCH — MEDIA GALLERY</header>
+<header>Media Gallery</header>
+
+<!-- Loader -->
+<div id="loader"></div>
 
 <!-- Gallery -->
 <div class="gallery" id="gallery"></div>
@@ -177,6 +200,14 @@ const imagesPerPage = 35;
 let allImages = [];
 const folderURL = "https://ik.imagekit.io/s95tumxuk/church-gallery/";
 
+// Show loader
+function showLoader() {
+  document.getElementById('loader').style.display = 'block';
+}
+function hideLoader() {
+  document.getElementById('loader').style.display = 'none';
+}
+
 // Check if an image exists
 function checkImage(url) {
   return new Promise(resolve => {
@@ -189,6 +220,7 @@ function checkImage(url) {
 
 // Automatically discover images
 async function discoverImages() {
+  showLoader();
   const oldLength = allImages.length;
   let index = 1;
   let newImages = [];
@@ -201,10 +233,12 @@ async function discoverImages() {
   }
   allImages = allImages.concat(newImages);
   displayPage(currentPage, newImages);
+  hideLoader();
 }
 
 // Display images for current page
 function displayPage(page, newImages=[]) {
+  showLoader();
   const gallery = document.getElementById("gallery");
   gallery.innerHTML = "";
   currentPage = page;
@@ -218,13 +252,14 @@ function displayPage(page, newImages=[]) {
     img.src = file.url;
     img.onclick = () => openLightbox(file.url);
     gallery.appendChild(img);
-    // Fade-in animation
     setTimeout(() => img.classList.add('show'), i*100);
   });
 
   const totalPages = Math.ceil(allImages.length / imagesPerPage);
   document.getElementById("prevBtn").disabled = currentPage === 1;
   document.getElementById("nextBtn").disabled = currentPage === totalPages;
+
+  hideLoader();
 }
 
 // Pagination functions
@@ -244,8 +279,7 @@ function openLightbox(url) {
   lb.classList.add('show');
 }
 function closeLightbox() {
-  const lb = document.getElementById('lightbox');
-  lb.classList.remove('show');
+  document.getElementById('lightbox').classList.remove('show');
 }
 
 // Refresh every 60s to detect new images
