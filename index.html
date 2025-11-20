@@ -971,37 +971,42 @@ copyright {
 <section id="events" class="section container">
   <h2>Upcoming Events</h2>
 
-  <!-- ==== SLIDER WITH INFINITE AUTO-SCROLL ==== -->
+  <!-- ==== SCROLLER WITH INFINITE AUTO-SCROLL ==== -->
   <div class="events-scroller" id="eventsScroller">
     <div class="events-track" id="eventsTrack">
 
-      <!-- Original Frames -->
+      <!-- Event Frames -->
       <div class="event-frame">
         <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-06-21-at-1.48.28-PM-3.jpeg" 
-             alt="Event 1" onclick="openEventLightbox(this.src, 'Youth Revival Night')">
+             alt="Youth Revival Night" 
+             onclick="openEventLightbox(this.src, 'Youth Revival Night')">
         <p class="event-caption">Youth Revival Night</p>
       </div>
 
       <div class="event-frame">
         <img src="https://ik.imagekit.io/s95tumxuk/PLC/DSC_1992_web.jpg" 
-             alt="Event 2" onclick="openEventLightbox(this.src, 'Bible Study Teen Edition')">
+             alt="Bible Study Teen Edition" 
+             onclick="openEventLightbox(this.src, 'Bible Study Teen Edition')">
         <p class="event-caption">Bible Study Teen Edition</p>
       </div>
 
       <div class="event-frame">
         <img src="https://ik.imagekit.io/s95tumxuk/PLC/DSC_2099_web%20(2).jpg" 
-             alt="Event 3" onclick="openEventLightbox(this.src, 'Youth Worship Experience')">
+             alt="Youth Worship Experience" 
+             onclick="openEventLightbox(this.src, 'Youth Worship Experience')">
         <p class="event-caption">Youth Worship Experience</p>
       </div>
 
       <div class="event-frame">
-        <img src="EVENT_IMAGE4.jpg" alt="Event 4"
+        <img src="EVENT_IMAGE4.jpg" 
+             alt="Youth Hangout Sunday" 
              onclick="openEventLightbox(this.src, 'Youth Hangout Sunday')">
         <p class="event-caption">Youth Hangout Sunday</p>
       </div>
 
       <div class="event-frame">
-        <img src="EVENT_IMAGE5.jpg" alt="Event 5"
+        <img src="EVENT_IMAGE5.jpg" 
+             alt="Community Outreach" 
              onclick="openEventLightbox(this.src, 'Community Outreach')">
         <p class="event-caption">Community Outreach</p>
       </div>
@@ -1013,39 +1018,51 @@ copyright {
 <!-- ================= LIGHTBOX POPUP ================= -->
 <div id="event-lightbox">
   <div id="event-lightbox-content">
-    <img id="event-lightbox-img" src="">
+    <img id="event-lightbox-img" src="" alt="Event Image">
     <p id="event-lightbox-caption"></p>
   </div>
 </div>
 
 <style>
-/* ================= TITLES ================= */
+/* ================= GENERAL ================= */
+.section.container {
+  padding: 50px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 #events h2 {
   text-align: center;
   margin-bottom: 25px;
   font-size: 32px;
-  color: #2c2c2c;
   font-weight: 700;
+  color: #2c2c2c;
 }
 
 /* ================= SCROLLER ================= */
 .events-scroller {
   overflow-x: hidden;
   white-space: nowrap;
-  position: relative;
   cursor: grab;
   padding-bottom: 20px;
+  position: relative;
+}
+
+.events-scroller:active {
+  cursor: grabbing;
 }
 
 .events-track {
   display: inline-flex;
-  gap: 19px;
+  gap: 20px;
 }
 
 /* ================= EVENT FRAME ================= */
 .event-frame {
   min-width: 100px;
   text-align: center;
+  display: inline-block;
+  cursor: pointer;
 }
 
 .event-frame img {
@@ -1054,7 +1071,7 @@ copyright {
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-  transition: .3s;
+  transition: transform 0.3s ease;
 }
 
 .event-frame img:hover {
@@ -1072,12 +1089,24 @@ copyright {
 #event-lightbox {
   position: fixed;
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   background: rgba(0,0,0,0.85);
   display: none;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   z-index: 9999;
+  animation: fadeOut 0.3s forwards;
+}
+
+#event-lightbox.show {
+  display: flex;
+  animation: fadeIn 0.3s forwards;
+}
+
+#event-lightbox-content {
+  text-align: center;
+  animation: scaleUp 0.3s forwards;
 }
 
 #event-lightbox img {
@@ -1085,6 +1114,11 @@ copyright {
   max-height: 80vh;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
+}
+
+#event-lightbox img:hover {
+  transform: scale(1.02);
 }
 
 #event-lightbox-caption {
@@ -1093,97 +1127,117 @@ copyright {
   font-size: 18px;
   font-weight: 600;
 }
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes scaleDown {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(0.8); opacity: 0; }
+}
 </style>
 
 <script>
-// ================== LIGHTBOX =====================
+// ================= LIGHTBOX WITH FADE =================
 function openEventLightbox(imgSrc, caption) {
-  document.getElementById('event-lightbox-img').src = imgSrc;
-  document.getElementById('event-lightbox-caption').innerText = caption;
-  document.getElementById('event-lightbox').style.display = 'flex';
+  const lightbox = document.getElementById("event-lightbox");
+  const img = document.getElementById("event-lightbox-img");
+  const captionEl = document.getElementById("event-lightbox-caption");
+
+  img.src = imgSrc;
+  captionEl.innerText = caption;
+
+  lightbox.classList.add("show");
 }
 
-document.getElementById('event-lightbox').onclick = function () {
-  this.style.display = 'none';
-};
+// Close lightbox with fade-out when clicking outside the image
+document.getElementById("event-lightbox").addEventListener("click", function(e) {
+  const lightbox = this;
+  if (e.target.id === "event-lightbox" || e.target.id === "event-lightbox-content") {
+    lightbox.style.animation = "fadeOut 0.3s forwards";
+    document.getElementById("event-lightbox-content").style.animation = "scaleDown 0.3s forwards";
 
-// ================== INFINITE AUTO-SCROLL =====================
+    setTimeout(() => {
+      lightbox.classList.remove("show");
+      lightbox.style.animation = "";
+      document.getElementById("event-lightbox-content").style.animation = "";
+      document.getElementById("event-lightbox-img").src = "";
+    }, 300);
+  }
+});
+
+// ================= SCROLLER AUTO-SCROLL =================
 const scroller = document.getElementById("eventsScroller");
 const track = document.getElementById("eventsTrack");
 
-// Duplicate track for infinite loop
+// Duplicate content for infinite scroll
 track.innerHTML += track.innerHTML;
 
 let autoSpeed = 1;
-let autoScroll;
-
-function startAuto() {
-  autoScroll = setInterval(() => {
-    scroller.scrollLeft += autoSpeed;
-
-    // If first half is finished → reset cleanly
-    if (scroller.scrollLeft >= track.scrollWidth / 2) {
-      scroller.scrollLeft = 0;
-    }
-  }, 20);
-}
-
-function stopAuto() {
-  clearInterval(autoScroll);
-}
-
-// Start auto scroll
-startAuto();
+let autoScroll = setInterval(() => {
+  scroller.scrollLeft += autoSpeed;
+  if(scroller.scrollLeft >= track.scrollWidth / 2){
+    scroller.scrollLeft = 0;
+  }
+}, 20);
 
 // Pause on hover/touch
-scroller.addEventListener("mouseenter", stopAuto);
-scroller.addEventListener("mouseleave", startAuto);
-scroller.addEventListener("touchstart", stopAuto);
-scroller.addEventListener("touchend", startAuto);
+scroller.addEventListener("mouseenter", () => clearInterval(autoScroll));
+scroller.addEventListener("mouseleave", () => {
+  autoScroll = setInterval(() => {
+    scroller.scrollLeft += autoSpeed;
+    if(scroller.scrollLeft >= track.scrollWidth / 2) scroller.scrollLeft = 0;
+  }, 20);
+});
+scroller.addEventListener("touchstart", () => clearInterval(autoScroll));
+scroller.addEventListener("touchend", () => {
+  autoScroll = setInterval(() => {
+    scroller.scrollLeft += autoSpeed;
+    if(scroller.scrollLeft >= track.scrollWidth / 2) scroller.scrollLeft = 0;
+  }, 20);
+});
 
-// ================== DRAG & SWIPE CONTROL =====================
+// ================= DRAG & SWIPE =================
 let isDown = false, startX, scrollLeft;
 
-// Mouse
 scroller.addEventListener("mousedown", e => {
   isDown = true;
   startX = e.pageX;
   scrollLeft = scroller.scrollLeft;
-  stopAuto();
+  clearInterval(autoScroll);
 });
 
-scroller.addEventListener("mouseup", () => {
-  isDown = false;
-  startAuto();
-});
+scroller.addEventListener("mouseup", () => { isDown = false; });
+scroller.addEventListener("mouseleave", () => { isDown = false; });
 
 scroller.addEventListener("mousemove", e => {
-  if (!isDown) return;
-  scroller.scrollLeft = scrollLeft - (e.pageX - startX) * 1.3;
+  if(!isDown) return;
+  const x = e.pageX - startX;
+  scroller.scrollLeft = scrollLeft - x * 1.3;
 });
 
-// Touch
+// Touch events
 scroller.addEventListener("touchstart", e => {
   startX = e.touches[0].pageX;
   scrollLeft = scroller.scrollLeft;
 });
 
 scroller.addEventListener("touchmove", e => {
-  scroller.scrollLeft = scrollLeft - (e.touches[0].pageX - startX) * 1.3;
-});
-</script>
-
-<script>
-/* ===== OPEN LIGHTBOX ===== */
-function openEventLightbox(imageSrc, caption) {
-  document.getElementById("event-lightbox-img").src = imageSrc;
-  document.getElementById("event-lightbox-caption").innerText = caption;
-  document.getElementById("event-lightbox").style.display = "flex";
-}
-
-/* ===== CLOSE LIGHTBOX WHEN CLICKED ANYWHERE ===== */
-document.getElementById("event-lightbox").addEventListener("click", function() {
-  this.style.display = "none";
+  const x = e.touches[0].pageX - startX;
+  scroller.scrollLeft = scrollLeft - x * 1.3;
 });
 </script>
 
@@ -1821,6 +1875,35 @@ toggle.onclick = () => nav.classList.toggle("show");
       window.open(paymentUrl, "_blank");
   });
 </script>
+<script>
+  // Wait until the DOM is fully loaded
+  document.addEventListener("DOMContentLoaded", function() {
+    // Select the About section (make sure it has an ID or class)
+    const aboutSection = document.getElementById("about"); // replace "about" if your section ID is different
 
+    if (aboutSection) {
+      // Create a div that will serve as the background
+      const bgDiv = document.createElement("div");
+      bgDiv.id = "custom-bg-image";
+      document.body.appendChild(bgDiv);
+
+      // Position it starting from the About section
+      const topOffset = aboutSection.offsetTop;
+      bgDiv.style.position = "absolute";
+      bgDiv.style.top = topOffset + "px";
+      bgDiv.style.left = 0;
+      bgDiv.style.width = "100%";
+      bgDiv.style.height = "100vh"; // change to desired height
+      bgDiv.style.backgroundImage = "url('')"; // replace with your image URL
+      bgDiv.style.backgroundSize = "cover";
+      bgDiv.style.backgroundRepeat = "no-repeat";
+      bgDiv.style.backgroundPosition = "center";
+      bgDiv.style.zIndex = "-1"; // ensures it stays behind content
+
+      // Optional: adjust when scrolling if you want it fixed
+      // bgDiv.style.position = "fixed";
+    }
+  });
+</script>
 </body>
 </html>
