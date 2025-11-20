@@ -1905,5 +1905,115 @@ toggle.onclick = () => nav.classList.toggle("show");
     }
   });
 </script>
+  <!-- ================= SCROLLING MESSAGE ================= -->
+<div id="scrolling-message-container">
+  <div id="scrolling-message">PURPOSEFUL LIVING CHURCH KULAMBIRO KISAASI , KAMPALA UGANDA</div>
+</div>
+
+<style>
+/* ================= CONTAINER ================= */
+#scrolling-message-container {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.15); /* glass effect */
+  backdrop-filter: blur(10px); /* blur behind glass */
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px; /* circular edges */
+  color: #000000; /* text color changed to black */
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 20px; /* spacing below message */
+  opacity: 0;
+  animation: fadeIn 1s forwards; /* fade-in effect */
+}
+
+/* ================= SCROLLING MESSAGE ================= */
+#scrolling-message {
+  display: inline-block;
+  padding-left: 100%;
+  animation: scroll-left 20s linear infinite;
+  color: #000000; /* ensure inner text is black */
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Fade-out animation */
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Responsive text */
+@media (max-width: 768px) {
+  #scrolling-message-container {
+    font-size: 14px;
+    padding: 10px 0;
+    border-radius: 20px;
+  }
+}
+</style>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+// ===== FIREBASE CONFIG =====
+const firebaseConfig = {
+  apiKey: "AIzaSyDaFhZ_ykNSmNXKCh6ye1M1vgoW6VhrdLU",
+  authDomain: "plc-church.firebaseapp.com",
+  databaseURL: "https://plc-church-default-rtdb.firebaseio.com",
+  projectId: "plc-church",
+  storageBucket: "plc-church.firebasestorage.app",
+  messagingSenderId: "508729736386",
+  appId: "1:508729736386:web:4f6b37701e7ff9efaecf5b",
+  measurementId: "G-5YSWLTBJ5M"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const messageEl = document.getElementById("scrolling-message");
+const container = document.getElementById("scrolling-message-container");
+
+// ===== FETCH MESSAGE FROM FIREBASE =====
+const messageRef = ref(db, 'scrollMessage');
+
+onValue(messageRef, (snapshot) => {
+  const data = snapshot.val();
+  if (data && data.enabled) {
+    messageEl.textContent = data.message;
+    container.style.display = "block";
+    container.style.animation = "fadeIn 1s forwards"; // fade-in
+  } else {
+    container.style.animation = "fadeOut 0.5s forwards"; // fade-out
+    setTimeout(() => { container.style.display = "none"; }, 500);
+  }
+});
+
+// ===== AUTOMATICALLY INSERT ABOVE ABOUT SECTION =====
+function insertAboveAbout() {
+  const aboutSection = document.querySelector('#about'); // assumes About section has id="about"
+  if (aboutSection) {
+    aboutSection.parentNode.insertBefore(container, aboutSection);
+  }
+}
+
+// Run on load
+window.addEventListener('load', insertAboveAbout);
+</script>
 </body>
 </html>
