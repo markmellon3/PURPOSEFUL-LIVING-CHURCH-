@@ -367,68 +367,104 @@ discoverImages();
         <!-- Church Info -->
         <div class="footer-section">
             <h4>Purposeful Living Church</h4>
-            <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
+            <p>
+                Purposeful Living Church is a Bible-based, family-centered, non-denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.
+            </p>
         </div>
 
-        <!-- Address Section -->
+
+        <!-- Social Media -->
         <div class="footer-section">
-            <h4>Address</h4>
-            <ul>
-                <li><i class="fas fa-map-marker-alt"></i> Kulambiro Kisaasi, Kampala Uganda</li>
-            </ul>
-
-            <!-- Google Map -->
-            <div class="map-container">
-    <iframe 
-        width="100%" 
-        height="180" 
-        frameborder="0"
-        style="border:0; border-radius:10px;"
-        allowfullscreen 
-        src="https://www.google.com/maps/embed?pb=https://maps.app.goo.gl/kNhgd4dEfZjvHsQQ6">
-    </iframe>
-
-    <div style="text-align:center; margin-top:10px;">
-        <a 
-            href="https://maps.app.goo.gl/qjw1Tn7ZRuhBAtHx6" 
-            target="_blank" 
-            style="
-                padding: 10px 20px;
-                background: #e67e22;
-                color: #fff;
-                border-radius: 6px;
-                font-weight: bold;
-                text-decoration: none;
-            ">
-            View on Google Maps
-        </a>
-    </div>
-</div>
-
-                
-            </div>
-        </div>
-
-        <!-- Contact Section -->
-        <div class="footer-section">
-            <h4>Reach Out</h4>
-            <ul>
-                <li><i class="fas fa-phone"></i> +(256) 75227 5855</li>
-                <li><i class="fas fa-envelope"></i> info@purposefullivingchurch.org</li>
-            </ul>
-
-            <!-- Social Media Icons -->
+            <h4>Connect With Us</h4>
             <div class="social-icons">
-                <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
 
     </div>
 
-    <p class="copyright">&copy; <span id="year"></span> Purposeful Living Church. All rights reserved.</p>
+    <!-- Copyright -->
+    <div class="copyright">
+        &copy; <span id="year"></span> Purposeful Living Church. All rights reserved.
+    </div>
 </footer>
+
+<style>
+/* ================= FOOTER (Gray Theme) ================= */
+.main-footer {
+    background: #e5e5e5;
+    color: #333;
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: space-between;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-section h4 {
+    color: #222;
+    margin-bottom: 12px;
+}
+
+.footer-section p, 
+.footer-section ul li, 
+.footer-section a {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer-section ul li {
+    list-style: none;
+    margin: 6px 0;
+}
+
+.footer-section a {
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-section a:hover {
+    color: #000;
+}
+
+.social-icons {
+    margin-top: 10px;
+}
+
+.social-icons .social-link {
+    font-size: 20px;
+    margin-right: 15px;
+    color: #333;
+    transition: 0.3s;
+}
+
+.social-icons .social-link:hover {
+    color: #000;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 25px;
+    color: #444;
+    border-top: 1px solid #bbb;
+    padding-top: 15px;
+    font-size: 14px;
+}
+</style>
+
 
 </body>
 </html>
