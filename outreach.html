@@ -4,409 +4,171 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Outreach Ministry | Purposeful Living Church</title>
-
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin:0;
-    background:white;
-    color:#333;
-  }
-
-  /* NAVIGATION BAR (White Theme + Cool Borders) */
-  nav {
-    background:white;
-    padding:12px 0;
-    display:flex;
-    justify-content:center;
-    gap:25px;
-    border-bottom:3px solid #b3d9ff; /* LIGHT BLUE HEADER BORDER */
-    box-shadow:0 2px 10px rgba(0,0,0,0.05);
-  }
-  nav a {
-    color:#000;
-    text-decoration:none;
-    font-size:16px;
-    font-weight:bold;
-    padding:10px 18px;
-    border:2px solid #b3d9ff;
-    border-radius:25px;
-    transition:0.3s;
-    background:white;
-  }
-  nav a:hover {
-    background:#e6f3ff;
-    transform:translateY(-3px);
-    box-shadow:0 4px 10px rgba(0,0,0,0.12);
-  }
-
-  /* CONTAINER */
-  .container {
-    max-width:1100px;
-    margin:auto;
-    padding:20px;
-  }
-
-  h1 {
-    text-align:center;
-    margin-bottom:20px;
-    color:#004a80;
-  }
-
-  /* LOADING SPINNER */
-  #spinner {
-    display:flex;
-    justify-content:center;
-    margin:20px 0;
-  }
-  .loader {
-    border:8px solid #eee;
-    border-top:8px solid #4da3ff;
-    border-radius:50%;
-    width:50px;
-    height:50px;
-    animation:spin 1s linear infinite;
-  }
-  @keyframes spin {
-    0% { transform:rotate(0deg); }
-    100% { transform:rotate(360deg); }
-  }
-
-  /* GALLERY */
-  .gallery {
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
-  }
-  @media(max-width:900px) { .gallery { grid-template-columns: repeat(2,1fr); } }
-  @media(max-width:600px) { .gallery { grid-template-columns:1fr; } }
-
-  .gallery img, .gallery video {
-    width:100%;
-    height:170px;
-    object-fit:cover;
-    border-radius:12px;
-    background:#f0f8ff;
-    border:1px solid #d9ecff;
-    box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    opacity:0;
-    transition:opacity .5s ease, transform .3s ease;
-    cursor:pointer;
-  }
-
-  .show { opacity:1 !important; }
-  .gallery img:hover, .gallery video:hover { transform:scale(1.05); }
-
-  /* PAGINATION */
-  .pagination {
-    text-align:center;
-    margin:30px 0;
-  }
-
-  .pagination button {
-    padding:10px 20px;
-    font-size:16px;
-    background:white;
-    border:2px solid #b3d9ff;
-    color:#004a80;
-    border-radius:25px;
-    cursor:pointer;
-    margin:5px;
-    transition:0.3s;
-  }
-
-  .pagination button:hover {
-    background:#e6f3ff;
-    transform:translateY(-2px);
-  }
-
-  .pagination button:disabled {
-    background:#f5f5f5;
-    border-color:#ddd;
-    color:#aaa;
-    cursor:not-allowed;
-  }
-
-  /* LIGHTBOX (White theme) */
-  #lightbox {
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:rgba(255,255,255,0.95);
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-  }
-
-  #lightbox.show { display:flex; }
-
-  #lightbox img, #lightbox video {
-    max-width:90%;
-    max-height:85%;
-    border-radius:10px;
-    box-shadow:0 4px 18px rgba(0,0,0,0.15);
-  }
-
-  footer {
-    text-align:center;
-    padding:20px;
-    background:#f7fbff;
-    border-top:1px solid #cce6ff;
-    margin-top:40px;
-    color:#555;
-  }
-</style>
-
-</head>
-<body>
-
-<!-- NAVIGATION -->
-<nav>
-  <a href="index.html">Home</a>
-  <a href="kids.html">Kids Ministry</a>
-  <a href="youth.html">Youth Ministry</a>
-</nav>
-
-<div class="container">
-  <h1>Outreach Ministry Gallery</h1>
-
-  <!-- SPINNER -->
-  <div id="spinner"><div class="loader"></div></div>
-
-  <!-- GALLERY -->
-  <div class="gallery" id="gallery"></div>
-
-  <!-- PAGINATION -->
-  <div class="pagination">
-    <button id="prevBtn" onclick="prevPage()">Previous</button>
-    <button id="nextBtn" onclick="nextPage()">Next</button>
-  </div>
-</div>
-
-<!-- LIGHTBOX -->
-<div id="lightbox" onclick="closeLightbox()">
-  <div id="lightboxContent"></div>
-</div>
-
-<footer>© 2025 Purposeful Living Church — All Rights Reserved</footer>
-
-<!-- SCRIPT (unchanged) -->
-<script>
-let currentPage = 1;
-const itemsPerPage = 35;
-let allItems = [];
-
-const folderURL = "https://ik.imagekit.io/s95tumxuk/outreach-gallery/";
-
-/* Check if file exists */
-function checkFile(url) {
-  return new Promise(resolve => {
-    const x = new XMLHttpRequest();
-    x.open("HEAD", url);
-    x.onload = () => resolve(x.status === 200);
-    x.onerror = () => resolve(false);
-    x.send();
-  });
+body {
+  font-family: Arial, sans-serif;
+  margin:0;
+  background:white;
+  color:#333;
 }
 
-/* AUTO DISCOVER IMAGES + VIDEOS */
-async function discoverFiles() {
-  let index = allItems.length + 1;
-  let newItems = [];
-
-  while (true) {
-    let img = `${folderURL}image${index}.jpg?${Date.now()}`;
-    let vid = `${folderURL}video${index}.mp4?${Date.now()}`;
-
-    const imgExists = await checkFile(img);
-    const vidExists = await checkFile(vid);
-
-    if (!imgExists && !vidExists) break;
-
-    if (imgExists) newItems.push({type: "image", url: img});
-    if (vidExists) newItems.push({type: "video", url: vid});
-
-    index++;
-  }
-
-  if (newItems.length > 0) {
-    allItems = allItems.concat(newItems);
-    displayPage(currentPage);
-  }
-
-  document.getElementById("spinner").style.display = "none";
+nav {
+  background:white;
+  padding:12px 0;
+  display:flex;
+  justify-content:center;
+  gap:25px;
+  border-bottom:2px solid #ccc;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+nav a {
+  color:#000;
+  text-decoration:none;
+  font-size:16px;
+  font-weight:bold;
+  padding:10px 18px;
+  border:2px solid #ccc;
+  border-radius:25px;
+  transition:0.3s;
+  background:white;
+}
+nav a:hover {
+  background:#f0f0f0;
+  transform:translateY(-2px);
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* DISPLAY ITEMS */
-function displayPage(page) {
-  const gallery = document.getElementById("gallery");
-  gallery.innerHTML = "";
-  currentPage = page;
-
-  const start = (page - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  const pageItems = allItems.slice(start, end);
-
-  pageItems.forEach((item, i) => {
-    let element;
-
-    if (item.type === "image") {
-      element = document.createElement("img");
-      element.src = item.url;
-      element.onclick = () => openLightbox(item);
-    } else {
-      element = document.createElement("video");
-      element.src = item.url;
-      element.onclick = () => openLightbox(item);
-      element.muted = true;
-    }
-
-    gallery.appendChild(element);
-    setTimeout(() => element.classList.add("show"), i * 70);
-  });
-
-  const totalPages = Math.ceil(allItems.length / itemsPerPage);
-  document.getElementById("prevBtn").disabled = currentPage === 1;
-  document.getElementById("nextBtn").disabled = currentPage === totalPages;
+.container {
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
 }
 
-/* PAGINATION */
-function nextPage() {
-  const totalPages = Math.ceil(allItems.length / itemsPerPage);
-  if (currentPage < totalPages) displayPage(currentPage + 1);
+h1 {
+  text-align:center;
+  color:#222;
+  margin-bottom:20px;
 }
 
-function prevPage() {
-  if (currentPage > 1) displayPage(currentPage - 1);
+/* CARD STYLE ABOUT PANEL */
+.about-card {
+  background:#f9f9f9;
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:30px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
 }
+.about-card h2 {
+  margin-top:0;
+  color:#004a80;
+}
+.about-card p {
+  font-size:16px;
+  line-height:1.6;
+  color:#444;
+}
+
+.loader {
+  border:8px solid #eee;
+  border-top:8px solid #888;
+  border-radius:50%;
+  width:50px;
+  height:50px;
+  animation:spin 1s linear infinite;
+  margin:20px auto;
+}
+@keyframes spin {
+  0% { transform:rotate(0deg); }
+  100% { transform:rotate(360deg); }
+}
+
+.gallery {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+@media(max-width:900px) { .gallery { grid-template-columns: repeat(2,1fr); } }
+
+.gallery img, .gallery video {
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:12px;
+  background:#f0f0f0;
+  border:1px solid #ddd;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  opacity:0;
+  transition:opacity .5s ease, transform .3s ease;
+  cursor:pointer;
+}
+.show { opacity:1 !important; }
+.gallery img:hover, .gallery video:hover { transform:scale(1.05); }
 
 /* LIGHTBOX */
-function openLightbox(file) {
-  const box = document.getElementById("lightboxContent");
-  box.innerHTML = "";
-
-  let element;
-
-  if (file.type === "image") {
-    element = document.createElement("img");
-    element.src = file.url;
-  } else {
-    element = document.createElement("video");
-    element.src = file.url;
-    element.controls = true;
-    element.autoplay = true;
-  }
-
-  box.appendChild(element);
-  document.getElementById("lightbox").classList.add("show");
+.lightbox {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+.lightbox.show { display:flex; }
+.lightbox-content img, .lightbox-content video {
+  max-width:80%;
+  max-height:80%;
+  border-radius:10px;
+  box-shadow:0 4px 18px rgba(0,0,0,0.25);
 }
 
-function closeLightbox() {
-  document.getElementById("lightbox").classList.remove("show");
+/* FOOTER */
+footer {
+  text-align:center;
+  padding:20px;
+  background:#f7f7f7;
+  border-top:1px solid #ddd;
+  margin-top:40px;
+  color:#555;
 }
-
-/* Refresh every 60 seconds */
-setInterval(discoverFiles, 60000);
-
-/* Start */
-discoverFiles();
-</script>
-<!-- ================= FOOTER ================= -->
-<footer id="contact" class="main-footer">
-    <div class="footer-content">
-
-        <!-- Church Info -->
-        <div class="footer-section">
-            <h4>Purposeful Living Church</h4>
-            <p>
-                Purposeful Living Church is a Bible-based, family-centered, non-denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.
-            </p>
-        </div>
-
-
-        <!-- Social Media -->
-        <div class="footer-section">
-            <h4>Connect With Us</h4>
-            <div class="social-icons">
-                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Copyright -->
-    <div class="copyright">
-        &copy; <span id="year"></span> Purposeful Living Church. All rights reserved.
-    </div>
-</footer>
-
-<style>
-/* ================= FOOTER (Gray Theme) ================= */
 .main-footer {
     background: #e5e5e5;
     color: #333;
     padding: 40px 20px;
     font-family: Arial, sans-serif;
 }
-
 .footer-content {
     display: flex;
     flex-wrap: wrap;
     gap: 30px;
     justify-content: space-between;
 }
-
 .footer-section {
     flex: 1;
     min-width: 250px;
 }
-
 .footer-section h4 {
     color: #222;
     margin-bottom: 12px;
 }
-
 .footer-section p, 
-.footer-section ul li, 
 .footer-section a {
     color: #333;
     font-size: 14px;
     line-height: 1.6;
 }
-
-.footer-section ul li {
-    list-style: none;
-    margin: 6px 0;
-}
-
-.footer-section a {
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-.footer-section a:hover {
-    color: #000;
-}
-
-.social-icons {
-    margin-top: 10px;
-}
-
+.footer-section a { text-decoration:none; transition:0.3s;}
+.footer-section a:hover { color:#000;}
+.social-icons { margin-top:10px;}
 .social-icons .social-link {
     font-size: 20px;
     margin-right: 15px;
     color: #333;
     transition: 0.3s;
 }
-
-.social-icons .social-link:hover {
-    color: #000;
-}
-
+.social-icons .social-link:hover { color:#000;}
 .copyright {
     text-align: center;
     margin-top: 25px;
@@ -416,10 +178,162 @@ discoverFiles();
     font-size: 14px;
 }
 </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="kids.html">Kids Ministry</a>
+  <a href="youth.html">Youth Ministry</a>
+</nav>
+
+<!-- DONATION 2 -->
+<div class="container">
+  <div class="about-card">
+    <h2>Bukakata Dental Mission</h2>
+    <p>
+      This 2-day mission happened on 31st August to 1st September 2023 at Lambu Landing Site, Bukakata. 
+      We held a Christ Love Fest mission including a 3-day dental mission, a pastors & leaders conference, and a women’s conference. 
+      Over 400 people received treatment, and 200+ pastors and leaders attended.
+    </p>
+  </div>
+
+  <div id="spinner2" class="loader"></div>
+  <div class="gallery" id="gallery2"></div>
+</div>
+
+<div id="lightbox2" class="lightbox" onclick="closeLightbox(event, 'lightbox2')">
+  <div class="lightbox-content" id="lightboxContent2" onclick="event.stopPropagation()"></div>
+</div>
+
+<!-- DONATION 1 -->
+<div class="container">
+  <div class="about-card">
+    <h2>Bukakata Outreach Donations</h2>
+    <p>
+      Purposeful Living Church organizes outreach programs to support the needy, provide food, clothing, and educational materials. 
+      Through generous donations, we impacted lives in the community and beyond. This happened on 2nd September 2023 in Bukakata.
+    </p>
+  </div>
+
+  <div id="spinner1" class="loader"></div>
+  <div class="gallery" id="gallery1"></div>
+</div>
+
+<div id="lightbox1" class="lightbox" onclick="closeLightbox(event, 'lightbox1')">
+  <div class="lightbox-content" id="lightboxContent1" onclick="event.stopPropagation()"></div>
+</div>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Purposeful Living Church</h4>
+      <p>Bible-based, family-centered, non-denominational church with a mission to win the lost and teach the saved to live a purposeful life.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Connect With Us</h4>
+      <div class="social-icons">
+        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="copyright">
+    &copy; 2025 Purposeful Living Church. All rights reserved.
+  </div>
+</footer>
 
 <script>
-// Automatically set current year
-document.getElementById("year").textContent = new Date().getFullYear();
+/* ===== REUSABLE GALLERY FUNCTION ===== */
+function createGallery(galleryId, spinnerId, lightboxId, contentId, folderURL){
+  const gallery = document.getElementById(galleryId);
+  const spinner = document.getElementById(spinnerId);
+  const lightbox = document.getElementById(lightboxId);
+  const lightboxContent = document.getElementById(contentId);
+  const allItems = [];
+
+  async function checkFile(url) {
+    return new Promise(resolve => {
+      const x = new XMLHttpRequest();
+      x.open("HEAD", url);
+      x.onload = () => resolve(x.status === 200);
+      x.onerror = () => resolve(false);
+      x.send();
+    });
+  }
+
+  async function discoverFiles() {
+    let index = allItems.length + 1;
+    while(true){
+      let img = `${folderURL}image${index}.jpg?${Date.now()}`;
+      let vid = `${folderURL}video${index}.mp4?${Date.now()}`;
+
+      const imgExists = await checkFile(img);
+      const vidExists = await checkFile(vid);
+
+      if(!imgExists && !vidExists) break;
+
+      if(imgExists) allItems.push({type:"image", url:img});
+      if(vidExists) allItems.push({type:"video", url:vid});
+
+      index++;
+    }
+    displayGallery();
+    spinner.style.display = "none";
+  }
+
+  function displayGallery(){
+    gallery.innerHTML = "";
+    allItems.forEach((item, i) => {
+      let el;
+      if(item.type==="image"){
+        el = document.createElement("img");
+        el.src = item.url;
+      } else {
+        el = document.createElement("video");
+        el.src = item.url;
+        el.muted = true;
+      }
+      el.onclick = () => openLightbox(item);
+      gallery.appendChild(el);
+      setTimeout(()=>el.classList.add("show"), i*70);
+    });
+  }
+
+  function openLightbox(file){
+    lightboxContent.innerHTML = "";
+    let el;
+    if(file.type==="image"){
+      el = document.createElement("img");
+      el.src = file.url;
+    } else {
+      el = document.createElement("video");
+      el.src = file.url;
+      el.controls = true;
+      el.autoplay = true;
+    }
+    lightboxContent.appendChild(el);
+    lightbox.classList.add("show");
+  }
+
+  discoverFiles();
+  setInterval(discoverFiles, 60000);
+}
+
+/* ===== CLOSE LIGHTBOX ===== */
+function closeLightbox(e, lightboxId){
+  const lightbox = document.getElementById(lightboxId);
+  const content = lightbox.querySelector('.lightbox-content');
+  if(!content.contains(e.target)){
+    lightbox.classList.remove("show");
+  }
+}
+
+/* ===== INITIALIZE GALLERIES ===== */
+createGallery("gallery1","spinner1","lightbox1","lightboxContent1","https://ik.imagekit.io/s95tumxuk/outreach-gallery/");
+createGallery("gallery2","spinner2","lightbox2","lightboxContent2","https://ik.imagekit.io/s95tumxuk/outreach2-gallery/");
 </script>
 </body>
 </html>
