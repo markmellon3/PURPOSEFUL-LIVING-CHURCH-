@@ -1238,6 +1238,32 @@ scroller.addEventListener("touchmove", e => {
 });
 </script>
 
+  <!-- Floating NEWS & UPDATES Button -->
+<a href="news.html" class="floating-news-button">NEWS & UPDATES</a>
+
+<style>
+/* Floating Button Styles */
+.floating-news-button {
+  position: fixed;
+  bottom: 30px; /* distance from bottom */
+  right: 30px;  /* distance from right */
+  background-color: #ff6600; /* Orange color */
+  color: #ffffff; /* White text */
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+  transition: background-color 0.3s, transform 0.2s;
+  z-index: 1000; /* makes sure it’s above other elements */
+}
+
+.floating-news-button:hover {
+  background-color: #e65c00; /* Slightly darker orange on hover */
+  transform: translateY(-3px);
+}
+</style>
 <!-- ================= GIVE ================= -->
 <section id="give" class="section container give-section">
   <h2>Support the Ministry</h2>
