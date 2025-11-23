@@ -243,22 +243,111 @@
       <p>Serving the community through youth-led mission work.</p>
     </div>
   </div>
+  
+<!-- GALLERY -->
+<h2>Gallery</h2>
 
-  <!-- GALLERY -->
-  <h2 class="gallery-title">Youth Moments Gallery</h2>
-  <div class="gallery">
-    <div class="gallery-item"><img src="YOUTH_IMAGE1.jpg" alt="Youth Ministry 1"></div>
-    <div class="gallery-item"><img src="YOUTH_IMAGE2.jpg" alt="Youth Ministry 2"></div>
-    <div class="gallery-item"><img src="YOUTH_IMAGE3.jpg" alt="Youth Ministry 3"></div>
-    <div class="gallery-item"><img src="YOUTH_IMAGE4.jpg" alt="Youth Ministry 4"></div>
-    <div class="gallery-item"><img src="YOUTH_IMAGE5.jpg" alt="Youth Ministry 5"></div>
+<style>
+  /* Responsive grid */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Mobile: 2 columns */
+    gap: 12px;
+  }
 
-    <div class="gallery-item">
-      <video src="YOUTH_VIDEO1.mp4" controls></video>
-    </div>
+  @media (min-width: 768px) {
+    .gallery {
+      grid-template-columns: repeat(4, 1fr); /* Desktop: 4 columns */
+      gap: 18px;
+    }
+  }
+
+  .gallery img {
+    width: 100%;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.25s ease-in-out;
+  }
+
+  .gallery img:hover {
+    transform: scale(1.03);
+  }
+</style>
+
+<div class="gallery" id="gallery"></div>
+
+<!-- LIGHTBOX POPUP -->
+<div id="lightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
+  <div style="position:relative; max-width:800px; width:90%; text-align:center; animation:popupZoom 0.3s ease-in-out; background:#fff; border-radius:20px; padding:20px;">
+    <span onclick="closeLightbox()" style="position:absolute; top:10px; right:15px; font-size:40px; cursor:pointer; font-weight:bold; color:#333;">&times;</span>
+    <img id="lightboxImg" style="width:100%; max-height:500px; object-fit:cover; border-radius:12px;">
   </div>
-
 </div>
+
+<script>
+let allImages = [];
+const folderURL = "https://ik.imagekit.io/s95tumxuk/youth-gallery/";
+
+// Check if an image exists
+function checkImage(url) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = url;
+  });
+}
+
+// Automatically discover images
+async function discoverImages() {
+  let index = 1;
+  let newImages = [];
+
+  while (true) {
+    const url = `${folderURL}image${index}.jpg?updatedAt=${Date.now()}`;
+    const exists = await checkImage(url);
+    if (!exists) break;
+
+    if (!allImages.find(img => img.url === url)) {
+      newImages.push({ url });
+    }
+    index++;
+  }
+
+  allImages = allImages.concat(newImages);
+  displayImages();
+}
+
+// Display ALL images (no pagination)
+function displayImages() {
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
+
+  allImages.forEach((file, i) => {
+    const img = document.createElement("img");
+    img.src = file.url;
+    img.onclick = () => openLightbox(file.url);
+    gallery.appendChild(img);
+  });
+}
+
+// Lightbox functions
+function openLightbox(url) {
+  document.getElementById('lightboxImg').src = url;
+  document.getElementById('lightbox').style.display = "flex";
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').style.display = "none";
+}
+
+// Refresh every 60 seconds to detect new images
+setInterval(discoverImages, 60000);
+
+// Start automatically
+discoverImages();
+</script>
+  
 
 <!-- CLEAN FOOTER (NO COLOR BACKGROUND) -->
 <section class="cta">
