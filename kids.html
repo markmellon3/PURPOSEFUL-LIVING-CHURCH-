@@ -189,7 +189,7 @@ copyright {
 <!-- NAVIGATION -->
 <header>
   <nav id="mainNav" class="main-nav">
-    <a href="index.html">Home</a>
+    
     
   </nav>
 </header>
@@ -232,15 +232,35 @@ copyright {
 
 <!-- GALLERY -->
 <h2>Gallery</h2>
-<div class="gallery" id="gallery">
-  <!-- Images will load here dynamically -->
-</div>
 
-<!-- Pagination Buttons -->
-<div style="text-align:center; margin-top:20px;">
-  <button id="prevBtn" onclick="prevPage()" style="padding:10px 20px; margin-right:10px; background:#f39c12; color:#fff; border:none; border-radius:6px; cursor:pointer;">Previous</button>
-  <button id="nextBtn" onclick="nextPage()" style="padding:10px 20px; background:#f39c12; color:#fff; border:none; border-radius:6px; cursor:pointer;">Next</button>
-</div>
+<style>
+  /* Responsive grid */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Mobile: 2 columns */
+    gap: 12px;
+  }
+
+  @media (min-width: 768px) {
+    .gallery {
+      grid-template-columns: repeat(4, 1fr); /* Desktop: 4 columns */
+      gap: 18px;
+    }
+  }
+
+  .gallery img {
+    width: 100%;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.25s ease-in-out;
+  }
+
+  .gallery img:hover {
+    transform: scale(1.03);
+  }
+</style>
+
+<div class="gallery" id="gallery"></div>
 
 <!-- LIGHTBOX POPUP -->
 <div id="lightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
@@ -251,8 +271,6 @@ copyright {
 </div>
 
 <script>
-let currentPage = 1;
-const imagesPerPage = 20;
 let allImages = [];
 const folderURL = "https://ik.imagekit.io/s95tumxuk/Kids-gallery/";
 
@@ -270,66 +288,46 @@ function checkImage(url) {
 async function discoverImages() {
   let index = 1;
   let newImages = [];
+
   while (true) {
     const url = `${folderURL}image${index}.jpg?updatedAt=${Date.now()}`;
     const exists = await checkImage(url);
     if (!exists) break;
-    if (!allImages.find(img => img.url === url)) newImages.push({url});
+
+    if (!allImages.find(img => img.url === url)) {
+      newImages.push({ url });
+    }
     index++;
   }
+
   allImages = allImages.concat(newImages);
-  displayPage(currentPage);
+  displayImages();
 }
 
-// Display images for current page
-function displayPage(page) {
+// Display ALL images (no pagination)
+function displayImages() {
   const gallery = document.getElementById("gallery");
   gallery.innerHTML = "";
-  currentPage = page;
 
-  const start = (page - 1) * imagesPerPage;
-  const end = start + imagesPerPage;
-  const pageImages = allImages.slice(start, end);
-
-  pageImages.forEach((file, i) => {
+  allImages.forEach((file, i) => {
     const img = document.createElement("img");
     img.src = file.url;
-    img.style.width = "100%";
-    img.style.borderRadius = "15px";
-    img.style.marginBottom = "15px";
-    img.style.cursor = "pointer";
     img.onclick = () => openLightbox(file.url);
     gallery.appendChild(img);
-    setTimeout(() => img.classList.add('show'), i * 100);
   });
-
-  const totalPages = Math.ceil(allImages.length / imagesPerPage);
-  document.getElementById("prevBtn").disabled = currentPage === 1;
-  document.getElementById("nextBtn").disabled = currentPage === totalPages;
-}
-
-// Pagination functions
-function nextPage() {
-  const totalPages = Math.ceil(allImages.length / imagesPerPage);
-  if (currentPage < totalPages) displayPage(currentPage + 1);
-}
-function prevPage() {
-  if (currentPage > 1) displayPage(currentPage - 1);
 }
 
 // Lightbox functions
 function openLightbox(url) {
-  const lb = document.getElementById('lightbox');
-  const lbImg = document.getElementById('lightboxImg');
-  lbImg.src = url;
-  lb.style.display = "flex";
-}
-function closeLightbox() {
-  const lb = document.getElementById('lightbox');
-  lb.style.display = "none";
+  document.getElementById('lightboxImg').src = url;
+  document.getElementById('lightbox').style.display = "flex";
 }
 
-// Refresh every 60s to detect new images
+function closeLightbox() {
+  document.getElementById('lightbox').style.display = "none";
+}
+
+// Refresh every 60 seconds to detect new images
 setInterval(discoverImages, 60000);
 
 // Start automatically
