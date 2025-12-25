@@ -1741,127 +1741,123 @@ function insertAboveAbout() {
 // Run on load
 window.addEventListener('load', insertAboveAbout);
 </script>
-<!-- Christmas & New Year Countdown Script -->
+  <!-- 🎉 Real-Time New Year Countdown (Uganda Time Only) -->
 <style>
-.countdown-card {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 20px 25px;
-  color: #fff;
-  font-family: 'Poppins', sans-serif;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-  width: 300px;
-  text-align: center;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.3s ease, background 0.3s ease;
-}
-.countdown-card:hover {
-  transform: scale(1.05);
-  background: rgba(255,255,255,0.15);
-}
-.countdown-card h4 {
-  margin: 0 0 10px;
-  color: #ffd700;
-  font-size: 1.3rem;
-}
-.countdown-timer {
-  display: flex;
-  justify-content: space-between;
-  gap:5px;
-}
-.time-box {
-  background: rgba(255,255,255,0.15);
-  padding: 10px;
-  border-radius: 10px;
-  flex: 1;
-}
-.time-box span {
-  display: block;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #ffd700;
-}
-.time-box small {
-  display: block;
-  font-size: 0.7rem;
-  color: #fff;
+#countdownCard{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:9999;
 }
 
-/* Bottom center positioning */
-#countdownCard {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
+.countdown-card{
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-radius:16px;
+  padding:20px 24px;
+  color:#fff;
+  font-family:'Poppins',sans-serif;
+  box-shadow:0 8px 32px rgba(0,0,0,0.35);
+  width:300px;
+  text-align:center;
+}
+
+.countdown-card h4{
+  margin:0 0 10px;
+  color:#ffd700;
+  font-size:1.3rem;
+}
+
+.countdown-timer{
+  display:flex;
+  gap:6px;
+  justify-content:space-between;
+}
+
+.time-box{
+  background:rgba(255,255,255,0.15);
+  padding:10px;
+  border-radius:10px;
+  flex:1;
+}
+
+.time-box span{
+  display:block;
+  font-size:1.25rem;
+  font-weight:700;
+  color:#ffd700;
+}
+
+.time-box small{
+  font-size:0.7rem;
 }
 </style>
 
-<div id="countdownCard" class="countdown-card">
-  <h4 id="countdownTitle">🎄 Christmas Countdown 🎄</h4>
-  <div class="countdown-timer">
-    <div class="time-box"><span id="cdDays">0</span><small>Days</small></div>
-    <div class="time-box"><span id="cdHours">0</span><small>Hours</small></div>
-    <div class="time-box"><span id="cdMinutes">0</span><small>Minutes</small></div>
-    <div class="time-box"><span id="cdSeconds">0</span><small>Seconds</small></div>
+<div id="countdownCard">
+  <div class="countdown-card">
+    <h4>🎉 New Year Countdown 🇺🇬</h4>
+    <div class="countdown-timer">
+      <div class="time-box"><span id="d">0</span><small>Days</small></div>
+      <div class="time-box"><span id="h">0</span><small>Hours</small></div>
+      <div class="time-box"><span id="m">0</span><small>Minutes</small></div>
+      <div class="time-box"><span id="s">0</span><small>Seconds</small></div>
+    </div>
   </div>
 </div>
 
 <script>
 (function(){
-  const card = document.getElementById("countdownCard");
-  const title = document.getElementById("countdownTitle");
-  const daysEl = document.getElementById("cdDays");
-  const hoursEl = document.getElementById("cdHours");
-  const minutesEl = document.getElementById("cdMinutes");
-  const secondsEl = document.getElementById("cdSeconds");
+  const d=document.getElementById("d"),
+        h=document.getElementById("h"),
+        m=document.getElementById("m"),
+        s=document.getElementById("s"),
+        card=document.getElementById("countdownCard");
 
-  let showChristmas = true; // starts with Christmas countdown
+  const UGANDA_OFFSET = 3 * 60 * 60 * 1000; // UTC +3
 
-  function getNextXmas() {
-    const now = new Date();
-    let year = now.getFullYear();
-    if(now.getMonth() === 11 && now.getDate() > 25) year++;
-    return new Date(`December 25, ${year} 00:00:00`);
+  function ugandaNow(){
+    const local = new Date();
+    return new Date(local.getTime() + UGANDA_OFFSET + local.getTimezoneOffset()*60000);
   }
 
-  function getNextNY() {
-    const now = new Date();
-    let year = now.getFullYear();
-    if(now.getMonth() === 11 && now.getDate() > 31) year++;
-    return new Date(`January 1, ${year} 00:00:00`);
+  function update(){
+    const nowUG = ugandaNow();
+
+    // 🔒 Only show in December (Uganda time)
+    if(nowUG.getMonth() !== 11){
+      card.style.display="none";
+      return;
+    }
+
+    // 🎯 Target: Jan 1st 00:00:00 Uganda time
+    const target = new Date(
+      nowUG.getFullYear()+1, 0, 1, 0, 0, 0
+    );
+
+    let diff = target - nowUG;
+    if(diff <= 0){
+      card.style.display="none";
+      return;
+    }
+
+    const days = Math.floor(diff / 86400000);
+    diff %= 86400000;
+    const hours = Math.floor(diff / 3600000);
+    diff %= 3600000;
+    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+
+    d.textContent = days;
+    h.textContent = hours;
+    m.textContent = minutes;
+    s.textContent = seconds;
   }
 
-  function updateCountdown() {
-    const now = new Date();
-    const target = showChristmas ? getNextXmas() : getNextNY();
-    const diff = target - now;
-
-    const days = Math.floor(diff / (1000*60*60*24));
-    const hours = Math.floor((diff / (1000*60*60)) % 24);
-    const minutes = Math.floor((diff / (1000*60)) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
-
-    daysEl.innerText = days;
-    hoursEl.innerText = hours;
-    minutesEl.innerText = minutes;
-    secondsEl.innerText = seconds;
-  }
-
-  // toggle countdown on click
-  card.addEventListener("click", ()=>{
-    showChristmas = !showChristmas;
-    title.innerText = showChristmas ? "🎄 Christmas Countdown 🎄" : "🎉 New Year Countdown 🎉";
-    updateCountdown();
-  });
-
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
+  update();
+  setInterval(update, 1000);
 })();
 </script>
- 
 </body>
 </html>
