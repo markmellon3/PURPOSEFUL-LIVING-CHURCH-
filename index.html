@@ -1752,12 +1752,13 @@ function insertAboveAbout() {
 // Run on load
 window.addEventListener('load', insertAboveAbout);
 </script>
- <!-- App Download Popup Script -->
+ 
+<!-- App Download Popup Script for WebViewGold -->
 <script>
 (function() {
-    // Check if user is NOT inside the app
-    const isInApp = /PLCApp/i.test(navigator.userAgent); // Change 'PLCApp' to your app's identifier
-    if(isInApp) return; // Don't show popup in the app
+    // Detect if user is inside WebViewGold (your app)
+    const isInApp = /WebViewGold/i.test(navigator.userAgent); // <-- WebViewGold identifier
+    if(isInApp) return; // Don't show popup in app
 
     // Create overlay
     const overlay = document.createElement('div');
@@ -1814,7 +1815,7 @@ window.addEventListener('load', insertAboveAbout);
 
     // Button actions
     document.getElementById('downloadAppBtn').addEventListener('click', function() {
-        window.location.href = 'https://markmellon3.github.io/application/'; // <-- change this to your app download URL
+        window.location.href = 'https://markmellon3.github.io/application/'; // <-- replace with your app download URL
     });
 
     document.getElementById('closePopupBtn').addEventListener('click', function() {
@@ -1832,5 +1833,6 @@ window.addEventListener('load', insertAboveAbout);
     document.head.appendChild(style);
 })();
 </script>
+        
 </body>
 </html>
