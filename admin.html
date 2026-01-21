@@ -19,7 +19,7 @@ body{
 }
 
 .panel{
-  max-width:900px;
+  max-width:1000px;
   margin:20px auto;
   background:#fff;
   padding:20px;
@@ -28,6 +28,7 @@ body{
 }
 
 h2{ color:#ff6600; margin-top:0; }
+h3{ color:#ff6600; margin-bottom:5px; }
 
 input, textarea, button{
   width:100%;
@@ -67,28 +68,36 @@ hr{ margin:30px 0; }
 
 .actions{
   margin-top:10px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
 }
 
 .actions button{
   width:auto;
   padding:6px 12px;
-  margin-right:5px;
   font-size:14px;
 }
 
-.edit{ background:#007bff; }
+.edit{ background:#007bff; color:#fff; }
 .edit:hover{ background:#0056b3; }
 
-.delete{ background:#dc3545; }
+.delete{ background:#dc3545; color:#fff; }
 .delete:hover{ background:#a71d2a; }
 
 @media(max-width:600px){
   body{ padding:10px; }
   .panel{ padding:15px; }
+  .actions button{ flex:1 1 100%; }
+}
+
+#newsList, #eventList, #mediaList, #kidsGalleryList{
+  max-height:500px;
+  overflow-y:auto;
+  padding-right:5px;
 }
 </style>
 </head>
-
 <body>
 
 <!-- LOGIN -->
@@ -101,16 +110,16 @@ hr{ margin:30px 0; }
 
 <!-- ADMIN DASHBOARD -->
 <div class="panel" id="adminPanel" style="display:none;">
-  
+
   <hr>
+  <h2>Live Website Preview</h2>
+  <p>You can see your website changes in real-time here:</p>
+  <button onclick="refreshPreview()">Refresh Preview</button>
+  <div style="margin-top:10px; border:1px solid #ccc; border-radius:8px; overflow:hidden;">
+    <iframe id="livePreview" src="https://purposefullivingchurchplc.org/" style="width:100%; height:600px; border:none;"></iframe>
+  </div>
 
-<h2>Live Website Preview</h2>
-<p>You can see your website changes in real-time here:</p>
-<button onclick="refreshPreview()">Refresh Preview</button>
-<div style="margin-top:10px; border:1px solid #ccc; border-radius:8px; overflow:hidden;">
-  <iframe id="livePreview" src="https://purposefullivingchurchplc.org/" style="width:100%; height:600px; border:none;"></iframe>
-</div>
-
+  <hr>
   <h2>Add / Edit News</h2>
   <input type="hidden" id="newsId">
   <input id="title" placeholder="News Title">
@@ -118,24 +127,18 @@ hr{ margin:30px 0; }
   <textarea id="content" placeholder="News Content"></textarea>
   <button onclick="saveNews()">Save News</button>
 
-  <hr>
-
-  <h2>All News (Recent & Old)</h2>
+  <h3>All News (Recent & Old)</h3>
   <div id="newsList"></div>
 
   <hr>
-
   <h2>Add Event Image</h2>
   <input id="imageUrl" placeholder="Image URL">
   <button onclick="addEvent()">Add Event Image</button>
 
-  <hr>
-
-  <h2>Manage Event Images</h2>
+  <h3>Manage Event Images</h3>
   <div id="eventList"></div>
 
   <hr>
-
   <h2>Manage Media Images</h2>
   <h3>Add Media Image</h3>
   <input id="mediaUrl" placeholder="Media Image URL">
@@ -143,7 +146,17 @@ hr{ margin:30px 0; }
 
   <h3>All Media Images</h3>
   <div id="mediaList"></div>
-  
+
+  <hr>
+  <h2>Manage Kids Gallery</h2>
+  <h3>Add Kids Image</h3>
+  <input type="text" id="kidsCaption" placeholder="Image caption (optional)">
+  <input type="url" id="kidsImageUrl" placeholder="Kids Image URL">
+  <button onclick="addKidsImage()">Add Kids Image</button>
+
+  <h3>All Kids Images</h3>
+  <div id="kidsGalleryList"></div>
+
 </div>
 
 <script>
@@ -168,6 +181,7 @@ function login(){
       loadNews();
       loadEvents();
       loadMediaImages();
+      loadKidsGallery();
     })
     .catch(err => alert(err.message));
 }
@@ -193,7 +207,6 @@ function saveNews(){
   content.value = "";
 }
 
-// FIXED: LOAD ALL NEWS RECENT FIRST
 function loadNews(){
   db.ref("news").on("value", snap => {
     const list = document.getElementById("newsList");
@@ -202,12 +215,10 @@ function loadNews(){
     const newsArray = [];
     snap.forEach(child => {
       const n = { id: child.key, ...child.val() };
-      // Convert date to timestamp for sorting; if missing, treat as 0
       n.timestamp = n.date ? new Date(n.date).getTime() : 0;
       newsArray.push(n);
     });
 
-    // Sort descending (newest first)
     newsArray.sort((a,b) => b.timestamp - a.timestamp);
 
     newsArray.forEach(n=>{
@@ -218,12 +229,7 @@ function loadNews(){
           <p>${n.content || ""}</p>
           <div class="actions">
             <button class="edit"
-              onclick="editNews(
-                '${n.id}',
-                '${(n.title||"").replace(/'/g,"\\'")}',
-                '${n.date||""}',
-                '${(n.content||"").replace(/'/g,"\\'")}'
-              )">Edit</button>
+              onclick="editNews('${n.id}','${(n.title||"").replace(/'/g,"\\'")}','${n.date||""}','${(n.content||"").replace(/'/g,"\\'")}')">Edit</button>
             <button class="delete"
               onclick="deleteNews('${n.id}')">Delete</button>
           </div>
@@ -262,10 +268,8 @@ function loadEvents(){
         <div class="item">
           <img src="${c.val().imageUrl}">
           <div class="actions">
-            <button class="edit"
-              onclick="editEvent('${c.key}','${c.val().imageUrl}')">Edit</button>
-            <button class="delete"
-              onclick="deleteEvent('${c.key}')">Delete</button>
+            <button class="edit" onclick="editEvent('${c.key}','${c.val().imageUrl}')">Edit</button>
+            <button class="delete" onclick="deleteEvent('${c.key}')">Delete</button>
           </div>
         </div>`;
     });
@@ -301,10 +305,8 @@ function loadMediaImages(){
         <div class="item">
           <img src="${c.val().url}">
           <div class="actions">
-            <button class="edit"
-              onclick="editMedia('${c.key}','${c.val().url}')">Edit</button>
-            <button class="delete"
-              onclick="deleteMedia('${c.key}')">Delete</button>
+            <button class="edit" onclick="editMedia('${c.key}','${c.val().url}')">Edit</button>
+            <button class="delete" onclick="deleteMedia('${c.key}')">Delete</button>
           </div>
         </div>`;
     });
@@ -323,105 +325,63 @@ function deleteMedia(id){
     db.ref("gallery/" + id).remove();
   }
 }
-// Refresh preview manually
+
+/* ---------- KIDS GALLERY CRUD ---------- */
+const kidsGalleryRef = db.ref("kidsGallery");
+
+function addKidsImage() {
+  const url = document.getElementById("kidsImageUrl").value.trim();
+  const caption = document.getElementById("kidsCaption").value.trim();
+  if(!url) return alert("Please enter an image URL");
+  kidsGalleryRef.push({ url, caption: caption || "", timestamp: Date.now() });
+  document.getElementById("kidsImageUrl").value = "";
+  document.getElementById("kidsCaption").value = "";
+}
+
+function loadKidsGallery() {
+  const list = document.getElementById("kidsGalleryList");
+  list.innerHTML = "";
+  kidsGalleryRef.on("value", snapshot => {
+    list.innerHTML = "";
+    snapshot.forEach(child => {
+      const data = child.val();
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <img src="${data.url}" alt="${data.caption}">
+        <p>${data.caption || ""}</p>
+        <div class="actions">
+          <button class="edit" onclick="editKidsImage('${child.key}','${data.url}','${(data.caption||"").replace(/'/g,"\\'")}')">Edit</button>
+          <button class="delete" onclick="deleteKidsImage('${child.key}')">Delete</button>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  });
+}
+
+function editKidsImage(id, url, caption){
+  const newUrl = prompt("Update image URL", url);
+  const newCaption = prompt("Update caption (optional)", caption);
+  if(newUrl){
+    kidsGalleryRef.child(id).update({ url: newUrl, caption: newCaption || "" });
+  }
+}
+
+function deleteKidsImage(id){
+  if(confirm("Delete this kids image?")){
+    kidsGalleryRef.child(id).remove();
+  }
+}
+
+/* ---------- LIVE PREVIEW ---------- */
 function refreshPreview(){
   const iframe = document.getElementById('livePreview');
-  iframe.src = iframe.src; // reload the iframe
-}
-
-// Optional: Auto-refresh every 60 seconds
-setInterval(() => {
-  const iframe = document.getElementById('livePreview');
   iframe.src = iframe.src;
-}, 60000);
-</script>
-<!-- ================= RESPONSIVE ADMIN PANEL SCRIPT ================= -->
-<style>
-/* Make all panels responsive */
-.panel {
-  max-width: 1000px;
-  width: 95%;
-  margin: 20px auto;
-  padding: 20px;
-  box-sizing: border-box;
 }
 
-/* Input, textarea, button responsiveness */
-input, textarea, button {
-  width: 100%;
-  font-size: 16px;
-  margin-top: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-/* Make item containers flexible */
-.item {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.item img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
-/* Actions buttons wrap on smaller screens */
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-/* Responsive headings */
-.panel h2, .panel h3 {
-  font-size: 1.4rem;
-}
-
-/* Scrollable lists on mobile */
-#newsList, #eventList, #mediaList {
-  max-height: 500px;
-  overflow-y: auto;
-  padding-right: 5px;
-}
-
-/* Responsive tweaks */
-@media (max-width: 768px) {
-  .panel {
-    padding: 15px;
-  }
-  .panel h2, .panel h3 {
-    font-size: 1.2rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .panel {
-    padding: 10px;
-  }
-  .panel h2, .panel h3 {
-    font-size: 1rem;
-  }
-  .actions button {
-    flex: 1 1 100%;
-  }
-}
-</style>
-
-<script>
-/* ================= OPTIONAL: Auto adjust iframe previews ================= */
-function adjustIframeHeight(iframeId) {
-  const iframe = document.getElementById(iframeId);
-  if (!iframe) return;
-  try {
-    iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
-  } catch(e) {
-    // cross-origin iframe; fallback
-    iframe.style.height = '600px';
-  }
-}
+// Optional: auto-refresh every 60s
+setInterval(refreshPreview, 60000);
 </script>
 </body>
 </html>
