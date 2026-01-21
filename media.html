@@ -124,7 +124,11 @@ footer {
 }
 
 /* ================= RESPONSIVE ================= */
-@media(max-width:768px) { .gallery { grid-template-columns:repeat(2,1fr); } header h1 { font-size:1.6rem; } nav a { font-size:14px; padding:6px 10px; } }
+@media(max-width:768px) { 
+  .gallery { grid-template-columns:repeat(2,1fr); } 
+  header h1 { font-size:1.6rem; } 
+  nav a { font-size:14px; padding:6px 10px; } 
+}
 </style>
 </head>
 <body>
@@ -156,45 +160,59 @@ footer {
   © 2025 Purposeful Living Church — All Rights Reserved
 </footer>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-database-compat.js"></script>
+
 <script>
+/* ---------- FIREBASE CONFIG ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyDaFhZ_ykNSmNXKCh6ye1M1vgoW6VhrdLU",
+  authDomain: "plc-church.firebaseapp.com",
+  databaseURL: "https://plc-church-default-rtdb.firebaseio.com",
+  projectId: "plc-church"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ---------- GALLERY VARIABLES ---------- */
 let currentPage = 1;
 const imagesPerPage = 20;
 let allImages = [];
-const folderURL = "https://ik.imagekit.io/s95tumxuk/church-gallery/";
 let loading = false;
 
-/* LOADER */
+/* ---------- LOADER FUNCTIONS ---------- */
 function showLoader(){ document.getElementById("loader").style.display="block"; }
 function hideLoader(){ document.getElementById("loader").style.display="none"; }
 
-/* CHECK IMAGE EXISTS */
-function checkImage(url){
-  return new Promise(resolve=>{
-    const img = new Image();
-    img.onload = ()=>resolve(true);
-    img.onerror = ()=>resolve(false);
-    img.src = url;
-  });
+/* ---------- LIGHTBOX ---------- */
+function openLightbox(url){
+  document.getElementById("lightboxImg").src = url;
+  document.getElementById("lightbox").classList.add("show");
+}
+function closeLightbox(){
+  document.getElementById("lightbox").classList.remove("show");
 }
 
-/* DISCOVER ALL IMAGES */
-async function discoverImages(){
+/* ---------- LOAD IMAGES FROM FIREBASE ---------- */
+async function loadFirebaseImages(){
   showLoader();
-  let index = 1;
-  let images = [];
-  while(true){
-    const url = `${folderURL}image${index}.jpg?updatedAt=${Date.now()}`;
-    const exists = await checkImage(url);
-    if(!exists) break;
-    images.push({ url });
-    index++;
-  }
+  const snapshot = await db.ref("gallery").once("value");
+  const images = [];
+  snapshot.forEach(child => {
+    const data = child.val();
+    if(data.url) images.push({ url: data.url });
+  });
+  // Sort newest images first (optional)
+  images.reverse();
   allImages = images;
   hideLoader();
+  currentPage = 1;
+  document.getElementById("gallery").innerHTML = "";
   loadMoreImages();
 }
 
-/* LOAD MORE IMAGES */
+/* ---------- LOAD MORE IMAGES ---------- */
 function loadMoreImages(){
   if(loading) return;
   loading = true;
@@ -215,7 +233,7 @@ function loadMoreImages(){
   loading = false;
 }
 
-/* INFINITE SCROLL */
+/* ---------- INFINITE SCROLL ---------- */
 window.addEventListener('scroll', ()=>{
   if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 200){
     const totalPages = Math.ceil(allImages.length / imagesPerPage);
@@ -225,18 +243,11 @@ window.addEventListener('scroll', ()=>{
   }
 });
 
-/* LIGHTBOX */
-function openLightbox(url){
-  document.getElementById("lightboxImg").src = url;
-  document.getElementById("lightbox").classList.add("show");
-}
-function closeLightbox(){ document.getElementById("lightbox").classList.remove("show"); }
+/* ---------- AUTO REFRESH EVERY 60 SECONDS ---------- */
+setInterval(loadFirebaseImages, 60000);
 
-/* AUTO REFRESH IMAGES EVERY 60s */
-setInterval(discoverImages, 60000);
-
-/* INITIAL LOAD */
-discoverImages();
+/* ---------- INITIAL LOAD ---------- */
+loadFirebaseImages();
 </script>
 
 </body>
