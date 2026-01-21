@@ -125,6 +125,16 @@ hr{ margin:30px 0; }
   <h2>Manage Event Images</h2>
   <div id="eventList"></div>
 
+  <hr>
+
+  <h2>Manage Media Images</h2>
+  <h3>Add Media Image</h3>
+  <input id="mediaUrl" placeholder="Media Image URL">
+  <button onclick="addMediaImage()">Add Media Image</button>
+
+  <h3>All Media Images</h3>
+  <div id="mediaList"></div>
+
 </div>
 
 <script>
@@ -148,11 +158,12 @@ function login(){
       adminPanel.style.display = "block";
       loadNews();
       loadEvents();
+      loadMediaImages();
     })
     .catch(err => alert(err.message));
 }
 
-/* ---------- NEWS CRUD (FIXED: SHOW ALL NEWS) ---------- */
+/* ---------- NEWS CRUD ---------- */
 function saveNews(){
   const data = {
     title: title.value || "",
@@ -165,7 +176,6 @@ function saveNews(){
   } else {
     data.views = 0;
     db.ref("news").push(data);
-    // 🔔 Push notification hook can be added here
   }
 
   newsId.value = "";
@@ -174,28 +184,24 @@ function saveNews(){
   content.value = "";
 }
 
+// FIXED: LOAD ALL NEWS RECENT FIRST
 function loadNews(){
   db.ref("news").on("value", snap => {
     const list = document.getElementById("newsList");
     list.innerHTML = "";
 
     const newsArray = [];
-
     snap.forEach(child => {
-      newsArray.push({
-        id: child.key,
-        ...child.val()
-      });
+      const n = { id: child.key, ...child.val() };
+      // Convert date to timestamp for sorting; if missing, treat as 0
+      n.timestamp = n.date ? new Date(n.date).getTime() : 0;
+      newsArray.push(n);
     });
 
-    // Sort newest first (safe for missing dates)
-    newsArray.sort((a, b) => {
-      if (!a.date) return 1;
-      if (!b.date) return -1;
-      return b.date.localeCompare(a.date);
-    });
+    // Sort descending (newest first)
+    newsArray.sort((a,b) => b.timestamp - a.timestamp);
 
-    newsArray.forEach(n => {
+    newsArray.forEach(n=>{
       list.innerHTML += `
         <div class="item">
           <strong>${n.title || "Untitled News"}</strong><br>
@@ -209,7 +215,6 @@ function loadNews(){
                 '${n.date||""}',
                 '${(n.content||"").replace(/'/g,"\\'")}'
               )">Edit</button>
-
             <button class="delete"
               onclick="deleteNews('${n.id}')">Delete</button>
           </div>
@@ -243,7 +248,7 @@ function loadEvents(){
   db.ref("events").on("value", snap => {
     const list = document.getElementById("eventList");
     list.innerHTML = "";
-    snap.forEach(c => {
+    snap.forEach(c=>{
       list.innerHTML += `
         <div class="item">
           <img src="${c.val().imageUrl}">
@@ -270,46 +275,46 @@ function deleteEvent(id){
     db.ref("events/" + id).remove();
   }
 }
+
+/* ---------- MEDIA IMAGES CRUD ---------- */
+function addMediaImage(){
+  if(!mediaUrl.value) return;
+  db.ref("gallery").push({ url: mediaUrl.value });
+  mediaUrl.value = "";
+}
+
+function loadMediaImages(){
+  db.ref("gallery").on("value", snap => {
+    const list = document.getElementById("mediaList");
+    list.innerHTML = "";
+    snap.forEach(c=>{
+      list.innerHTML += `
+        <div class="item">
+          <img src="${c.val().url}">
+          <div class="actions">
+            <button class="edit"
+              onclick="editMedia('${c.key}','${c.val().url}')">Edit</button>
+            <button class="delete"
+              onclick="deleteMedia('${c.key}')">Delete</button>
+          </div>
+        </div>`;
+    });
+  });
+}
+
+function editMedia(id, url){
+  const newUrl = prompt("Update media image URL", url);
+  if(newUrl){
+    db.ref("gallery/" + id).update({ url: newUrl });
+  }
+}
+
+function deleteMedia(id){
+  if(confirm("Delete this media image?")){
+    db.ref("gallery/" + id).remove();
+  }
+}
 </script>
-<script>
-/* ================= DYNAMIC BACKGROUND IMAGE ================= */
 
-// URL of your background image
-const backgroundImageUrl = "https://ik.imagekit.io/s95tumxuk/PLC/1763336127446.jpg";
-
-// Create a full-screen background div
-const bgDiv = document.createElement("div");
-bgDiv.style.position = "fixed";
-bgDiv.style.top = "0";
-bgDiv.style.left = "0";
-bgDiv.style.width = "100%";
-bgDiv.style.height = "100%";
-bgDiv.style.zIndex = "-1"; // Send it behind all content
-bgDiv.style.backgroundImage = `url('${backgroundImageUrl}')`;
-bgDiv.style.backgroundSize = "cover";
-bgDiv.style.backgroundPosition = "center";
-bgDiv.style.backgroundRepeat = "no-repeat";
-bgDiv.style.transition = "opacity 0.5s ease"; // smooth fade effect
-document.body.appendChild(bgDiv);
-
-/* ================= OPTIONAL: CHANGE BACKGROUND DYNAMICALLY ================= */
-/*
-const images = [
-  "https://example.com/image1.jpg",
-  "https://example.com/image2.jpg",
-  "https://example.com/image3.jpg"
-];
-let current = 0;
-
-setInterval(() => {
-  current = (current + 1) % images.length;
-  bgDiv.style.opacity = 0;
-  setTimeout(() => {
-    bgDiv.style.backgroundImage = `url('${images[current]}')`;
-    bgDiv.style.opacity = 1;
-  }, 500); // fade transition
-}, 10000); // change every 10 seconds
-*/
-</script>
 </body>
 </html>
