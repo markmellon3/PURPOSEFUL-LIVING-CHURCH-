@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Devotion Before duty Program | Purposeful Living Church</title>
+<title>Devotion Before duty Programs | Purposeful Living Church</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
@@ -91,117 +91,19 @@ h2 {
 .badge-yesterday { background-color:#f59e0b; }
 .badge-older { background-color:#6b7280; }
 
-/* ======= WHATSAPP ICON ======= */
-.whatsapp-icon {
-  position:absolute;
-  top:10px;
-  left:10px;
-  color:#25D366;
-  font-size:20px;
-}
-
-/* ======= DELETE BUTTON ======= */
-.delete-btn {
-  position:absolute;
-  bottom:10px;
-  right:10px;
-  background:#ef4444;
-  color:#fff;
-  border:none;
-  padding:6px 12px;
-  border-radius:12px;
-  font-size:12px;
-  cursor:pointer;
-  display:none;
-}
-
-/* ======= ADMIN BUTTON ======= */
-#admin-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #1f2937;
-  color: #fff;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  z-index: 9999;
-}
-
-/* ======= ADMIN MODAL ======= */
-#admin-modal {
-  display:none;
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(2px);
-  justify-content: center;
-  align-items: center;
-  z-index:10000;
-}
-
-#admin-modal .modal-content {
-  background:#fff;
-  padding:30px;
-  border-radius:20px;
-  max-width:400px;
-  width:90%;
-  text-align:center;
-}
-
-#admin-modal input {
-  width:80%;
-  padding:12px;
-  margin-top:15px;
-  border-radius:12px;
-  border:1px solid #ccc;
-}
-
-/* ======= ADD PANEL ======= */
-#whatsapp-panel {
-  display:none;
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:#f4f5f7;
-  padding:20px;
-  box-shadow:0 -4px 12px rgba(0,0,0,0.1);
-  z-index:9999;
-}
-
-#whatsapp-panel input {
-  width:80%;
-  padding:10px;
-  margin:10px 0;
-  border-radius:12px;
-  border:1px solid #ccc;
-}
-
-#whatsapp-panel button {
-  padding:10px 20px;
-  background:#10b981;
-  color:white;
-  border:none;
-  border-radius:12px;
-}
-
 /* ======= MOBILE VERTICAL SCROLL ======= */
 @media (max-width:768px) {
   .notes-container {
     display: flex;
-    flex-direction: column; /* stack cards vertically */
-    overflow-y: auto;       /* vertical scroll */
-    max-height: 400px;      /* or whatever height you want */
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 400px;
     gap: 15px;
     padding-bottom: 10px;
   }
   .voice-note {
-    width: 100%;            /* full width of container */
-    flex: 0 0 auto;         /* don't shrink or grow */
+    width: 100%;
+    flex: 0 0 auto;
   }
   .voice-note audio { 
     width: 100%; 
@@ -230,28 +132,10 @@ h2 {
   </div>
 </main>
 
-<button id="admin-btn">Admin</button>
-
-<div id="admin-modal">
-  <div class="modal-content">
-    <h2>Admin Login</h2>
-    <input type="password" id="admin-password" placeholder="Enter Password">
-    <button id="login-btn">Login</button>
-    <p id="login-error" style="display:none;color:red;">Wrong Password</p>
-  </div>
-</div>
-
-<div id="whatsapp-panel">
-  <h3>Add New Devotion</h3>
-  <input type="text" id="note-title" placeholder="Devotion Title">
-  <input type="text" id="note-url" placeholder="Paste Dropbox Link">
-  <button id="add-note-btn">Add Devotion</button>
-</div>
-
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDaFhZ_ykNSmNXKCh6ye1M1vgoW6VhrdLU",
@@ -267,8 +151,6 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const notesRef = ref(db, "devotionPrograms");
 
-let isAdmin = false;
-
 /* ======= RENDER NOTES ======= */
 function renderNotes(notesObj){
   const today = new Date();
@@ -281,7 +163,7 @@ function renderNotes(notesObj){
 
   newC.innerHTML = lastC.innerHTML = olderC.innerHTML = "";
 
-  Object.entries(notesObj).sort((a,b)=>b[1].timestamp - a[1].timestamp).forEach(([key,note])=>{
+  Object.entries(notesObj || {}).sort((a,b)=>b[1].timestamp - a[1].timestamp).forEach(([key,note])=>{
     const date = new Date(note.timestamp);
     let group, badgeClass, badgeLabel;
 
@@ -299,103 +181,32 @@ function renderNotes(notesObj){
     div.className="voice-note";
 
     div.innerHTML = `
-      <i class="fab fa-whatsapp whatsapp-icon"></i>
       <span class="badge ${badgeClass}">${badgeLabel}</span>
       <audio controls src="${note.url}"></audio>
       <div class="voice-meta">
         <div>${note.title}</div>
         <div>${date.toLocaleDateString()}</div>
       </div>
-      <button class="delete-btn">Delete</button>
     `;
-
-    if(isAdmin){
-      div.querySelector(".delete-btn").style.display="block";
-      div.querySelector(".delete-btn").onclick = ()=>{
-        if(confirm("Are you sure you want to delete this devotion?")){
-          remove(ref(db, "devotionPrograms/"+key));
-        }
-      };
-    }
 
     group.appendChild(div);
   });
 }
 
+/* ======= LISTEN TO DATABASE ======= */
 onValue(notesRef, snap=>{
   const data = snap.val();
-  if(data){ 
-    renderNotes(data); 
-  } else {
-    document.getElementById("new-container").innerHTML="";
-    document.getElementById("yesterday-container").innerHTML="";
-    document.getElementById("older-container").innerHTML="";
-  }
+  renderNotes(data);
 });
-
-/* ======= ADMIN LOGIN ======= */
-const ADMIN_PASS = "PLC2025";
-document.getElementById("admin-btn").onclick = ()=>{ 
-  document.getElementById("admin-modal").style.display="flex";
-};
-
-document.getElementById("login-btn").onclick = ()=>{
-  if(document.getElementById("admin-password").value === ADMIN_PASS){
-    document.getElementById("admin-modal").style.display="none";
-    document.getElementById("whatsapp-panel").style.display="block";
-    isAdmin = true;
-
-    // Re-render notes to show delete buttons
-    onValue(notesRef, snap=>{
-      const data = snap.val();
-      if(data){ renderNotes(data); }
-    });
-
-  } else {
-    document.getElementById("login-error").style.display="block";
-  }
-};
-
-/* ===== ADD NOTE: DROPBOX AUTOCONVERT ===== */
-document.getElementById("add-note-btn").onclick = ()=>{
-
-  let title = document.getElementById("note-title").value.trim();
-  let link = document.getElementById("note-url").value.trim();
-
-  if(!title || !link){
-    alert("Please enter both title and link.");
-    return;
-  }
-
-  /* CONVERT DROPBOX LINK AUTOMATICALLY */
-  link = link
-    .replace("www.dropbox.com", "dl.dropboxusercontent.com")
-    .replace("?dl=0", "?raw=1");
-
-  push(notesRef, {
-    title,
-    url: link,
-    timestamp: Date.now()
-  });
-
-  document.getElementById("note-title").value="";
-  document.getElementById("note-url").value="";
-};
 </script>
+
 <!-- ================= FOOTER ================= -->
 <footer id="contact" class="main-footer">
     <div class="footer-content">
-
-        <!-- Church Info -->
         <div class="footer-section">
             <h4>Purposeful Living Church</h4>
-            <p>
-                Purposeful Living Church is a Bible-based, family-centered, non-denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.
-            </p>
+            <p>Purposeful Living Church is a Bible-based, family-centered, non-denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
         </div>
-
-
-        <!-- Social Media -->
         <div class="footer-section">
             <h4>Connect With Us</h4>
             <div class="social-icons">
@@ -405,87 +216,15 @@ document.getElementById("add-note-btn").onclick = ()=>{
                 <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
-
     </div>
-
-    <!-- Copyright -->
     <div class="copyright">
         &copy; <span id="year"></span> Purposeful Living Church. All rights reserved.
     </div>
 </footer>
 
-<style>
-/* ================= FOOTER (Gray Theme) ================= */
-.main-footer {
-    background: #e5e5e5;
-    color: #333;
-    padding: 40px 20px;
-    font-family: Arial, sans-serif;
-}
-
-.footer-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    justify-content: space-between;
-}
-
-.footer-section {
-    flex: 1;
-    min-width: 250px;
-}
-
-.footer-section h4 {
-    color: #222;
-    margin-bottom: 12px;
-}
-
-.footer-section p, 
-.footer-section ul li, 
-.footer-section a {
-    color: #333;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.footer-section ul li {
-    list-style: none;
-    margin: 6px 0;
-}
-
-.footer-section a {
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-.footer-section a:hover {
-    color: #000;
-}
-
-.social-icons {
-    margin-top: 10px;
-}
-
-.social-icons .social-link {
-    font-size: 20px;
-    margin-right: 15px;
-    color: #333;
-    transition: 0.3s;
-}
-
-.social-icons .social-link:hover {
-    color: #000;
-}
-
-.copyright {
-    text-align: center;
-    margin-top: 25px;
-    color: #444;
-    border-top: 1px solid #bbb;
-    padding-top: 15px;
-    font-size: 14px;
-}
-</style>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
 
 </body>
 </html>
