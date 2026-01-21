@@ -335,6 +335,93 @@ setInterval(() => {
   iframe.src = iframe.src;
 }, 60000);
 </script>
+<!-- ================= RESPONSIVE ADMIN PANEL SCRIPT ================= -->
+<style>
+/* Make all panels responsive */
+.panel {
+  max-width: 1000px;
+  width: 95%;
+  margin: 20px auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
 
+/* Input, textarea, button responsiveness */
+input, textarea, button {
+  width: 100%;
+  font-size: 16px;
+  margin-top: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Make item containers flexible */
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Actions buttons wrap on smaller screens */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* Responsive headings */
+.panel h2, .panel h3 {
+  font-size: 1.4rem;
+}
+
+/* Scrollable lists on mobile */
+#newsList, #eventList, #mediaList {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .panel {
+    padding: 15px;
+  }
+  .panel h2, .panel h3 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .panel {
+    padding: 10px;
+  }
+  .panel h2, .panel h3 {
+    font-size: 1rem;
+  }
+  .actions button {
+    flex: 1 1 100%;
+  }
+}
+</style>
+
+<script>
+/* ================= OPTIONAL: Auto adjust iframe previews ================= */
+function adjustIframeHeight(iframeId) {
+  const iframe = document.getElementById(iframeId);
+  if (!iframe) return;
+  try {
+    iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+  } catch(e) {
+    // cross-origin iframe; fallback
+    iframe.style.height = '600px';
+  }
+}
+</script>
 </body>
 </html>
