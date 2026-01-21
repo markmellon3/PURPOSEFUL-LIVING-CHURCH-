@@ -980,41 +980,7 @@ copyright {
   <!-- ==== SCROLLER WITH INFINITE AUTO-SCROLL ==== -->
   <div class="events-scroller" id="eventsScroller">
     <div class="events-track" id="eventsTrack">
-
-      <!-- Event Frames -->
-<div class="event-frame" id="event-1">
-  <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg?updatedAt=1763291178317 " 
-       alt="Youth Revival Night" 
-       onclick="openEventLightbox(this.src, '')">
-  <p class="event-caption"></p>
-</div>
-
-<div class="event-frame" id="event-2">
-  <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg?updatedAt=1763291178317" 
-       alt="Bible Study Teen Edition" 
-       onclick="openEventLightbox(this.src, '')">
-  <p class="event-caption"></p>
-</div>
-
-<div class="event-frame" id="event-3">
-  <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg?updatedAt=1763291178317" 
-       alt="Youth Worship Experience" 
-       onclick="openEventLightbox(this.src, '')">
-  <p class="event-caption"></p>
-</div>
-
-<div class="event-frame" id="event-4">
-  <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg?updatedAt=1763291178317" 
-       alt="Youth Hangout Sunday" 
-       onclick="openEventLightbox(this.src, '')">
-  <p class="event-caption"></p>
-</div>
-      <div class="event-frame" id="event-4">
-  <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg?updatedAt=1763291178317" 
-       alt="Youth Hangout Sunday" 
-       onclick="openEventLightbox(this.src, '')">
-  <p class="event-caption"></p>
-
+      <!-- Event frames will be injected dynamically from Firebase -->
     </div>
   </div>
 </section>
@@ -1063,15 +1029,15 @@ copyright {
 
 /* ================= EVENT FRAME ================= */
 .event-frame {
-  min-width: 100px;
+  min-width: 300px;
   text-align: center;
   display: inline-block;
   cursor: pointer;
 }
 
 .event-frame img {
-  width: 300px;
-  height: 250px;
+  width: 350px;
+  height: 550px;
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
@@ -1100,7 +1066,7 @@ copyright {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  animation: fadeOut 0.3s forwards;
+  cursor: pointer;
 }
 
 #event-lightbox.show {
@@ -1133,118 +1099,154 @@ copyright {
 }
 
 /* ================= ANIMATIONS ================= */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-
-@keyframes scaleUp {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-@keyframes scaleDown {
-  from { transform: scale(1); opacity: 1; }
-  to { transform: scale(0.8); opacity: 0; }
-}
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+@keyframes fadeOut { from {opacity:1;} to {opacity:0;} }
+@keyframes scaleUp { from {transform:scale(0.8); opacity:0;} to {transform:scale(1); opacity:1;} }
+@keyframes scaleDown { from {transform:scale(1); opacity:1;} to {transform:scale(0.8); opacity:0;} }
 </style>
 
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-database-compat.js"></script>
+
 <script>
-// ================= LIGHTBOX WITH FADE =================
-function openEventLightbox(imgSrc, caption) {
+/* ================= FIREBASE CONFIG ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyDaFhZ_ykNSmNXKCh6ye1M1vgoW6VhrdLU",
+  authDomain: "plc-church.firebaseapp.com",
+  databaseURL: "https://plc-church-default-rtdb.firebaseio.com",
+  projectId: "plc-church"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ================= ELEMENTS ================= */
+const eventsTrack = document.getElementById("eventsTrack");
+const scroller = document.getElementById("eventsScroller");
+
+let autoScrollInterval;
+let autoSpeed = 1;
+
+/* ================= LOAD EVENTS FROM FIREBASE ================= */
+function loadEvents() {
+  db.ref("events").orderByKey().on("value", snapshot => {
+    eventsTrack.innerHTML = "";
+
+    snapshot.forEach(child => {
+      const event = child.val();
+
+      const frame = document.createElement("div");
+      frame.className = "event-frame";
+
+      const img = document.createElement("img");
+      img.src = event.imageUrl;
+      img.alt = event.title || "Upcoming Event";
+      img.onclick = () => openEventLightbox(event.imageUrl, event.title || "");
+
+      const caption = document.createElement("p");
+      caption.className = "event-caption";
+      caption.textContent = event.title || "";
+
+      frame.appendChild(img);
+      frame.appendChild(caption);
+      eventsTrack.appendChild(frame);
+    });
+
+    // Duplicate track for infinite scroll
+    eventsTrack.innerHTML += eventsTrack.innerHTML;
+
+    startAutoScroll();
+  });
+}
+loadEvents();
+
+/* ================= LIGHTBOX FUNCTIONS ================= */
+function openEventLightbox(src, caption) {
   const lightbox = document.getElementById("event-lightbox");
   const img = document.getElementById("event-lightbox-img");
   const captionEl = document.getElementById("event-lightbox-caption");
 
-  img.src = imgSrc;
-  captionEl.innerText = caption;
+  img.src = src;
+  captionEl.innerText = caption || "";
 
   lightbox.classList.add("show");
+  lightbox.style.animation = "fadeIn 0.3s forwards";
+  document.getElementById("event-lightbox-content").style.animation = "scaleUp 0.3s forwards";
 }
 
-// Close lightbox with fade-out when clicking outside the image
-document.getElementById("event-lightbox").addEventListener("click", function(e) {
-  const lightbox = this;
-  if (e.target.id === "event-lightbox" || e.target.id === "event-lightbox-content") {
-    lightbox.style.animation = "fadeOut 0.3s forwards";
-    document.getElementById("event-lightbox-content").style.animation = "scaleDown 0.3s forwards";
+function closeEventLightbox() {
+  const lightbox = document.getElementById("event-lightbox");
+  const content = document.getElementById("event-lightbox-content");
 
-    setTimeout(() => {
-      lightbox.classList.remove("show");
-      lightbox.style.animation = "";
-      document.getElementById("event-lightbox-content").style.animation = "";
-      document.getElementById("event-lightbox-img").src = "";
-    }, 300);
+  lightbox.style.animation = "fadeOut 0.3s forwards";
+  content.style.animation = "scaleDown 0.3s forwards";
+
+  setTimeout(() => {
+    lightbox.classList.remove("show");
+    lightbox.style.animation = "";
+    content.style.animation = "";
+    document.getElementById("event-lightbox-img").src = "";
+    document.getElementById("event-lightbox-caption").innerText = "";
+  }, 300);
+}
+
+// Close lightbox when clicking outside image or on image itself
+document.getElementById("event-lightbox").addEventListener("click", e => {
+  if (e.target === e.currentTarget || e.target.id === "event-lightbox-img") {
+    closeEventLightbox();
   }
 });
 
-// ================= SCROLLER AUTO-SCROLL =================
-const scroller = document.getElementById("eventsScroller");
-const track = document.getElementById("eventsTrack");
+// Close with ESC key
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeEventLightbox();
+});
 
-// Duplicate content for infinite scroll
-track.innerHTML += track.innerHTML;
-
-let autoSpeed = 1;
-let autoScroll = setInterval(() => {
-  scroller.scrollLeft += autoSpeed;
-  if(scroller.scrollLeft >= track.scrollWidth / 2){
-    scroller.scrollLeft = 0;
-  }
-}, 20);
+/* ================= SCROLLER AUTO-SCROLL ================= */
+function startAutoScroll() {
+  clearInterval(autoScrollInterval);
+  autoScrollInterval = setInterval(() => {
+    scroller.scrollLeft += autoSpeed;
+    if (scroller.scrollLeft >= eventsTrack.scrollWidth / 2) {
+      scroller.scrollLeft = 0;
+    }
+  }, 20);
+}
 
 // Pause on hover/touch
-scroller.addEventListener("mouseenter", () => clearInterval(autoScroll));
-scroller.addEventListener("mouseleave", () => {
-  autoScroll = setInterval(() => {
-    scroller.scrollLeft += autoSpeed;
-    if(scroller.scrollLeft >= track.scrollWidth / 2) scroller.scrollLeft = 0;
-  }, 20);
-});
-scroller.addEventListener("touchstart", () => clearInterval(autoScroll));
-scroller.addEventListener("touchend", () => {
-  autoScroll = setInterval(() => {
-    scroller.scrollLeft += autoSpeed;
-    if(scroller.scrollLeft >= track.scrollWidth / 2) scroller.scrollLeft = 0;
-  }, 20);
-});
+scroller.addEventListener("mouseenter", () => clearInterval(autoScrollInterval));
+scroller.addEventListener("mouseleave", startAutoScroll);
+scroller.addEventListener("touchstart", () => clearInterval(autoScrollInterval));
+scroller.addEventListener("touchend", startAutoScroll);
 
-// ================= DRAG & SWIPE =================
+/* ================= DRAG & SWIPE ================= */
 let isDown = false, startX, scrollLeft;
 
 scroller.addEventListener("mousedown", e => {
   isDown = true;
   startX = e.pageX;
   scrollLeft = scroller.scrollLeft;
-  clearInterval(autoScroll);
+  clearInterval(autoScrollInterval);
 });
 
-scroller.addEventListener("mouseup", () => { isDown = false; });
-scroller.addEventListener("mouseleave", () => { isDown = false; });
-
+scroller.addEventListener("mouseup", () => isDown = false);
+scroller.addEventListener("mouseleave", () => isDown = false);
 scroller.addEventListener("mousemove", e => {
-  if(!isDown) return;
+  if (!isDown) return;
   const x = e.pageX - startX;
   scroller.scrollLeft = scrollLeft - x * 1.3;
 });
 
-// Touch events
+// Touch drag
 scroller.addEventListener("touchstart", e => {
   startX = e.touches[0].pageX;
   scrollLeft = scroller.scrollLeft;
 });
-
 scroller.addEventListener("touchmove", e => {
   const x = e.touches[0].pageX - startX;
   scroller.scrollLeft = scrollLeft - x * 1.3;
 });
 </script>
-
   <!-- Floating NEWS & UPDATES Button -->
 <a href="news.html" class="floating-news-button">NEWS & UPDATES</a>
 
