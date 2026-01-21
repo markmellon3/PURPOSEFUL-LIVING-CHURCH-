@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <header class="plc-header">
+  <div class="plc-header-left">
+    <span class="plc-logo">PLC</span>
+    <div class="plc-title">
+      <h1>PLC DASHBOARD</h1>
+      <small>Admin Control Panel</small>
+    </div>
+  </div>
+
+  <div class="plc-header-right">
+    <span class="status-dot"></span>
+    <span class="status-text">Online</span>
+  </div>
+</header>
 <meta charset="UTF-8">
 <title>PLC Admin Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +25,77 @@
 <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-auth-compat.js"></script>
 
 <style>
+  .plc-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+
+/* Left section */
+.plc-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.plc-logo {
+  background: white;
+  color: #f57c00;
+  font-weight: bold;
+  font-size: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.plc-title h1 {
+  font-size: 18px;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.plc-title small {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Right section */
+.plc-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background: #00ff5a;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00ff5a;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .plc-title h1 {
+    font-size: 16px;
+  }
+  .plc-title small {
+    display: none;
+  }
+}
+
 body{
   margin:0;
   padding:15px;
