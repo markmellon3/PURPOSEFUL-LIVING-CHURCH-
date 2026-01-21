@@ -260,6 +260,17 @@ hr{ margin:30px 0; }
 
   <h3>All Kids Images</h3>
   <div id="kidsGalleryList"></div>
+  <hr>
+<h2>Manage Devotion Programs</h2>
+
+<h3>Add New Devotion</h3>
+<input id="devotionTitle" placeholder="Devotion Title or Comment">
+<input id="devotionUrl" placeholder="Audio File URL (mp3, etc.)">
+<input type="date" id="devotionDate" placeholder="Date">
+<button onclick="addDevotion()">Add Devotion</button>
+
+<h3>All Devotions</h3>
+<div id="devotionList"></div>
 
 </div>
 
@@ -478,6 +489,97 @@ function deleteKidsImage(id){
   }
 }
 
+/* ---------- DEVOTION PROGRAMS / VOICE NOTES CRUD ---------- */
+const devotionRef = db.ref("devotionPrograms");
+
+function addDevotion() {
+  let title = document.getElementById("devotionTitle").value.trim();
+  let url = document.getElementById("devotionUrl").value.trim();
+  let date = document.getElementById("devotionDate").value;
+
+  if (!title || !url || !date) return alert("Please fill all fields.");
+
+  // Convert Dropbox link to direct URL if needed
+  if (url.includes("dropbox.com")) {
+    url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com").replace("?dl=0", "?raw=1");
+  }
+
+  devotionRef.push({
+    title,
+    url,
+    date,
+    timestamp: new Date(date).getTime()
+  });
+
+  document.getElementById("devotionTitle").value = "";
+  document.getElementById("devotionUrl").value = "";
+  document.getElementById("devotionDate").value = "";
+}
+
+/* Load devotions in real-time */
+function loadDevotions() {
+  const list = document.getElementById("devotionList");
+
+  devotionRef.on("value", snapshot => {
+    list.innerHTML = ""; // clear existing
+
+    const devotionArray = [];
+    snapshot.forEach(child => {
+      const data = child.val();
+      devotionArray.push({ id: child.key, ...data, timestamp: data.timestamp || 0 });
+    });
+
+    // Sort newest first
+    devotionArray.sort((a,b) => b.timestamp - a.timestamp);
+
+    devotionArray.forEach(d => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <strong>${d.title || "Untitled Devotion"}</strong><br>
+        <small>${d.date || ""}</small>
+        <audio controls style="width:100%; margin-top:8px;">
+          <source src="${d.url}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+        <div class="actions">
+          <button class="edit" onclick="editDevotion('${d.id}','${(d.title||"").replace(/'/g,"\\'")}','${d.url}','${d.date}')">Edit</button>
+          <button class="delete" onclick="deleteDevotion('${d.id}')">Delete</button>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  });
+}
+
+function editDevotion(id, title, url, date) {
+  const newTitle = prompt("Update Title/Comment:", title);
+  let newUrl = prompt("Update Audio URL:", url);
+  const newDate = prompt("Update Date (YYYY-MM-DD):", date);
+
+  if (!newTitle || !newUrl || !newDate) return;
+
+  if (newUrl.includes("dropbox.com")) {
+    newUrl = newUrl.replace("www.dropbox.com", "dl.dropboxusercontent.com").replace("?dl=0", "?raw=1");
+  }
+
+  devotionRef.child(id).update({
+    title: newTitle,
+    url: newUrl,
+    date: newDate,
+    timestamp: new Date(newDate).getTime()
+  });
+}
+
+function deleteDevotion(id) {
+  if (confirm("Delete this devotion?")) {
+    devotionRef.child(id).remove();
+  }
+}
+
+/* ---------- INITIAL LOAD ---------- */
+loadDevotions();
+
 /* ---------- LIVE PREVIEW ---------- */
 function refreshPreview(){
   const iframe = document.getElementById('livePreview');
@@ -581,5 +683,6 @@ async function pasteLink() {
   alert("Copied link:\n" + text);
 }
 </script>
+
 </body>
 </html>
