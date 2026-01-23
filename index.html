@@ -1759,7 +1759,78 @@ function insertAboveAbout() {
 window.addEventListener('load', insertAboveAbout);
 </script>
  
+<script>
+(function () {
 
+  let stopScroll = false;
+  let rafId = null;
+
+  function stopAutoScroll() {
+    stopScroll = true;
+    if (rafId) cancelAnimationFrame(rafId);
+  }
+
+  // Stop animation on any user interaction
+  ["wheel", "touchstart", "mousedown", "keydown"].forEach(event => {
+    window.addEventListener(event, stopAutoScroll, { once: true });
+  });
+
+  window.addEventListener("load", () => {
+    const totalHeight =
+      document.documentElement.scrollHeight - window.innerHeight;
+
+    if (totalHeight <= 0) return;
+
+    let startTime = null;
+    const durationDown = 3500;
+    const durationUp = 2500;
+    const pauseAtBottom = 900;
+
+    function easeInOut(t) {
+      return t < 0.5
+        ? 2 * t * t
+        : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    function scrollDown(timestamp) {
+      if (stopScroll) return;
+
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / durationDown, 1);
+      const eased = easeInOut(progress);
+
+      window.scrollTo(0, eased * totalHeight);
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(scrollDown);
+      } else {
+        setTimeout(() => {
+          if (stopScroll) return;
+          startTime = null;
+          rafId = requestAnimationFrame(scrollUp);
+        }, pauseAtBottom);
+      }
+    }
+
+    function scrollUp(timestamp) {
+      if (stopScroll) return;
+
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / durationUp, 1);
+      const eased = easeInOut(progress);
+
+      window.scrollTo(0, totalHeight * (1 - eased));
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(scrollUp);
+      }
+    }
+
+    rafId = requestAnimationFrame(scrollDown);
+  });
+
+})();
+</script>
         
 </body>
 </html>
