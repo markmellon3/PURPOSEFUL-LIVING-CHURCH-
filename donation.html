@@ -1,338 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Donation Portal | Purposeful Living Church</title>
+  <meta charset="UTF-8">
+  <title>Donate | Purposeful Living Church – Kulambiro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f7f7f7;
-    color: #222;
-  }
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      line-height: 1.6;
+    }
 
-  header {
-    background: #f9e79f; /* Light Gold */
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    color: #222;
-  }
+    header {
+      background: linear-gradient(135deg, #1d3557, #457b9d);
+      color: #fff;
+      padding: 50px 20px;
+      text-align: center;
+    }
 
-  header img {
-    height: 60px;
-    object-fit: contain;
-  }
+    header h1 {
+      margin: 0;
+      font-size: 32px;
+    }
 
-  header .home-btn {
-    padding: 10px 20px;
-    background: #ffd700; /* Gold */
-    color: #222;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
-  }
+    header p {
+      margin-top: 10px;
+      font-size: 16px;
+      opacity: 0.9;
+    }
 
-  header .home-btn:hover {
-    background: #e6c200;
-  }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 40px 20px;
+    }
 
-  h1 {
-    margin: 10px 0 5px 0;
-    font-size: 28px;
-    flex: 1 1 100%;
-    text-align: center;
-  }
+    .intro {
+      text-align: center;
+      margin-bottom: 40px;
+    }
 
-  .container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 20px;
-  }
+    .intro h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
 
-  h2 {
-    margin-bottom: 20px;
-    color: #f9e79f; /* Light Gold for headings */
-    text-align: center;
-  }
+    .intro p {
+      font-size: 16px;
+      color: #555;
+    }
 
-  p {
-    margin-bottom: 30px;
-    text-align: center;
-  }
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
 
-  /* CATEGORY GRID */
-  .category-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
-  }
+    .card h3 {
+      margin-top: 0;
+      color: #1d3557;
+    }
 
-  .category {
-    position: relative;
-    overflow: hidden;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    text-align: center;
-    color: #222;
-    font-weight: bold;
-    font-size: 20px;
-  }
+    .highlight {
+      background: #e9f2ff;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin: 12px 0;
+      font-size: 16px;
+    }
 
-  .category img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s;
-    border-radius: 15px;
-  }
+    .note {
+      font-size: 14px;
+      color: #666;
+    }
 
-  .category:hover img {
-    transform: scale(1.05);
-  }
+    blockquote {
+      background: #fff;
+      border-left: 5px solid #457b9d;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 40px 0;
+      font-style: italic;
+    }
 
-  .category-overlay {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background: rgba(249, 231, 159, 0.7); /* Light Gold overlay */
-    padding: 10px 0;
-    border-radius: 0 0 15px 15px;
-    color: #222;
-  }
+    .thank-you {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 30px;
+      font-size: 16px;
+    }
 
-  .category.selected .category-overlay {
-    background: gold;
-    color: #222;
-  }
+    footer {
+      background: #1d3557;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      margin-top: 50px;
+    }
 
-  /* DONATE BUTTON */
-  .donate-btn {
-    display: block;
-    width: 200px;
-    margin: 0 auto 50px;
-    padding: 15px;
-    background: #ffd700; /* Gold */
-    color: #222;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-    text-decoration: none;
-  }
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 26px;
+      }
 
-  .donate-btn:hover {
-    background: #e6c200;
-  }
-  
-  /* ================= FOOTER================= */
-
-.main-footer {
-    background: #e5e5e5;  /* Light-Medium Gray */
-    color: #333;          /* Dark text for contrast */
-    padding: 40px 20px;
-}
-
-.footer-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    justify-content: space-between;
-}
-
-.footer-section {
-    flex: 1;
-    min-width: 250px;
-}
-
-.footer-section h3 {
-    color: #222;
-    margin-bottom: 10px;
-}
-
-.footer-section ul li {
-    list-style: none;
-    margin: 6px 0;
-}
-
-.footer-section a {
-    color: #333;
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-.footer-section a:hover {
-    color: #000;
-}
-
-.footer-section i {
-    margin-right: 8px;
-    color: #555; /* Subtle gray icon color */
-}
-
-.social-icons {
-    margin-top: 15px;
-}
-
-.social-icons .social-link {
-    font-size: 20px;
-    margin-right: 15px;
-    color: #333;
-    transition: 0.3s;
-}
-
-.social-icons .social-link:hover {
-    color: #000;
-}
-
-.map-container {
-    margin-top: 10px;
-    background: #d4d4d4; /* Slight contrast */
-    padding: 5px;
-    border-radius: 8px;
-}
-
-copyright {
-    text-align: center;
-    margin-top: 25px;
-    color: #444;
-    border-top: 1px solid #bbb;
-    padding-top: 15px;
-}
-
-</style>
+      .intro h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg?updatedAt=1763291178317" alt="Church Logo">
-  <a href="index.html" class="home-btn">Home</a>
-  <h1>Support the Ministry</h1>
-</header>
+  <!-- HEADER -->
+  <header>
+    <h1>Purposeful Living Church – Kulambiro</h1>
+    <p>We Appreciate Your Support</p>
+  </header>
 
-<div class="container">
+  <!-- MAIN CONTENT -->
+  <div class="container">
 
-  <h2>Select a Giving Category</h2>
-  <p>Click on a category to donate:</p>
+    <div class="intro">
+      <h2>Donate</h2>
+      <p>
+        Your generous giving supports church construction and
+        other Purposeful Living Church ministries.
+      </p>
+    </div>
 
-  <div class="category-grid">
-    <div class="category" data-link="https://donate.example.com/tithe">
-      <img src="https://ik.imagekit.io/s95tumxuk/PLC/water.jpg " alt="Clean Water">
-      <div class="category-overlay">Clean Water</div>
+    <!-- ABSA BANK -->
+    <div class="card">
+      <h3>🏦 Bank Donation (ABSA Bank)</h3>
+      <p>You can make a direct bank transfer using the details below:</p>
+      <div class="highlight">Account Number: 6008451735</div>
+      <p><strong>Account Name:</strong> Kulambiro Christian Ministries</p>
+      <p class="note">Please include your name as the reference.</p>
     </div>
-    <div class="category" data-link="https://donate.example.com/offering">
-      <img src="https://ik.imagekit.io/s95tumxuk/church-gallery/image1.jpg?updatedAt=1763382071604" alt="Food">
-      <div class="category-overlay">Food</div>
+
+    <!-- MTN MOBILE MONEY -->
+    <div class="card">
+      <h3>📱 MTN Mobile Money</h3>
+      <p>Send your donation via MTN Mobile Money:</p>
+      <div class="highlight">+256 759 389577</div>
+      <p class="note">Registered Name: David Ssekaboga</p>
     </div>
-    <div class="category" data-link="https://donate.example.com/seed">
-      <img src="https://ik.imagekit.io/s95tumxuk/church-gallery/image23.jpg?updatedAt=1763389978401" alt="Clothes">
-      <div class="category-overlay">Clothes</div>
+
+    <!-- AIRTEL MONEY -->
+    <div class="card">
+      <h3>📱 Airtel Money</h3>
+      <p>Send your donation via Airtel Money:</p>
+      <div class="highlight">+256 773 531222</div>
+      <p class="note">Registered Name: David Ssekaboga</p>
     </div>
-    <div class="category" data-link="https://donate.example.com/youth">
-      <img src="https://ik.imagekit.io/s95tumxuk/PLC/Living-Conditions-in-Africa-1030x687.jpg " alt="Shelter">
-      <div class="category-overlay">Shelter</div>
-    </div>
+
+    <!-- BIBLE VERSE -->
+    <blockquote>
+      <strong>Luke 6:38</strong><br>
+      “Give, and it will be given to you. A good measure, pressed down,
+      shaken together and running over, will be poured into your lap.
+      For with the measure you use, it will be measured to you.”
+    </blockquote>
+
+    <p class="thank-you">
+      Thank you for loving and giving unto the Lord.
+    </p>
+
   </div>
 
-  <a id="donateButton" href="#" class="donate-btn" target="_blank">Donate Now</a>
+  <!-- FOOTER -->
+  <footer>
+    © Purposeful Living Church – Kulambiro
+  </footer>
 
-</div>
-
-<script>
-  const categories = document.querySelectorAll(".category");
-  const donateButton = document.getElementById("donateButton");
-
-  categories.forEach(cat => {
-    cat.addEventListener("click", () => {
-      // Remove selected from all categories
-      categories.forEach(c => c.classList.remove("selected"));
-      // Add selected class to clicked category
-      cat.classList.add("selected");
-      // Update donation button link
-      donateButton.href = cat.getAttribute("data-link");
-    });
-  });
-</script>
-
-<!-- ================= FOOTER ================= -->
-<footer id="contact" class="main-footer">
-    <div class="footer-content">
-
-        <!-- Church Info -->
-        <div class="footer-section">
-            <h4>Purposeful Living Church</h4>
-            <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
-        </div>
-
-        <!-- Address Section -->
-        <div class="footer-section">
-            <h4>Address</h4>
-            <ul>
-                <li><i class="fas fa-map-marker-alt"></i> Kulambiro Kisaasi, Kampala Uganda</li>
-            </ul>
-
-            <!-- Google Map -->
-            <div class="map-container">
-    <iframe 
-        width="100%" 
-        height="180" 
-        frameborder="0"
-        style="border:0; border-radius:10px;"
-        allowfullscreen 
-        src="https://www.google.com/maps/embed?pb=https://maps.app.goo.gl/kNhgd4dEfZjvHsQQ6">
-    </iframe>
-
-    <div style="text-align:center; margin-top:10px;">
-        <a 
-            href="https://maps.app.goo.gl/qjw1Tn7ZRuhBAtHx6" 
-            target="_blank" 
-            style="
-                padding: 10px 20px;
-                background: #e67e22;
-                color: #fff;
-                border-radius: 6px;
-                font-weight: bold;
-                text-decoration: none;
-            ">
-            View on Google Maps
-        </a>
-    </div>
-</div>
-
-                
-            </div>
-        </div>
-
-        <!-- Contact Section -->
-        <div class="footer-section">
-            <h4>Reach Out</h4>
-            <ul>
-                <li><i class="fas fa-phone"></i> +(256) 75227 5855</li>
-                <li><i class="fas fa-envelope"></i> info@purposefullivingchurch.org</li>
-            </ul>
-
-            <!-- Social Media Icons -->
-            <div class="social-icons">
-                <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-            </div>
-        </div>
-
-    </div>
-
-    <p class="copyright">&copy; <span id="year"></span> Purposeful Living Church. All rights reserved.</p>
-</footer>
 </body>
 </html>
