@@ -1,339 +1,712 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Outreach Ministry | Purposeful Living Church</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Outreach Ministry — PURPOSEFUL LIVING CHURCH</title>
+<link rel="icon" type="image/webp" sizes="16x16" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="icon" type="image/webp" sizes="32x32" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="icon" type="image/webp" sizes="96x96" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
 <style>
-body {
-  font-family: Arial, sans-serif;
-  margin:0;
-  background:white;
-  color:#333;
+:root {
+  --bg:#f0f4ff;--card:#ffffff;--muted:#6b7280;
+  --accent:#1a3a5c;--accent-light:#2a5a8c;
+  --gold:#c8952e;--gold-light:#e8b84a;
+  --gold-glow:rgba(200,149,46,0.15);
+  --text:#1a1a2e;--text-light:#4a4a5e;
+  --border:rgba(0,0,0,0.06);
+  --radius:16px;--radius-lg:24px;--maxw:1200px;
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md:0 8px 30px rgba(0,0,0,0.06);
+  --shadow-lg:0 20px 50px rgba(0,0,0,0.08);
+  --shadow-gold:0 8px 30px rgba(200,149,46,0.2);
+  --transition:0.4s cubic-bezier(0.25,0.46,0.45,0.94);
 }
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:#fff}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 
-nav {
-  background:white;
-  padding:12px 0;
-  display:flex;
-  justify-content:center;
-  gap:25px;
-  border-bottom:2px solid #ccc;
-  box-shadow:0 2px 10px rgba(0,0,0,0.05);
-}
-nav a {
-  color:#000;
-  text-decoration:none;
-  font-size:16px;
-  font-weight:bold;
-  padding:10px 18px;
-  border:2px solid #ccc;
-  border-radius:25px;
-  transition:0.3s;
-  background:white;
-}
-nav a:hover {
-  background:#f0f0f0;
-  transform:translateY(-2px);
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
-}
+/* ================= HEADER ================= */
+.site-header{position:fixed;top:0;left:0;width:100%;z-index:1000;background:rgba(255,255,255,0.55);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.35);box-shadow:0 4px 30px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.5),inset 0 -1px 0 rgba(255,255,255,0.15)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;max-width:1200px;margin:0 auto}
+.brand{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.03em;display:flex;align-items:center;gap:10px}
+.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-glow)}
+.main-nav{display:flex;align-items:center;gap:4px}
+.main-nav a{padding:8px 14px;border-radius:50px;color:var(--text-light);text-decoration:none;font-weight:500;font-size:0.88rem;transition:var(--transition);position:relative}
+.main-nav a::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%) scaleX(0);width:16px;height:2px;background:var(--gold);border-radius:2px;transition:transform 0.3s ease}
+.main-nav a:hover::after{transform:translateX(-50%) scaleX(1)}
+.main-nav a:hover{background:rgba(200,149,46,0.1);color:var(--gold)}
+.main-nav a.active{color:var(--gold);background:rgba(200,149,46,0.08)}
+.mobile-toggle{display:none;font-size:1.3rem;background:none;border:none;cursor:pointer;color:var(--accent);width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;transition:var(--transition)}
+.mobile-toggle:hover{background:var(--gold-glow)}
 
-.container {
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
-}
+/* ================= SCROLL PROGRESS ================= */
+#scrollProgress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold-light),#fff,var(--gold));background-size:300% 100%;animation:progressShimmer 3s linear infinite;z-index:10001;transition:width 0.1s linear;border-radius:0 2px 2px 0}
+@keyframes progressShimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
 
-h1 {
-  text-align:center;
-  color:#222;
-  margin-bottom:20px;
-}
+/* ================= PAGE HERO ================= */
+.page-hero{position:relative;width:100%;min-height:45vh;display:flex;align-items:center;justify-content:center;background-image:url("https://ik.imagekit.io/s95tumxuk/PLC/1763336127446.jpg");background-size:cover;background-position:center;background-repeat:no-repeat;overflow:hidden}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,15,30,0.75) 0%,rgba(10,15,30,0.55) 50%,rgba(10,15,30,0.88) 100%);z-index:1}
+.page-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 50%,rgba(200,149,46,0.1),transparent 60%);z-index:2;animation:heroGlow 12s ease-in-out infinite alternate}
+@keyframes heroGlow{0%{transform:translate(0,0)}100%{transform:translate(5%,3%)}}
+.page-hero-inner{position:relative;z-index:3;color:#fff;text-align:center;max-width:750px;padding:120px 24px 60px}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;line-height:1.15;letter-spacing:-0.02em;margin-bottom:12px}
+.page-hero p{font-size:1.1rem;color:rgba(255,255,255,0.7);max-width:600px;margin:0 auto}
+.breadcrumb{display:flex;justify-content:center;gap:8px;margin-bottom:20px;font-size:0.85rem;color:rgba(255,255,255,0.5);font-weight:500;letter-spacing:0.04em;text-transform:uppercase}
+.breadcrumb a{color:var(--gold-light);text-decoration:none;transition:var(--transition)}
+.breadcrumb a:hover{color:#fff}
 
-/* CARD STYLE ABOUT PANEL */
-.about-card {
-  background:#f9f9f9;
-  border:1px solid #ddd;
-  border-radius:12px;
-  padding:20px;
-  margin-bottom:30px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.05);
-}
-.about-card h2 {
-  margin-top:0;
-  color:#004a80;
-}
-.about-card p {
-  font-size:16px;
-  line-height:1.6;
-  color:#444;
-}
+/* ================= MISSION CARDS ================= */
+.mission-cards{padding:60px 24px}
+.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:var(--maxw);margin:0 auto}
+.mission-card{background:var(--card);border-radius:var(--radius-lg);padding:36px 30px;box-shadow:var(--shadow-md);border:1px solid var(--border);position:relative;overflow:hidden;transition:var(--transition)}
+.mission-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.mission-card::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(200,149,46,0.1),transparent 70%);border-radius:50%}
+.mission-card--primary{border-top:4px solid var(--gold)}
+.mission-card--secondary{border-top:4px solid var(--accent)}
+.mission-card .card-icon{font-size:2rem;margin-bottom:16px}
+.mission-card--primary .card-icon{color:var(--gold)}
+.mission-card--secondary .card-icon{color:var(--accent-light)}
+.mission-card h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--accent);margin-bottom:4px;position:relative}
+.mission-card .card-date{font-size:0.82rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;position:relative}
+.mission-card p{color:var(--text-light);font-size:0.95rem;line-height:1.7;position:relative}
+.mission-stats{display:flex;gap:20px;margin-top:20px;position:relative}
+.mission-stat{text-align:center}
+.mission-stat .stat-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--gold);line-height:1}
+.mission-stat .stat-label{font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-top:2px}
 
-.loader {
-  border:8px solid #eee;
-  border-top:8px solid #888;
-  border-radius:50%;
-  width:50px;
-  height:50px;
-  animation:spin 1s linear infinite;
-  margin:20px auto;
-}
-@keyframes spin {
-  0% { transform:rotate(0deg); }
-  100% { transform:rotate(360deg); }
-}
+/* ================= GALLERY TABS ================= */
+.gallery-section{padding:40px 0 80px;background:var(--card)}
+.gallery-header{text-align:center;margin-bottom:36px;padding:0 24px}
+.gallery-header h2{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.5vw,2.2rem);color:var(--accent);margin-bottom:8px}
+.gallery-header p{color:var(--muted);font-size:0.95rem;max-width:500px;margin:0 auto}
 
-.gallery {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
-@media(max-width:900px) { .gallery { grid-template-columns: repeat(2,1fr); } }
+.album-tabs{display:flex;justify-content:center;gap:10px;margin-bottom:32px;flex-wrap:wrap;padding:0 24px}
+.album-tab{padding:10px 24px;border-radius:50px;border:1.5px solid var(--border);background:var(--card);color:var(--text-light);font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition);position:relative}
+.album-tab:hover{border-color:rgba(200,149,46,0.3);color:var(--gold);background:var(--gold-glow)}
+.album-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 4px 15px rgba(26,58,92,0.2)}
+.album-tab .tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.2);font-size:0.72rem;font-weight:700;margin-left:6px;padding:0 5px}
+.album-tab.active .tab-count{background:rgba(255,255,255,0.25)}
 
-.gallery img, .gallery video {
-  width:100%;
-  height:200px;
-  object-fit:cover;
-  border-radius:12px;
-  background:#f0f0f0;
-  border:1px solid #ddd;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);
-  opacity:0;
-  transition:opacity .5s ease, transform .3s ease;
-  cursor:pointer;
-}
-.show { opacity:1 !important; }
-.gallery img:hover, .gallery video:hover { transform:scale(1.05); }
+/* View & Filter Bar */
+.gallery-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:var(--maxw);margin:0 auto 24px;padding:0 24px;flex-wrap:wrap}
+.bar-left{display:flex;gap:6px;align-items:center}
+.filter-chip{padding:7px 16px;border-radius:50px;border:1.5px solid var(--border);background:var(--card);color:var(--text-light);font-size:0.8rem;font-weight:600;cursor:pointer;transition:var(--transition)}
+.filter-chip:hover{border-color:rgba(200,149,46,0.3);color:var(--gold)}
+.filter-chip.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+.view-toggle{display:flex;gap:4px}
+.view-btn{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.8rem;transition:var(--transition)}
+.view-btn:hover{border-color:rgba(200,149,46,0.3);color:var(--gold)}
+.view-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-/* LIGHTBOX */
-.lightbox {
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.7);
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-.lightbox.show { display:flex; }
-.lightbox-content img, .lightbox-content video {
-  max-width:80%;
-  max-height:80%;
-  border-radius:10px;
-  box-shadow:0 4px 18px rgba(0,0,0,0.25);
-}
+/* ================= GALLERY GRID ================= */
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.gallery-grid.view-2{grid-template-columns:repeat(2,1fr)}
+.gallery-grid.view-3{grid-template-columns:repeat(3,1fr)}
 
-/* FOOTER */
-footer {
-  text-align:center;
-  padding:20px;
-  background:#f7f7f7;
-  border-top:1px solid #ddd;
-  margin-top:40px;
-  color:#555;
+.gallery-item{position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;box-shadow:var(--shadow-sm);opacity:0;transform:translateY(20px) scale(0.97);transition:opacity 0.5s ease,transform 0.5s ease,box-shadow 0.3s ease;background:#e8e8e8}
+.gallery-item.visible{opacity:1;transform:translateY(0) scale(1)}
+.gallery-item:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px) scale(1)}
+.gallery-item img,.gallery-item video{width:100%;height:220px;object-fit:cover;display:block;transition:transform 0.5s ease}
+.gallery-item:hover img,.gallery-item:hover video{transform:scale(1.08)}
+.gallery-item video{pointer-events:none}
+
+.item-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.55) 100%);opacity:0;transition:opacity 0.3s ease;pointer-events:none;border-radius:var(--radius)}
+.gallery-item:hover .item-overlay{opacity:1}
+.item-type-badge{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.4);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;opacity:0;transform:scale(0.7);transition:opacity 0.3s ease 0.05s,transform 0.3s ease 0.05s;pointer-events:none}
+.gallery-item:hover .item-type-badge{opacity:1;transform:scale(1)}
+.item-actions{position:absolute;bottom:10px;right:10px;display:flex;gap:5px;opacity:0;transform:translateY(8px);transition:opacity 0.3s ease 0.05s,transform 0.3s ease 0.05s}
+.gallery-item:hover .item-actions{opacity:1;transform:translateY(0)}
+.item-action-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.15);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;cursor:pointer;transition:var(--transition);pointer-events:all}
+.item-action-btn:hover{background:rgba(255,255,255,0.35);transform:scale(1.1)}
+
+/* Loader */
+.spinner-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:60px 0}
+.spinner{border:4px solid rgba(200,149,46,0.15);border-top:4px solid var(--gold);border-radius:50%;width:40px;height:40px;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-text{font-size:0.82rem;color:var(--muted);font-weight:600}
+.empty-gallery{text-align:center;padding:60px 24px;color:var(--muted)}
+.empty-gallery i{font-size:2.5rem;opacity:0.25;margin-bottom:12px}
+
+/* ================= LIGHTBOX ================= */
+.lightbox{position:fixed;inset:0;z-index:9999;background:rgba(10,15,30,0.95);backdrop-filter:blur(12px);display:none;flex-direction:column;align-items:center;justify-content:center}
+.lightbox.open{display:flex;animation:lbIn 0.3s forwards}
+@keyframes lbIn{from{opacity:0}to{opacity:1}}
+.lb-close{position:fixed;top:20px;right:24px;z-index:10000;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.lb-close:hover{background:rgba(255,255,255,0.2);transform:rotate(90deg)}
+.lb-counter{position:fixed;top:26px;left:50%;transform:translateX(-50%);z-index:10000;color:rgba(255,255,255,0.6);font-size:0.85rem;font-weight:600;background:rgba(0,0,0,0.3);padding:6px 18px;border-radius:50px;backdrop-filter:blur(8px)}
+.lb-nav{position:fixed;top:50%;z-index:10000;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);transform:translateY(-50%)}
+.lb-nav:hover{background:rgba(255,255,255,0.25)}
+.lb-prev{left:20px}
+.lb-next{right:20px}
+.lb-media-wrap{position:relative;max-width:90vw;max-height:80vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.lb-media-wrap img,.lb-media-wrap video{max-width:90vw;max-height:80vh;border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(0,0,0,0.5);transition:transform 0.3s ease}
+.lb-media-wrap img.zoomed{transform:scale(1.8);cursor:zoom-out}
+.lb-media-wrap video{cursor:default}
+.lb-actions{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:10000;display:flex;gap:10px;background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);padding:8px 16px;border-radius:50px;border:1px solid rgba(255,255,255,0.1)}
+.lb-act{width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,0.1);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.85rem;cursor:pointer;transition:var(--transition)}
+.lb-act:hover{background:rgba(255,255,255,0.25)}
+.lb-act.active{background:var(--gold);color:#fff}
+
+/* ================= TOAST ================= */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:#fff;padding:12px 24px;border-radius:50px;font-size:0.85rem;font-weight:600;box-shadow:var(--shadow-lg);z-index:99999;transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ================= IMPACT STATS ================= */
+.impact-section{padding:60px 24px;background:linear-gradient(135deg,var(--accent),#0f2840);position:relative;overflow:hidden}
+.impact-section::before{content:'';position:absolute;top:-60px;right:-60px;width:250px;height:250px;background:radial-gradient(circle,rgba(200,149,46,0.12),transparent 60%);border-radius:50%}
+.impact-section::after{content:'';position:absolute;bottom:-40px;left:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(200,149,46,0.08),transparent 60%);border-radius:50%}
+.impact-header{text-align:center;margin-bottom:40px;position:relative}
+.impact-header h2{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.5vw,2.2rem);color:#fff;margin-bottom:6px}
+.impact-header p{color:rgba(255,255,255,0.6);font-size:0.95rem}
+.impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:var(--maxw);margin:0 auto;position:relative}
+.impact-item{text-align:center;padding:24px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);transition:var(--transition)}
+.impact-item:hover{background:rgba(255,255,255,0.12);transform:translateY(-4px)}
+.impact-item i{color:var(--gold-light);font-size:1.6rem;margin-bottom:12px}
+.impact-num{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:800;color:var(--gold-light);line-height:1;margin-bottom:4px}
+.impact-label{color:rgba(255,255,255,0.6);font-size:0.82rem;font-weight:600;letter-spacing:0.04em}
+
+/* ================= CTA ================= */
+.cta-section{padding:60px 24px;text-align:center;background:var(--bg-warm, #faf7f2)}
+.cta-card{max-width:650px;margin:0 auto;background:var(--card);padding:44px 36px;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);border:1px solid var(--border);position:relative;overflow:hidden}
+.cta-card::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,var(--gold-glow),transparent 70%);border-radius:50%}
+.cta-card h3{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--accent);margin-bottom:10px;position:relative}
+.cta-card p{color:var(--text-light);font-size:0.95rem;margin-bottom:24px;position:relative}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#fff;font-weight:600;font-size:0.92rem;border-radius:50px;text-decoration:none;transition:var(--transition);box-shadow:var(--shadow-gold);border:none;cursor:pointer;position:relative}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(200,149,46,0.35)}
+
+/* ================= FOOTER ================= */
+.main-footer{background:#0f1a2e;color:rgba(255,255,255,0.7);padding:60px 24px 0}
+.footer-content{display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;max-width:var(--maxw);margin:0 auto}
+.footer-section{flex:1;min-width:250px}
+.footer-section h4{color:var(--gold-light);font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:14px}
+.footer-section p{font-size:0.88rem;line-height:1.7;color:rgba(255,255,255,0.6)}
+.footer-section ul{list-style:none}
+.footer-section ul li{margin:8px 0;font-size:0.9rem;color:rgba(255,255,255,0.6);display:flex;align-items:flex-start;gap:8px}
+.footer-section i{color:var(--gold);margin-top:3px;font-size:0.8rem}
+.footer-social{display:flex;gap:12px;margin-top:16px}
+.footer-social a{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:1rem;transition:var(--transition);text-decoration:none}
+.footer-social a:hover{background:var(--gold);border-color:var(--gold);color:#fff}
+.copyright{text-align:center;margin-top:40px;padding:20px 0;color:rgba(255,255,255,0.35);font-size:0.82rem;border-top:1px solid rgba(255,255,255,0.06)}
+
+/* ================= BACK TO TOP ================= */
+.back-to-top{position:fixed;bottom:28px;left:28px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border:1px solid rgba(255,255,255,0.25);box-shadow:0 4px 24px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:900;opacity:0;visibility:hidden;transform:translateY(20px);transition:var(--transition);color:var(--accent);font-size:1.1rem;text-decoration:none}
+.back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+.back-to-top:hover{transform:translateY(-3px);background:rgba(200,149,46,0.2);border-color:rgba(200,149,46,0.4);color:var(--gold)}
+
+/* ================= REVEAL ================= */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)}
+.reveal.revealed{opacity:1;transform:translateY(0)}
+.reveal-scale{opacity:0;transform:scale(0.9);transition:opacity 0.8s ease,transform 0.8s ease}
+.reveal-scale.revealed{opacity:1;transform:scale(1)}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+  .mission-grid{grid-template-columns:1fr}
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  .impact-grid{grid-template-columns:repeat(2,1fr)}
+  .mobile-toggle{display:flex}
+  .main-nav{display:none;flex-direction:column;background:rgba(255,255,255,0.92);backdrop-filter:blur(24px) saturate(1.8);position:absolute;right:24px;top:65px;padding:16px;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,0.3);min-width:200px}
+  .main-nav.show{display:flex}
+  .main-nav a{color:var(--text-light)!important;padding:10px 14px;border-radius:10px}
+  .main-nav a:hover{background:var(--gold-glow)!important;color:var(--gold)!important}
+  .footer-content{flex-direction:column}
 }
-.main-footer {
-    background: #e5e5e5;
-    color: #333;
-    padding: 40px 20px;
-    font-family: Arial, sans-serif;
-}
-.footer-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    justify-content: space-between;
-}
-.footer-section {
-    flex: 1;
-    min-width: 250px;
-}
-.footer-section h4 {
-    color: #222;
-    margin-bottom: 12px;
-}
-.footer-section p, 
-.footer-section a {
-    color: #333;
-    font-size: 14px;
-    line-height: 1.6;
-}
-.footer-section a { text-decoration:none; transition:0.3s;}
-.footer-section a:hover { color:#000;}
-.social-icons { margin-top:10px;}
-.social-icons .social-link {
-    font-size: 20px;
-    margin-right: 15px;
-    color: #333;
-    transition: 0.3s;
-}
-.social-icons .social-link:hover { color:#000;}
-.copyright {
-    text-align: center;
-    margin-top: 25px;
-    color: #444;
-    border-top: 1px solid #bbb;
-    padding-top: 15px;
-    font-size: 14px;
+@media(max-width:600px){
+  .gallery-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .gallery-item img,.gallery-item video{height:170px}
+  .impact-grid{grid-template-columns:1fr 1fr;gap:14px}
+  .impact-num{font-size:1.8rem}
+  .lb-nav{width:38px;height:38px;font-size:14px}
+  .lb-prev{left:10px}
+  .lb-next{right:10px}
+  .back-to-top{bottom:20px;left:20px;width:42px;height:42px}
 }
 </style>
 </head>
+
 <body>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="kids.html">Kids Ministry</a>
-  <a href="youth.html">Youth Ministry</a>
-</nav>
+<div id="scrollProgress"></div>
 
-<!-- DONATION 2 -->
-<div class="container">
-  <div class="about-card">
-    <h2>Bukakata Dental Mission</h2>
-    <p>
-      This 2-day mission happened on 31st August to 1st September 2023 at Lambu Landing Site, Bukakata. 
-      We held a Christ Love Fest mission including a 3-day dental mission, a pastors & leaders conference, and a women’s conference. 
-      Over 400 people received treatment, and 200+ pastors and leaders attended.
-    </p>
+<!-- Header -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg" alt="Logo">
+      PURPOSEFUL LIVING CHURCH
+    </a>
+    <nav id="mainNav" class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="media.html">Media</a>
+      <a href="kids.html">Kids</a>
+      <a href="youth.html">Youth</a>
+      <a href="outreach.html" class="active">Outreach</a>
+      <a href="index.html#give">Give</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <button id="mobileToggle" class="mobile-toggle">☰</button>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>/</span><span>Outreach Ministry</span>
+    </div>
+    <h1>Serving Our Community</h1>
+    <p>Through dental missions, food drives, conferences, and love — we take God's love beyond the church walls.</p>
+  </div>
+</section>
+
+<!-- Mission Cards -->
+<section class="mission-cards">
+  <div class="mission-grid">
+    <div class="mission-card mission-card--primary reveal">
+      <div class="card-icon"><i class="fas fa-tooth"></i></div>
+      <div class="card-date">Aug 31 – Sep 1, 2023 • Bukakata</div>
+      <h2>Bukakata Dental Mission</h2>
+      <p>A 2-day Christ Love Fest mission including a dental mission, pastors & leaders conference, and a women's conference. Over 400 people received treatment and 200+ pastors and leaders attended.</p>
+      <div class="mission-stats">
+        <div class="mission-stat"><div class="stat-num">400+</div><div class="stat-label">Treated</div></div>
+        <div class="mission-stat"><div class="stat-num">200+</div><div class="stat-label">Leaders</div></div>
+        <div class="mission-stat"><div class="stat-num">2</div><div class="stat-label">Days</div></div>
+      </div>
+    </div>
+    <div class="mission-card mission-card--secondary reveal">
+      <div class="card-icon"><i class="fas fa-hand-holding-heart"></i></div>
+      <div class="card-date">Sep 2, 2023 • Bukakata</div>
+      <h2>Outreach Donations</h2>
+      <p>Purposeful Living Church organizes outreach programs to support the needy, providing food, clothing, and educational materials. Through generous donations, we impacted lives in the community and beyond.</p>
+      <div class="mission-stats">
+        <div class="mission-stat"><div class="stat-num">100s</div><div class="stat-label">Impacted</div></div>
+        <div class="mission-stat"><div class="stat-num">3</div><div class="stat-label">Categories</div></div>
+        <div class="mission-stat"><div class="stat-num">∞</div><div class="stat-label">Love</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section class="gallery-section">
+  <div class="gallery-header reveal">
+    <h2>Outreach Gallery</h2>
+    <p>Browse photos and videos from our outreach missions and community impact activities.</p>
   </div>
 
-  <div id="spinner2" class="loader"></div>
-  <div class="gallery" id="gallery2"></div>
-</div>
-
-<div id="lightbox2" class="lightbox" onclick="closeLightbox(event, 'lightbox2')">
-  <div class="lightbox-content" id="lightboxContent2" onclick="event.stopPropagation()"></div>
-</div>
-
-<!-- DONATION 1 -->
-<div class="container">
-  <div class="about-card">
-    <h2>Bukakata Outreach Donations</h2>
-    <p>
-      Purposeful Living Church organizes outreach programs to support the needy, provide food, clothing, and educational materials. 
-      Through generous donations, we impacted lives in the community and beyond. This happened on 2nd September 2023 in Bukakata.
-    </p>
+  <div class="album-tabs reveal" id="albumTabs">
+    <button class="album-tab active" data-album="all">All<span class="tab-count" id="countAll">0</span></button>
+    <button class="album-tab" data-album="dental">Dental Mission<span class="tab-count" id="countDental">0</span></button>
+    <button class="album-tab" data-album="donations">Donations<span class="tab-count" id="countDonations">0</span></button>
   </div>
 
-  <div id="spinner1" class="loader"></div>
-  <div class="gallery" id="gallery1"></div>
+  <div class="gallery-bar reveal">
+    <div class="bar-left">
+      <div class="filter-chip active" data-filter="all">All</div>
+      <div class="filter-chip" data-filter="images"><i class="fas fa-image" style="margin-right:4px"></i> Photos</div>
+      <div class="filter-chip" data-filter="videos"><i class="fas fa-video" style="margin-right:4px"></i> Videos</div>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn" data-cols="3" title="3 columns"><i class="fas fa-th-large"></i></button>
+      <button class="view-btn active" data-cols="4" title="4 columns"><i class="fas fa-th"></i></button>
+      <button class="view-btn" data-cols="2" title="2 columns"><i class="fas fa-columns"></i></button>
+    </div>
+  </div>
+
+  <div class="gallery-grid" id="gallery"></div>
+  <div class="spinner-wrap" id="spinnerWrap"><div class="spinner"></div><div class="spinner-text">Loading gallery...</div></div>
+  <div class="empty-gallery" id="emptyGallery" style="display:none;"><i class="fas fa-images"></i><p>No items match your current filter.</p></div>
+</section>
+
+<!-- Impact Stats -->
+<section class="impact-section">
+  <div class="impact-header reveal">
+    <h2>Our Outreach Impact</h2>
+    <p>Numbers that represent lives touched by God's love through our ministry.</p>
+  </div>
+  <div class="impact-grid">
+    <div class="impact-item reveal"><i class="fas fa-heartbeat fa-2x"></i><div class="impact-num">600+</div><div class="impact-label">People Treated</div></div>
+    <div class="impact-item reveal"><i class="fas fa-users fa-2x"></i><div class="impact-num">200+</div><div class="impact-label">Leaders Trained</div></div>
+    <div class="impact-item reveal"><i class="fas fa-map-marked-alt fa-2x"></i><div class="impact-num">5+</div><div class="impact-label">Communities</div></div>
+    <div class="impact-item reveal"><i class="fas fa-calendar-check fa-2x"></i><div class="impact-num">10+</div><div class="impact-label">Outreaches</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-card reveal-scale">
+    <h3>Join Our Next Outreach</h3>
+    <p>Be part of something eternal. We're always looking for volunteers and partners to help us reach more communities with God's love.</p>
+    <a href="index.html#contact" class="btn-gold"><i class="fas fa-hands-helping"></i> Get Involved</a>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose">&times;</button>
+  <div class="lb-counter" id="lbCounter">1 / 1</div>
+  <button class="lb-nav lb-prev" id="lbPrev"><i class="fas fa-chevron-left"></i></button>
+  <button class="lb-nav lb-next" id="lbNext"><i class="fas fa-chevron-right"></i></button>
+  <div class="lb-media-wrap" id="lbWrap"></div>
+  <div class="lb-actions">
+    <button class="lb-act" id="lbZoom" title="Zoom"><i class="fas fa-search-plus"></i></button>
+    <button class="lb-act" id="lbDownload" title="Download"><i class="fas fa-download"></i></button>
+    <button class="lb-act" id="lbPlay" title="Play/Pause video"><i class="fas fa-play"></i></button>
+  </div>
 </div>
 
-<div id="lightbox1" class="lightbox" onclick="closeLightbox(event, 'lightbox1')">
-  <div class="lightbox-content" id="lightboxContent1" onclick="event.stopPropagation()"></div>
-</div>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
+<!-- Back to Top -->
+<a href="#" class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></a>
+
+<!-- Footer -->
 <footer class="main-footer">
   <div class="footer-content">
     <div class="footer-section">
       <h4>Purposeful Living Church</h4>
-      <p>Bible-based, family-centered, non-denominational church with a mission to win the lost and teach the saved to live a purposeful life.</p>
+      <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
     </div>
     <div class="footer-section">
-      <h4>Connect With Us</h4>
-      <div class="social-icons">
-        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+      <h4>Address</h4>
+      <ul><li><i class="fas fa-map-marker-alt"></i> Kulambiro Kisaasi, Kampala Uganda</li></ul>
+    </div>
+    <div class="footer-section">
+      <h4>Reach Out</h4>
+      <ul>
+        <li><i class="fas fa-phone"></i> +(256) 75227 5855</li>
+        <li><i class="fas fa-envelope"></i> info@purposefullivingchurch.com</li>
+      </ul>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/PurposefulLivingMinistriesInternational" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://youtube.com/@purposefullivingchurch-1?si=zTX5j_YH9d1xstvb" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://x.com/bulamu?t=9TV8lk9_A3XW03e6gis1eA&s=09" target="_blank"><i class="fab fa-twitter"></i></a>
       </div>
     </div>
   </div>
-  <div class="copyright">
-    &copy; 2025 Purposeful Living Church. All rights reserved.
-  </div>
+  <p class="copyright">&copy; <span id="year"></span> Purposeful Living Church. All rights reserved.</p>
 </footer>
 
 <script>
-/* ===== REUSABLE GALLERY FUNCTION ===== */
-function createGallery(galleryId, spinnerId, lightboxId, contentId, folderURL){
-  const gallery = document.getElementById(galleryId);
-  const spinner = document.getElementById(spinnerId);
-  const lightbox = document.getElementById(lightboxId);
-  const lightboxContent = document.getElementById(contentId);
-  const allItems = [];
+/* ================= NAV ================= */
+document.getElementById("mobileToggle").onclick = function() { document.getElementById("mainNav").classList.toggle("show"); };
+document.querySelectorAll("#mainNav a").forEach(function(a) { a.addEventListener("click", function() { document.getElementById("mainNav").classList.remove("show"); }); });
 
-  async function checkFile(url) {
-    return new Promise(resolve => {
-      const x = new XMLHttpRequest();
-      x.open("HEAD", url);
-      x.onload = () => resolve(x.status === 200);
-      x.onerror = () => resolve(false);
-      x.send();
-    });
+/* ================= SCROLL PROGRESS ================= */
+var scrollBar = document.getElementById("scrollProgress");
+window.addEventListener("scroll", function() { var h = document.documentElement.scrollHeight - window.innerHeight; if (h > 0) scrollBar.style.width = (window.scrollY / h * 100) + "%"; });
+
+/* ================= BACK TO TOP ================= */
+var btt = document.getElementById("backToTop");
+window.addEventListener("scroll", function() { btt.classList.toggle("visible", window.scrollY > 400); });
+btt.addEventListener("click", function(e) { e.preventDefault(); window.scrollTo({top:0,behavior:"smooth"}); });
+
+/* ================= YEAR ================= */
+document.getElementById("year").textContent = new Date().getFullYear();
+
+/* ================= REVEAL ================= */
+var revealObs = new IntersectionObserver(function(entries) { entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add("revealed"); }); }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
+document.querySelectorAll(".reveal,.reveal-scale").forEach(function(el) { revealObs.observe(el); });
+
+/* ================= TOAST ================= */
+function showToast(msg) { var t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(function() { t.classList.remove("show"); }, 2500); }
+
+/* ================= GALLERY STATE ================= */
+var dentalItems = [];
+var donationItems = [];
+var allItems = [];
+var filteredItems = [];
+var currentAlbum = "all";
+var currentFilter = "all";
+var lbIndex = 0;
+var isZoomed = false;
+var isVideoPlaying = false;
+var currentVideoEl = null;
+
+var galleryEl = document.getElementById("gallery");
+var spinnerWrap = document.getElementById("spinnerWrap");
+var emptyEl = document.getElementById("emptyGallery");
+
+/* ================= FILE DISCOVERY ================= */
+function checkFile(url) {
+  return new Promise(function(resolve) {
+    var x = new XMLHttpRequest();
+    x.open("HEAD", url);
+    x.onload = function() { resolve(x.status === 200); };
+    x.onerror = function() { resolve(false); };
+    x.send();
+  });
+}
+
+async function discoverFiles(folderURL, albumTag) {
+  var items = [];
+  var index = 1;
+  while (true) {
+    var imgURL = folderURL + "image" + index + ".jpg?" + Date.now();
+    var vidURL = folderURL + "video" + index + ".mp4?" + Date.now();
+    var imgOK = await checkFile(imgURL);
+    var vidOK = await checkFile(vidURL);
+    if (!imgOK && !vidOK) break;
+    if (imgOK) items.push({ type: "image", url: imgURL, album: albumTag });
+    if (vidOK) items.push({ type: "video", url: vidURL, album: albumTag });
+    index++;
   }
+  return items;
+}
 
-  async function discoverFiles() {
-    let index = allItems.length + 1;
-    while(true){
-      let img = `${folderURL}image${index}.jpg?${Date.now()}`;
-      let vid = `${folderURL}video${index}.mp4?${Date.now()}`;
+async function loadAllGalleries() {
+  spinnerWrap.style.display = "flex";
+  galleryEl.innerHTML = "";
 
-      const imgExists = await checkFile(img);
-      const vidExists = await checkFile(vid);
+  var results = await Promise.all([
+    discoverFiles("https://ik.imagekit.io/s95tumxuk/outreach2-gallery/", "dental"),
+    discoverFiles("https://ik.imagekit.io/s95tumxuk/outreach-gallery/", "donations")
+  ]);
 
-      if(!imgExists && !vidExists) break;
+  dentalItems = results[0].reverse();
+  donationItems = results[1].reverse();
+  allItems = dentalItems.concat(donationItems);
 
-      if(imgExists) allItems.push({type:"image", url:img});
-      if(vidExists) allItems.push({type:"video", url:vid});
+  updateCounts();
+  applyFilters();
+  spinnerWrap.style.display = "none";
 
-      index++;
-    }
-    displayGallery();
-    spinner.style.display = "none";
-  }
+  /* Auto-refresh every 60s */
+  setInterval(async function() {
+    var r = await Promise.all([
+      discoverFiles("https://ik.imagekit.io/s95tumxuk/outreach2-gallery/", "dental"),
+      discoverFiles("https://ik.imagekit.io/s95tumxuk/outreach-gallery/", "donations")
+    ]);
+    dentalItems = r[0].reverse();
+    donationItems = r[1].reverse();
+    allItems = dentalItems.concat(donationItems);
+    updateCounts();
+    applyFilters();
+  }, 60000);
+}
 
-  function displayGallery(){
-    gallery.innerHTML = "";
-    allItems.forEach((item, i) => {
-      let el;
-      if(item.type==="image"){
-        el = document.createElement("img");
-        el.src = item.url;
-      } else {
-        el = document.createElement("video");
-        el.src = item.url;
-        el.muted = true;
-      }
-      el.onclick = () => openLightbox(item);
-      gallery.appendChild(el);
-      setTimeout(()=>el.classList.add("show"), i*70);
-    });
-  }
+/* ================= COUNTS ================= */
+function updateCounts() {
+  document.getElementById("countAll").textContent = allItems.length;
+  document.getElementById("countDental").textContent = dentalItems.length;
+  document.getElementById("countDonations").textContent = donationItems.length;
+}
 
-  function openLightbox(file){
-    lightboxContent.innerHTML = "";
-    let el;
-    if(file.type==="image"){
-      el = document.createElement("img");
-      el.src = file.url;
+/* ================= FILTERS ================= */
+document.getElementById("albumTabs").addEventListener("click", function(e) {
+  var tab = e.target.closest(".album-tab");
+  if (!tab) return;
+  document.querySelectorAll(".album-tab").forEach(function(t) { t.classList.remove("active"); });
+  tab.classList.add("active");
+  currentAlbum = tab.getAttribute("data-album");
+  applyFilters();
+});
+
+document.querySelectorAll(".filter-chip").forEach(function(chip) {
+  chip.addEventListener("click", function() {
+    document.querySelectorAll(".filter-chip").forEach(function(c) { c.classList.remove("active"); });
+    chip.classList.add("active");
+    currentFilter = chip.getAttribute("data-filter");
+    applyFilters();
+  });
+});
+
+document.querySelectorAll(".view-btn").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    document.querySelectorAll(".view-btn").forEach(function(b) { b.classList.remove("active"); });
+    btn.classList.add("active");
+    galleryEl.className = "gallery-grid";
+    var cols = btn.getAttribute("data-cols");
+    if (cols) galleryEl.classList.add("view-" + cols);
+  });
+});
+
+/* ================= APPLY ================= */
+function applyFilters() {
+  filteredItems = allItems.filter(function(item) {
+    var matchAlbum = currentAlbum === "all" || item.album === currentAlbum;
+    var matchType = currentFilter === "all" || item.type === currentFilter;
+    return matchAlbum && matchType;
+  });
+  galleryEl.innerHTML = "";
+  filteredItems.forEach(function(item, i) {
+    var el = document.createElement("div");
+    el.className = "gallery-item";
+    var child;
+    if (item.type === "image") {
+      child = document.createElement("img");
+      child.src = item.url;
+      child.alt = item.album;
+      child.loading = "lazy";
     } else {
-      el = document.createElement("video");
-      el.src = file.url;
-      el.controls = true;
-      el.autoplay = true;
+      child = document.createElement("video");
+      child.src = item.url;
+      child.muted = true;
+      child.preload = "metadata";
+      child.playsInline = true;
     }
-    lightboxContent.appendChild(el);
-    lightbox.classList.add("show");
-  }
-
-  discoverFiles();
-  setInterval(discoverFiles, 60000);
+    var badgeIcon = item.type === "video" ? "fa-play-circle" : "fa-camera";
+    el.innerHTML = '<div class="item-overlay"></div><div class="item-type-badge"><i class="fas ' + badgeIcon + '"></i></div><div class="item-actions"><button class="item-action-btn" title="View"><i class="fas fa-expand"></i></button><button class="item-action-btn" title="Download"><i class="fas fa-download"></i></button></div>';
+    el.insertBefore(child, el.firstChild);
+    galleryEl.appendChild(el);
+    setTimeout(function() { el.classList.add("visible"); }, i * 50);
+    el.addEventListener("click", function(e) {
+      var actBtn = e.target.closest(".item-action-btn");
+      if (actBtn) {
+        e.stopPropagation();
+        if (actBtn.title === "Download") downloadFile(item.url);
+        else openLightbox(filteredItems.indexOf(item));
+      } else {
+        openLightbox(filteredItems.indexOf(item));
+      }
+    });
+  });
+  emptyEl.style.display = filteredItems.length === 0 ? "block" : "none";
 }
 
-/* ===== CLOSE LIGHTBOX ===== */
-function closeLightbox(e, lightboxId){
-  const lightbox = document.getElementById(lightboxId);
-  const content = lightbox.querySelector('.lightbox-content');
-  if(!content.contains(e.target)){
-    lightbox.classList.remove("show");
+/* ================= DOWNLOAD ================= */
+function downloadFile(url) {
+  var a = document.createElement("a");
+  a.href = url; a.download = "plc-outreach-" + Date.now() + ".jpg"; a.target = "_blank";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  showToast("Download started");
+}
+
+/* ================= LIGHTBOX ================= */
+function openLightbox(index) {
+  lbIndex = Math.max(0, Math.min(index, filteredItems.length - 1));
+  isZoomed = false; isVideoPlaying = false;
+  if (currentVideoEl) { currentVideoEl.pause(); currentVideoEl = null; }
+  updateLightbox();
+  document.getElementById("lightbox").classList.add("open");
+  document.body.style.overflow = "hidden";
+  document.getElementById("lbImg").classList.remove("zoomed");
+  document.getElementById("lbZoom").classList.remove("active");
+  updatePlayBtn();
+}
+
+function closeLightbox() {
+  document.getElementById("lightbox").classList.remove("open");
+  document.body.style.overflow = "";
+  if (currentVideoEl) { currentVideoEl.pause(); currentVideoEl = null; }
+  isZoomed = false; isVideoPlaying = false;
+  updatePlayBtn();
+}
+
+function updateLightbox() {
+  if (filteredItems.length === 0) return;
+  lbIndex = Math.max(0, Math.min(lbIndex, filteredItems.length - 1));
+  var item = filteredItems[lbIndex];
+  var wrap = document.getElementById("lbWrap");
+  wrap.innerHTML = "";
+  if (item.type === "image") {
+    var img = document.createElement("img");
+    img.id = "lbImg";
+    img.src = item.url;
+    img.alt = item.album;
+    img.draggable = false;
+    wrap.appendChild(img);
+  } else {
+    var vid = document.createElement("video");
+    vid.id = "lbVideo";
+    vid.src = item.url;
+    vid.controls = true;
+    vid.autoplay = true;
+    vid.playsInline = true;
+    wrap.appendChild(vid);
+    currentVideoEl = vid;
+    isVideoPlaying = true;
+  }
+  document.getElementById("lbCounter").textContent = (lbIndex + 1) + " / " + filteredItems.length;
+  isZoomed = false;
+  updatePlayBtn();
+}
+
+function nextImg() { lbIndex++; updateLightbox(); }
+function prevImg() { lbIndex--; updateLightbox(); }
+
+document.getElementById("lbClose").addEventListener("click", closeLightbox);
+document.getElementById("lbPrev").addEventListener("click", prevImg);
+document.getElementById("lbNext").addEventListener("click", nextImg);
+
+/* Zoom */
+document.getElementById("lbZoom").addEventListener("click", function() {
+  var img = document.getElementById("lbImg");
+  if (!img) return;
+  isZoomed = !isZoomed;
+  img.classList.toggle("zoomed", isZoomed);
+  this.classList.toggle("active", isZoomed);
+});
+
+/* Click image to zoom */
+document.getElementById("lbWrap").addEventListener("click", function(e) {
+  if (e.target.id === "lbImg") {
+    var img = document.getElementById("lbImg");
+    if (!img) return;
+    isZoomed = !isZoomed;
+    img.classList.toggle("zoomed", isZoomed);
+    document.getElementById("lbZoom").classList.toggle("active", isZoomed);
+  }
+});
+
+/* Download */
+document.getElementById("lbDownload").addEventListener("click", function() {
+  if (filteredItems[lbIndex]) downloadFile(filteredItems[lbIndex].url);
+});
+
+/* Play/Pause */
+function updatePlayBtn() {
+  var btn = document.getElementById("lbPlay");
+  if (filteredItems[lbIndex] && filteredItems[lbIndex].type === "video") {
+    btn.style.display = "flex";
+    btn.innerHTML = isVideoPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+  } else {
+    btn.style.display = "none";
   }
 }
 
-/* ===== INITIALIZE GALLERIES ===== */
-createGallery("gallery1","spinner1","lightbox1","lightboxContent1","https://ik.imagekit.io/s95tumxuk/outreach-gallery/");
-createGallery("gallery2","spinner2","lightbox2","lightboxContent2","https://ik.imagekit.io/s95tumxuk/outreach2-gallery/");
+document.getElementById("lbPlay").addEventListener("click", function() {
+  if (!currentVideoEl) return;
+  if (isVideoPlaying) { currentVideoEl.pause(); isVideoPlaying = false; }
+  else { currentVideoEl.play(); isVideoPlaying = true; }
+  updatePlayBtn();
+});
+
+/* Keyboard */
+document.addEventListener("keydown", function(e) {
+  if (!document.getElementById("lightbox").classList.contains("open")) return;
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowRight") nextImg();
+  if (e.key === "ArrowLeft") prevImg();
+});
+
+/* Touch swipe */
+var touchX = 0;
+document.getElementById("lbWrap").addEventListener("touchstart", function(e) { touchX = e.changedTouches[0].screenX; }, { passive: true });
+document.getElementById("lbWrap").addEventListener("touchend", function(e) {
+  var d = touchX - e.changedTouches[0].screenX;
+  if (Math.abs(d) > 50) { d > 0 ? nextImg() : prevImg(); }
+}, { passive: true });
+
+/* Click outside */
+document.getElementById("lightbox").addEventListener("click", function(e) {
+  if (e.target === this || e.target.id === "lbWrap") closeLightbox();
+});
+
+/* ================= INIT ================= */
+loadAllGalleries();
 </script>
+
 </body>
 </html>
