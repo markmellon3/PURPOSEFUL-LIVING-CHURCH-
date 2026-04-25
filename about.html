@@ -1,743 +1,707 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purposeful Living Church</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <style>
-        /* --- Global Styles --- */
-        :root {
-            --primary: #f2c759; /* A warm, golden yellow for the logo */
-            --primary-dark: #cc9f45;
-            --secondary: #333; /* Dark text/background */
-            --text-light: #f4f4f4;
-            --text-dark: #444;
-            --section-light: #ffffff;
-            --section-dark: #f0f0f0;
-            --font-family-body: 'Arial', sans-serif;
-        }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>About — PURPOSEFUL LIVING CHURCH</title>
+<link rel="icon" type="image/webp" sizes="16x16" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="icon" type="image/webp" sizes="32x32" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="icon" type="image/webp" sizes="96x96" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
-        body {
-            font-family: var(--font-family-body);
-            line-height: 1.6;
-            color: var(--text-dark);
-            background-color: var(--section-light);
-        }
-
-        .section {
-            padding: 60px 5%;
-            text-align: center;
-        }
-
-        .section--light {
-            background-color: var(--section-light);
-        }
-
-        .section--dark {
-            background-color: var(--section-dark);
-        }
-
-        h1, h2, h3, h4 {
-            color: var(--secondary);
-            margin-bottom: 15px;
-        }
-
-        h2 {
-            font-size: 2.5em;
-            padding-bottom: 10px;
-            border-bottom: 3px solid var(--primary);
-            display: inline-block;
-            margin-bottom: 40px;
-        }
-
-        p {
-            margin-bottom: 20px;
-        }
-
-        /* --- Header & Navigation --- */
-        .main-header {
-            background: var(--secondary);
-            color: var(--text-light);
-            padding: 15px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .nav__list {
-            list-style: none;
-            display: flex;
-        }
-
-        .nav__item {
-            margin-left: 20px;
-        }
-
-        .nav__link {
-            color: var(--text-light);
-            text-decoration: none;
-            padding: 5px 10px;
-            transition: color 0.3s, background-color 0.3s;
-        }
-
-        .nav__link:hover {
-            color: var(--primary);
-        }
-
-        .nav-toggle {
-            display: none; /* Hidden on desktop */
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            position: relative;
-            z-index: 2000;
-        }
-
-        .hamburger {
-            display: block;
-            position: relative;
-            width: 25px;
-            height: 3px;
-            background: var(--primary);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .hamburger::before,
-        .hamburger::after {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 3px;
-            background: var(--primary);
-            transition: transform 0.3s ease-in-out, top 0.3s ease-in-out;
-        }
-
-        .hamburger::before { top: -8px; }
-        .hamburger::after { top: 8px; }
-
-        /* --- Hero Section --- */
-        .hero {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://ik.imagekit.io/s95tumxuk/1763291103188.jpg?updatedAt=1763291178317') no-repeat center center/cover; /* Replace 'church-bg.j' with an actual background image */
-            color: var(--text-light);
-            padding: 100px 5%;
-            min-height: 70vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero__content {
-            max-width: 800px;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 3.5em;
-            color: var(--text-light);
-            margin-bottom: 10px;
-        }
-
-        .tagline {
-            font-size: 1.5em;
-            font-weight: 300;
-            margin-bottom: 30px;
-            color: var(--primary);
-        }
-
-        .logo-container {
-            margin-top: 30px;
-        }
-
-        .main-logo {
-            width: 150px;
-            height: auto;
-            border-radius: 50%; /* If your logo is circular */
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-
-        /* --- Mission & Vision --- */
-        .mission-vision-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .card {
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            background-color: var(--section-light);
-            transition: transform 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card--mission h3 { color: var(--primary-dark); }
-        .card--vision h3 { color: var(--secondary); }
-
-        /* --- Our Values --- */
-        .values-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .value-item {
-            padding: 20px;
-            border-radius: 8px;
-            background-color: var(--section-light);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            border-top: 5px solid var(--primary);
-        }
-
-        .value-item i {
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .value-item h4 {
-            font-size: 1.3em;
-            margin-bottom: 10px;
-        }
-
-        /* --- Building Blocks --- */
-        .blocks-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: left;
-        }
-
-        .block-item {
-            padding: 30px;
-            border-left: 4px solid var(--primary-dark);
-            background-color: var(--section-light);
-            position: relative;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-        }
-
-        .block-number {
-            position: absolute;
-            top: -15px;
-            left: -15px;
-            background: var(--primary);
-            color: var(--secondary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 1.2em;
-            border: 3px solid var(--section-light);
-        }
-
-        /* --- Footer --- */
-        .main-footer {
-            background: var(--secondary);
-            color: var(--text-light);
-            padding: 40px 5% 20px;
-            text-align: center;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            max-width: 900px;
-            margin: 0 auto 30px;
-            text-align: left;
-        }
-
-        .footer-section {
-            flex-basis: 45%;
-            margin-bottom: 20px;
-        }
-
-        .footer-section h4 {
-            color: var(--primary);
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-
-        .footer-section ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 8px;
-        }
-
-        .footer-section i {
-            color: var(--primary);
-            margin-right: 10px;
-        }
-
-        .copyright {
-            padding-top: 15px;
-            border-top: 1px solid #444;
-            font-size: 0.9em;
-        }
-
-        /* --- Media Queries for Mobile/Tablet --- */
-        @media (max-width: 768px) {
-            h2 {
-                font-size: 2em;
-            }
-
-            /* Mobile Nav Toggle */
-            .nav {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: var(--secondary);
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease-in-out;
-            }
-            
-            .nav.nav--visible {
-                max-height: 50vh; /* Adjust as needed */
-            }
-
-            .nav__list {
-                flex-direction: column;
-                padding: 20px 0;
-            }
-
-            .nav__item {
-                margin: 0;
-                border-bottom: 1px solid #444;
-            }
-
-            .nav__link {
-                display: block;
-                padding: 15px 5%;
-                text-align: center;
-            }
-
-            .nav-toggle {
-                display: block; /* Show on mobile */
-            }
-
-            /* Hamburger Animation */
-            .nav--visible .hamburger { transform: rotate(45deg); }
-            .nav--visible .hamburger::before { top: 0; opacity: 0; }
-            .nav--visible .hamburger::after { top: 0; transform: rotate(-90deg); }
-
-            .hero h1 { font-size: 2.5em; }
-            .tagline { font-size: 1.2em; }
-
-            .footer-content {
-                flex-direction: column;
-            }
-            .footer-section {
-                flex-basis: 100%;
-                text-align: center;
-            }
-            .footer-section ul {
-                display: inline-block;
-                text-align: left;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <header class="main-header">
-    <div class="logo">
-        <a href="index.html">
-            <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg?updatedAt=1763291178317" alt="PLC Logo" style="height: 50px;">
-        </a>
-    </div>
-    <button class="nav-toggle" aria-label="toggle navigation">
-        <span class="hamburger"></span>
-    </button>
-        <nav class="nav">
-            <ul class="nav__list">
-                <li class="nav__item"><a href="#mission" class="nav__link">Mission & Vision</a></li>
-                <li class="nav__item"><a href="#values" class="nav__link">Our Values</a></li>
-                <li class="nav__item"><a href="#blocks" class="nav__link">Building Blocks</a></li>
-                <li class="nav__item"><a href="#contact" class="nav__link">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section class="hero">
-        <div class="hero__content">
-            <h1>Purposeful Living Church</h1>
-            <p class="tagline">Equipping believers to lead lives defined by divine purpose.</p>
-            <div class="logo-container">
-                <img src="your-logo-file.png" alt="PLC Logo" class="main-logo">
-            </div>
-        </div>
-    </section>
-    <!-- ================= CHURCH PROJECTS ================= -->
-<section id="projects" class="projects-section">
-    <div class="container">
-        <!-- About the Church -->
-        <div class="church-about">
-            <h2>About the Church</h2>
-            <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
-            <p>It is the headquarter of Purposeful Living Churches under Kulambiro Christian Ministries (KCM).</p>
-            <p>Purposeful Living Church is registered by the government of Uganda under Registration no: 11708 to carry out evangelism activities, children welfare and social transformation development activities. The church was founded on May 18th 2014 by Pr. David and Sarah Ssekaboga and from that time the church is steadily growing and impacting the community and the Country at large.</p>
-
-            <h3>Church Construction Project</h3>
-            <p>Currently our church is under construction and it is our main project as a church. Upon completion, it is estimated to seat approx 1500 people and will house offices as well.</p>
-            <p><strong>“we his servants will arise and build” (Nehemiah 2:20 KJV)</strong></p>
-            <p><strong>Philippians 1:6 NKJV</strong></p>
-            <p><strong>“being confident of this very thing, that He who has begun a good work in you will complete it until the day of Jesus Christ”</strong></p>
-        </div>
-
-        <!-- Projects Grid -->
-        <h2 class="section-title">Our Church Projects</h2>
-        <p class="section-subtitle">See the work we are doing to serve our community and grow our church.</p>
-
-        <div class="projects-grid">
-            <!-- Project Item 1 -->
-            <div class="project-item" onclick="openModal(this)">
-                <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-06-21-at-1.48.28-PM-3.jpeg " alt="" class="project-img">
-                <div class="project-info">
-                    <h3 class="project-title"></h3>
-                    <p class="project-description"></p>
-                </div>
-            </div>
-            
-            <div class="projects-grid">
-            <!-- Project Item 1 -->
-            <div class="project-item" onclick="openModal(this)">
-                <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-11-04-at-15.47.28.jpeg?updatedAt=1763302930359 " alt="" class="project-img">
-                <div class="project-info">
-                    <h3 class="project-title"></h3>
-                    <p class="project-description"></p>
-                </div>
-            </div>
-            
-            <div class="projects-grid">
-            <!-- Project Item 1 -->
-            <div class="project-item" onclick="openModal(this)">
-                <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-11-04-at-15.47.47.jpeg?updatedAt=1763302944031" alt="" class="project-img">
-                <div class="project-info">
-                    <h3 class="project-title"></h3>
-                    <p class="project-description"></p>
-                </div>
-            </div>
-            
-            <div class="projects-grid">
-            <!-- Project Item 1 -->
-            <div class="project-item" onclick="openModal(this)">
-                <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-11-04-at-15.47.46.jpeg?updatedAt=1763302938796 " alt="" class="project-img">
-                <div class="project-info">
-                    <h3 class="project-title"></h3>
-                    <p class="project-description"></p>
-                </div>
-            </div>
-            
-            <div class="projects-grid">
-            <!-- Project Item 1 -->
-            <div class="project-item" onclick="openModal(this)">
-                <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-11-04-at-15.47.19.jpeg?updatedAt=1763302923691" alt="" class="project-img">
-                <div class="project-info">
-                    <h3 class="project-title"></h3>
-                    <p class="project-description"></p>
-                </div>
-            </div>
-
-            <!-- Project Item 2 -->
-            <div class="project-item" onclick="openModal(this)">
-                <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-06-21-at-1.48.28-PM-1.jpeg?updatedAt=1763302921341" alt="" class="project-img">
-                <div class="project-info">
-                    <h3 class="project-title"></h3>
-                    <p class="project-description"></p>
-                </div>
-            </div>
-
-            <!-- Project Item 3 -->
-            <div class="project-item" onclick="openModal(this)">
-                <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-02-04-at-10.34.45-AM%20(2).jpeg " alt="" class="project-img">
-                <div class="project-info">
-                    <h3 class="project-title"></h3>
-                    <p class="project-description"></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ================= MODAL ================= -->
-<div id="projectModal" class="modal">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="modalImg">
-    <div id="modalCaption"></div>
-</div>
-
-<!-- ================= CHURCH PROJECTS CSS ================= -->
 <style>
-.projects-section {
-    padding: 60px 20px;
-    background-color: #f9f9f9;
+:root {
+  --bg: #f0f4ff;
+  --bg-warm: #faf7f2;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #1a3a5c;
+  --accent-light: #2a5a8c;
+  --gold: #c8952e;
+  --gold-light: #e8b84a;
+  --gold-glow: rgba(200, 149, 46, 0.15);
+  --text: #1a1a2e;
+  --text-light: #4a4a5e;
+  --border: rgba(0,0,0,0.06);
+  --radius: 16px;
+  --radius-lg: 24px;
+  --maxw: 1100px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 8px 30px rgba(0,0,0,0.06);
+  --shadow-lg: 0 20px 50px rgba(0,0,0,0.08);
+  --shadow-gold: 0 8px 30px rgba(200,149,46,0.2);
+  --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.church-about h2, .church-about h3 {
-    color: #2c3e50;
-    margin-bottom: 15px;
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--gold);color:#fff}
+
+.container{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+/* ================= BUTTONS ================= */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--accent);color:#fff;
+  padding:13px 28px;border-radius:50px;
+  font-weight:600;font-size:0.92rem;
+  text-decoration:none;transition:var(--transition);
+  letter-spacing:0.02em;border:none;cursor:pointer;
+  position:relative;overflow:hidden;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(26,58,92,0.3)}
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold),var(--gold-light));
+  box-shadow:var(--shadow-gold);
+}
+.btn-gold:hover{box-shadow:0 12px 35px rgba(200,149,46,0.35);transform:translateY(-2px)}
+
+/* ================= HEADER GLASSMORPHISM ================= */
+.site-header{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  transition:var(--transition);
+  border-bottom:1px solid transparent;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(24px) saturate(1.8);
+  -webkit-backdrop-filter:blur(24px) saturate(1.8);
+  border-bottom-color:rgba(255,255,255,0.35);
+  box-shadow:0 4px 30px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.5),inset 0 -1px 0 rgba(255,255,255,0.15);
+}
+.header-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 24px;max-width:1200px;margin:0 auto;
+}
+.brand{
+  font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;
+  color:var(--accent);text-decoration:none;letter-spacing:0.03em;
+  display:flex;align-items:center;gap:10px;
+}
+.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-glow)}
+.main-nav{display:flex;align-items:center;gap:4px}
+.main-nav a{
+  padding:8px 14px;border-radius:50px;color:var(--text-light);
+  text-decoration:none;font-weight:500;font-size:0.88rem;
+  transition:var(--transition);letter-spacing:0.01em;position:relative;
+}
+.main-nav a::after{
+  content:'';position:absolute;bottom:4px;left:50%;
+  transform:translateX(-50%) scaleX(0);width:16px;height:2px;
+  background:var(--gold);border-radius:2px;transition:transform 0.3s ease;
+}
+.main-nav a:hover::after{transform:translateX(-50%) scaleX(1)}
+.main-nav a:hover{background:rgba(200,149,46,0.1);color:var(--gold)}
+.mobile-toggle{
+  display:none;font-size:1.3rem;background:none;border:none;cursor:pointer;
+  color:var(--accent);width:40px;height:40px;border-radius:50%;
+  align-items:center;justify-content:center;transition:var(--transition);
+}
+.mobile-toggle:hover{background:var(--gold-glow)}
+
+/* ================= SCROLL PROGRESS ================= */
+#scrollProgress{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--gold),var(--gold-light),#fff,var(--gold));
+  background-size:300% 100%;animation:progressShimmer 3s linear infinite;
+  z-index:10001;transition:width 0.1s linear;border-radius:0 2px 2px 0;
+}
+@keyframes progressShimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* ================= PAGE HERO ================= */
+.page-hero{
+  position:relative;width:100%;min-height:50vh;
+  display:flex;align-items:center;justify-content:center;
+  background-image:url("https://ik.imagekit.io/s95tumxuk/PLC/1763336127446.jpg");
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  overflow:hidden;
+}
+.page-hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,15,30,0.75) 0%,rgba(10,15,30,0.6) 50%,rgba(10,15,30,0.9) 100%);
+  z-index:1;
+}
+.page-hero::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(ellipse at 30% 50%,rgba(200,149,46,0.1),transparent 60%);
+  z-index:2;animation:heroGlow 12s ease-in-out infinite alternate;
+}
+@keyframes heroGlow{0%{transform:translate(0,0)}100%{transform:translate(5%,3%)}}
+.page-hero-inner{
+  position:relative;z-index:3;color:#fff;text-align:center;
+  max-width:700px;padding:120px 24px 60px;
+}
+.page-hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;
+  line-height:1.15;letter-spacing:-0.02em;margin-bottom:12px;
+}
+.page-hero p{
+  font-size:1.1rem;color:rgba(255,255,255,0.7);max-width:550px;margin:0 auto;
+}
+.breadcrumb{
+  display:flex;justify-content:center;gap:8px;
+  margin-bottom:20px;font-size:0.85rem;color:rgba(255,255,255,0.5);
+  font-weight:500;letter-spacing:0.04em;text-transform:uppercase;
+}
+.breadcrumb a{color:var(--gold-light);text-decoration:none;transition:var(--transition)}
+.breadcrumb a:hover{color:#fff}
+
+/* ================= SECTION STYLES ================= */
+.section{padding:80px 0}
+.section-header{text-align:center;margin-bottom:48px}
+.section-label{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:0.78rem;font-weight:700;color:var(--gold);
+  text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px;
+}
+.section-label::before,.section-label::after{content:'';width:24px;height:1px;background:var(--gold);opacity:0.5}
+.section-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;
+  color:var(--accent);letter-spacing:-0.02em;line-height:1.2;
+}
+.section-subtitle{color:var(--muted);font-size:1.05rem;margin-top:10px;max-width:550px;margin-left:auto;margin-right:auto}
+
+/* ================= SCROLL REVEAL ================= */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)}
+.reveal.revealed{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-50px);transition:opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)}
+.reveal-left.revealed{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(50px);transition:opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)}
+.reveal-right.revealed{opacity:1;transform:translateX(0)}
+.reveal-scale{opacity:0;transform:scale(0.9);transition:opacity 0.8s ease,transform 0.8s ease}
+.reveal-scale.revealed{opacity:1;transform:scale(1)}
+
+/* ================= ABOUT CONTENT ================= */
+.about-intro{background:var(--card);position:relative;overflow:hidden}
+.about-intro::before{content:'';position:absolute;top:-100px;right:-100px;width:300px;height:300px;background:radial-gradient(circle,var(--gold-glow),transparent 70%);border-radius:50%}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+.about-image img{width:100%;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);aspect-ratio:4/3;object-fit:cover}
+.about-content h2{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--accent);margin-bottom:20px;line-height:1.2}
+.about-content p{color:var(--text-light);margin-bottom:14px;font-size:0.98rem}
+.about-highlight{
+  background:linear-gradient(135deg,var(--accent),#0f2840);
+  color:#fff;padding:24px 28px;border-radius:var(--radius);
+  margin-top:20px;position:relative;overflow:hidden;
+}
+.about-highlight::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(200,149,46,0.15),transparent 60%);border-radius:50%}
+.about-highlight p{color:rgba(255,255,255,0.85);font-style:italic;font-family:'Playfair Display',serif;font-size:1rem;line-height:1.7;margin-bottom:0;position:relative}
+.about-highlight .ref{color:var(--gold-light);font-size:0.85rem;font-style:normal;font-family:'Inter',sans-serif;margin-top:8px;display:block}
+
+/* ================= MISSION & VISION ================= */
+.mv-section{background:var(--bg)}
+.mv-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:900px;margin:0 auto}
+.mv-card{
+  padding:36px 30px;border-radius:var(--radius-lg);
+  text-align:center;transition:var(--transition);
+  position:relative;overflow:hidden;
+}
+.mv-card--mission{
+  background:linear-gradient(135deg,var(--accent),var(--accent-light));
+  color:#fff;box-shadow:var(--shadow-lg);
+}
+.mv-card--vision{
+  background:var(--card);border:1px solid var(--border);
+  box-shadow:var(--shadow-md);
+}
+.mv-card::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(200,149,46,0.15),transparent 70%);border-radius:50%}
+.mv-card i{font-size:2rem;margin-bottom:16px;position:relative}
+.mv-card--mission i{color:var(--gold-light)}
+.mv-card--vision i{color:var(--gold)}
+.mv-card h3{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:14px;position:relative}
+.mv-card--mission h3{color:#fff}
+.mv-card--vision h3{color:var(--accent)}
+.mv-card p{font-size:0.95rem;line-height:1.7;position:relative}
+.mv-card--mission p{color:rgba(255,255,255,0.85)}
+.mv-card--vision p{color:var(--text-light)}
+.mv-card:hover{transform:translateY(-4px)}
+
+/* ================= VALUES ================= */
+.values-section{background:var(--accent);padding:80px 24px;position:relative;overflow:hidden}
+.values-section::before{content:'';position:absolute;bottom:-60px;left:-60px;width:250px;height:250px;background:radial-gradient(circle,rgba(200,149,46,0.12),transparent 60%);border-radius:50%}
+.values-section::after{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(200,149,46,0.08),transparent 60%);border-radius:50%}
+.values-section .section-label{color:var(--gold-light)}
+.values-section .section-title{color:#fff}
+.values-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;max-width:var(--maxw);margin:0 auto;position:relative}
+.value-item{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:blur(8px);padding:28px 20px;border-radius:var(--radius);
+  text-align:center;transition:var(--transition);
+}
+.value-item:hover{background:rgba(255,255,255,0.12);transform:translateY(-4px)}
+.value-item i{color:var(--gold-light);font-size:1.8rem;margin-bottom:14px;transition:var(--transition)}
+.value-item:hover i{transform:scale(1.15)}
+.value-item h4{color:var(--gold-light);font-size:1.05rem;margin-bottom:10px}
+.value-item p{color:rgba(255,255,255,0.8);font-size:0.9rem;line-height:1.6}
+
+/* ================= BUILDING BLOCKS ================= */
+.blocks-section{background:var(--card)}
+.blocks-container{
+  max-width:var(--maxw);margin:0 auto;
+  background:var(--bg);padding:60px 32px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);
+}
+.blocks-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px}
+.block-item{
+  background:var(--card);padding:28px 22px;border-radius:var(--radius);
+  text-align:center;transition:var(--transition);border:1px solid var(--border);
+  position:relative;
+}
+.block-item:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:rgba(200,149,46,0.2)}
+.block-item i{color:var(--gold);font-size:1.6rem;margin-bottom:10px}
+.block-number{
+  display:block;font-family:'Playfair Display',serif;font-size:2.2rem;
+  font-weight:700;color:var(--gold);opacity:0.3;margin-bottom:4px;line-height:1;
+}
+.block-item h3{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:10px}
+.block-item p{font-size:0.88rem;color:var(--muted);line-height:1.6}
+
+/* ================= PROJECTS ================= */
+.projects-section{background:var(--bg);padding:80px 24px}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;max-width:var(--maxw);margin:0 auto}
+.project-item{
+  background:var(--card);border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:var(--shadow-md);transition:var(--transition);border:1px solid var(--border);cursor:pointer;
+}
+.project-item:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.project-img{width:100%;height:220px;object-fit:cover;display:block;transition:transform 0.5s ease}
+.project-item:hover .project-img{transform:scale(1.05)}
+.project-img-wrap{overflow:hidden}
+.project-info{padding:20px;text-align:left}
+.project-title{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--accent);margin-bottom:6px}
+.project-description{font-size:0.88rem;color:var(--muted);line-height:1.6}
+
+/* ================= PROJECT MODAL ================= */
+.modal{
+  display:none;position:fixed;z-index:9999;
+  padding-top:40px;left:0;top:0;width:100%;height:100%;
+  overflow:auto;background:rgba(10,15,30,0.92);
+  backdrop-filter:blur(10px);cursor:pointer;
+}
+.modal.show{display:block;animation:modalFadeIn 0.3s forwards}
+@keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
+.modal-content{
+  margin:auto;display:block;width:85%;max-width:900px;
+  border-radius:var(--radius-lg);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  animation:modalScaleIn 0.3s forwards;cursor:default;
+}
+@keyframes modalScaleIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-close{
+  position:fixed;top:20px;right:30px;
+  width:48px;height:48px;border-radius:50%;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+  color:#fff;font-size:28px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:var(--transition);z-index:10000;
+}
+.modal-close:hover{background:rgba(255,255,255,0.2);transform:rotate(90deg)}
+
+/* ================= FOOTER ================= */
+.main-footer{background:#0f1a2e;color:rgba(255,255,255,0.7);padding:60px 24px 0}
+.footer-content{display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;max-width:var(--maxw);margin:0 auto}
+.footer-section{flex:1;min-width:250px}
+.footer-section h4{color:var(--gold-light);font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:14px}
+.footer-section p{font-size:0.88rem;line-height:1.7;color:rgba(255,255,255,0.6)}
+.footer-section ul{list-style:none}
+.footer-section ul li{margin:8px 0;font-size:0.9rem;color:rgba(255,255,255,0.6);display:flex;align-items:flex-start;gap:8px}
+.footer-section i{color:var(--gold);margin-top:3px;font-size:0.8rem}
+.footer-social{display:flex;gap:12px;margin-top:16px}
+.footer-social a{
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,0.5);font-size:1rem;
+  transition:var(--transition);text-decoration:none;
+}
+.footer-social a:hover{background:var(--gold);border-color:var(--gold);color:#fff}
+.copyright{text-align:center;margin-top:40px;padding:20px 0;color:rgba(255,255,255,0.35);font-size:0.82rem;border-top:1px solid rgba(255,255,255,0.06)}
+
+/* ================= BACK TO TOP ================= */
+.back-to-top{
+  position:fixed;bottom:28px;left:28px;width:48px;height:48px;border-radius:50%;
+  background:rgba(255,255,255,0.15);backdrop-filter:blur(20px) saturate(1.8);
+  -webkit-backdrop-filter:blur(20px) saturate(1.8);
+  border:1px solid rgba(255,255,255,0.25);
+  box-shadow:0 4px 24px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:900;opacity:0;visibility:hidden;
+  transform:translateY(20px);transition:var(--transition);
+  color:var(--accent);font-size:1.1rem;text-decoration:none;
+}
+.back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+.back-to-top:hover{
+  transform:translateY(-3px);background:rgba(200,149,46,0.2);
+  border-color:rgba(200,149,46,0.4);color:var(--gold);
 }
 
-.church-about p {
-    color: #34495e;
-    margin-bottom: 10px;
-    line-height: 1.6;
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+  .about-grid{grid-template-columns:1fr;gap:30px}
+  .about-image{order:-1}
+  .about-image img{max-width:400px;margin:0 auto;display:block}
+  .mv-grid{grid-template-columns:1fr}
+  .mobile-toggle{display:flex}
+  .main-nav{
+    display:none;flex-direction:column;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(24px) saturate(1.8);
+    position:absolute;right:24px;top:65px;
+    padding:16px;border-radius:var(--radius);
+    box-shadow:var(--shadow-lg);
+    border:1px solid rgba(255,255,255,0.3);min-width:200px;
+  }
+  .main-nav.show{display:flex}
+  .main-nav a{color:var(--text-light)!important;padding:10px 14px;border-radius:10px}
+  .main-nav a:hover{background:var(--gold-glow)!important;color:var(--gold)!important}
+  .footer-content{flex-direction:column}
 }
-
-.section-title {
-    font-size: 2.5rem;
-    margin: 40px 0 10px;
-    text-align: center;
-    color: #2c3e50;
-}
-
-.section-subtitle {
-    font-size: 1.2rem;
-    margin-bottom: 40px;
-    text-align: center;
-    color: #7f8c8d;
-}
-
-.projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-}
-
-.project-item {
-    background-color: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.project-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-}
-
-.project-img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.project-info {
-    padding: 20px;
-}
-
-.project-title {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    color: #34495e;
-}
-
-.project-description {
-    font-size: 1rem;
-    color: #7f8c8d;
-}
-
-/* Modal CSS */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    padding-top: 60px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.8);
-}
-
-.modal-content {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 800px;
-    border-radius: 12px;
-}
-
-#modalCaption {
-    margin: 20px auto;
-    text-align: center;
-    color: #fff;
-    font-size: 1.2rem;
-}
-
-.close {
-    position: absolute;
-    top: 20px;
-    right: 40px;
-    color: #fff;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
+@media(max-width:600px){
+  .section{padding:60px 0}
+  .blocks-container{padding:36px 20px;border-radius:var(--radius)}
+  .values-section{padding:60px 16px}
+  .back-to-top{bottom:20px;left:20px;width:42px;height:42px}
+  .page-hero{min-height:40vh}
+  .page-hero-inner{padding:100px 20px 50px}
 }
 </style>
+</head>
 
-<!-- ================= MODAL SCRIPT ================= -->
+<body>
+
+<!-- Scroll Progress -->
+<div id="scrollProgress"></div>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg" alt="Logo">
+      PURPOSEFUL LIVING CHURCH
+    </a>
+    <nav id="mainNav" class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="index.html#beliefs">Beliefs</a>
+      <a href="index.html#ministries">Ministries</a>
+      <a href="index.html#give">Give</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <button id="mobileToggle" class="mobile-toggle">☰</button>
+  </div>
+</header>
+
+<!-- Page Hero -->
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>/</span>
+      <span>About Us</span>
+    </div>
+    <h1>About Our Church</h1>
+    <p>Discover who we are, what we believe, and the purpose that drives everything we do.</p>
+  </div>
+</section>
+
+<!-- About Intro -->
+<section class="about-intro section">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-image reveal-left">
+        <img src="https://ik.imagekit.io/s95tumxuk/PLC/1763335772632.jpg" alt="Church Flames">
+      </div>
+      <div class="about-content reveal-right">
+        <div class="section-label">Who We Are</div>
+        <h2>About the Church</h2>
+        <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
+        <p>It is the headquarter of Purposeful Living Churches under Kulambiro Christian Ministries (KCM).</p>
+        <p>Purposeful Living Church is registered by the government of Uganda under Registration no: 11708 to carry out evangelism activities, children welfare and social transformation development activities. The church was founded on May 18th 2014 by Pr. David and Sarah Ssekaboga and from that time the church is steadily growing and impacting the community and the Country at large.</p>
+        <div class="about-highlight">
+          <p>"We his servants will arise and build"</p>
+          <span class="ref">— Nehemiah 2:20 KJV</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="mv-section section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">Our Purpose</div>
+      <h2 class="section-title">Mission & Vision</h2>
+    </div>
+    <div class="mv-grid">
+      <div class="mv-card mv-card--mission reveal">
+        <i class="fas fa-bullseye"></i>
+        <h3>Our Mission</h3>
+        <p>To bring the lost into a relationship with Christ and to equip believers with the wisdom and tools to lead lives defined by divine purpose.</p>
+      </div>
+      <div class="mv-card mv-card--vision reveal">
+        <i class="fas fa-eye"></i>
+        <h3>Our Vision</h3>
+        <p>To be a vibrant, Spirit-filled community where the promises of God are tangibly realized, and every person's divinely-inspired dreams come to fruition.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Core Values -->
+<section class="values-section">
+  <div class="section-header reveal" style="max-width:var(--maxw);margin:0 auto 48px;">
+    <div class="section-label">What Drives Us</div>
+    <h2 class="section-title">Our Core Values</h2>
+  </div>
+  <div class="values-grid">
+    <div class="value-item reveal">
+      <i class="fas fa-users fa-2x"></i>
+      <h4>Family</h4>
+      <p>We believe that being part of God's family is the most profound blessing we receive. This sacred bond inspires us to live a life of humility, gratitude, and mutual support.</p>
+    </div>
+    <div class="value-item reveal">
+      <i class="fas fa-hand-holding-heart fa-2x"></i>
+      <h4>Faithfulness</h4>
+      <p>We are committed to living a life of steadfast loyalty to God and His Word. We trust in His promise that He is faithful and will always provide a way through every challenge.</p>
+    </div>
+    <div class="value-item reveal">
+      <i class="fas fa-cross fa-2x"></i>
+      <h4>Commitment</h4>
+      <p>Our highest commitment is to love the Lord our God with our entire being. This wholehearted love is demonstrated by our resolve to walk according to His statutes.</p>
+    </div>
+    <div class="value-item reveal">
+      <i class="fas fa-people-carry-box fa-2x"></i>
+      <h4>Teamwork</h4>
+      <p>As the unified Body of Christ, we function as a single team dedicated to serving humanity. We recognize that true strength comes from every member working together in harmony.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Building Blocks -->
+<section class="blocks-section section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">Our Foundation</div>
+      <h2 class="section-title">The 4 Building Blocks of Purposeful Living</h2>
+    </div>
+    <div class="blocks-container reveal">
+      <div class="blocks-list">
+        <article class="block-item">
+          <i class="fas fa-praying-hands fa-2x"></i>
+          <span class="block-number">1</span>
+          <h3>Intimate Relationship with God</h3>
+          <p>Purposeful living begins with a vibrant, personal connection with our Creator. This relationship is continually nurtured through fellowship, unconditional love, and unwavering trust.</p>
+        </article>
+        <article class="block-item">
+          <i class="fas fa-user fa-2x"></i>
+          <span class="block-number">2</span>
+          <h3>Reflecting the Image of God</h3>
+          <p>Humanity was created to be the visible representation of God on Earth. While this divine image was marred by sin, we are being restored in Christ to fully express His nature and character.</p>
+        </article>
+        <article class="block-item">
+          <i class="fas fa-globe-africa fa-2x"></i>
+          <span class="block-number">3</span>
+          <h3>Exercising Dominion</h3>
+          <p>We are empowered by God to steward and positively influence the world around us. This dominion is exercised through a life of faith, spiritual authority, and victory over all opposition.</p>
+        </article>
+        <article class="block-item">
+          <i class="fas fa-users fa-2x"></i>
+          <span class="block-number">4</span>
+          <h3>Spiritual Reproduction (Discipleship)</h3>
+          <p>A purposeful life is one that actively multiplies its faith by investing in others. We are committed to following the biblical mandate to make and develop mature disciples of Jesus Christ.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Church Projects -->
+<section class="projects-section">
+  <div style="text-align:center;">
+    <div class="section-label reveal">Our Progress</div>
+    <h2 class="section-title reveal" style="margin-bottom:12px;">Church Projects</h2>
+    <p class="reveal" style="font-size:1rem;max-width:700px;margin:0 auto 40px;color:var(--text-light);">Currently our church is under construction and it is our main project. Upon completion, it will seat approx. 1500 people and house church offices.</p>
+  </div>
+  <div class="projects-grid">
+    <div class="project-item reveal" onclick="openModal(this)">
+      <div class="project-img-wrap">
+        <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-06-21-at-1.48.28-PM-3.jpeg" alt="Construction" class="project-img">
+      </div>
+      <div class="project-info">
+        <h3 class="project-title">Church Construction</h3>
+        <p class="project-description">Progress of the main sanctuary building.</p>
+      </div>
+    </div>
+    <div class="project-item reveal" onclick="openModal(this)">
+      <div class="project-img-wrap">
+        <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-11-04-at-15.47.28.jpeg?updatedAt=1763302930359" alt="Construction" class="project-img">
+      </div>
+      <div class="project-info">
+        <h3 class="project-title">Sanctuary Structure</h3>
+        <p class="project-description">The rising structure of our worship space.</p>
+      </div>
+    </div>
+    <div class="project-item reveal" onclick="openModal(this)">
+      <div class="project-img-wrap">
+        <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-11-04-at-15.47.47.jpeg?updatedAt=1763302944031" alt="Construction" class="project-img">
+      </div>
+      <div class="project-info">
+        <h3 class="project-title">Building Progress</h3>
+        <p class="project-description">Continued development of the church facility.</p>
+      </div>
+    </div>
+    <div class="project-item reveal" onclick="openModal(this)">
+      <div class="project-img-wrap">
+        <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-11-04-at-15.47.46.jpeg?updatedAt=1763302938796" alt="Construction" class="project-img">
+      </div>
+      <div class="project-info">
+        <h3 class="project-title">Foundation Work</h3>
+        <p class="project-description">Strong foundations being laid for the sanctuary.</p>
+      </div>
+    </div>
+    <div class="project-item reveal" onclick="openModal(this)">
+      <div class="project-img-wrap">
+        <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-11-04-at-15.47.19.jpeg?updatedAt=1763302923691" alt="Construction" class="project-img">
+      </div>
+      <div class="project-info">
+        <h3 class="project-title">Early Stages</h3>
+        <p class="project-description">The early stages of our construction journey.</p>
+      </div>
+    </div>
+    <div class="project-item reveal" onclick="openModal(this)">
+      <div class="project-img-wrap">
+        <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-06-21-at-1.48.28-PM-1.jpeg?updatedAt=1763302921341" alt="Construction" class="project-img">
+      </div>
+      <div class="project-info">
+        <h3 class="project-title">Site Preparation</h3>
+        <p class="project-description">Preparing the ground for God's house.</p>
+      </div>
+    </div>
+    <div class="project-item reveal" onclick="openModal(this)">
+      <div class="project-img-wrap">
+        <img src="https://ik.imagekit.io/s95tumxuk/PLC/WhatsApp-Image-2023-02-04-at-10.34.45-AM%20(2).jpeg" alt="Construction" class="project-img">
+      </div>
+      <div class="project-info">
+        <h3 class="project-title">Construction View</h3>
+        <p class="project-description">A wider view of the construction site.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:48px;" class="reveal">
+    <div style="max-width:600px;margin:0 auto;background:var(--card);padding:28px 32px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);border:1px solid var(--border);">
+      <p style="color:var(--text-light);font-style:italic;font-family:'Playfair Display',serif;font-size:1rem;line-height:1.7;margin-bottom:4px;">"Being confident of this very thing, that He who has begun a good work in you will complete it until the day of Jesus Christ."</p>
+      <span style="color:var(--gold);font-size:0.85rem;font-weight:600;">— Philippians 1:6 NKJV</span>
+    </div>
+  </div>
+</section>
+
+<!-- Modal -->
+<div id="projectModal" class="modal">
+  <button class="modal-close" onclick="closeModal()">&times;</button>
+  <img class="modal-content" id="modalImg" alt="Project Image">
+</div>
+
+<!-- Back to Top -->
+<a href="#" class="back-to-top" id="backToTop" aria-label="Back to top"><i class="fas fa-chevron-up"></i></a>
+
+<!-- Footer -->
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Purposeful Living Church</h4>
+      <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Address</h4>
+      <ul>
+        <li><i class="fas fa-map-marker-alt"></i> Kulambiro Kisaasi, Kampala Uganda</li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Reach Out</h4>
+      <ul>
+        <li><i class="fas fa-phone"></i> +(256) 75227 5855</li>
+        <li><i class="fas fa-envelope"></i> info@purposefullivingchurch.com</li>
+      </ul>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/PurposefulLivingMinistriesInternational" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://youtube.com/@purposefullivingchurch-1?si=zTX5j_YH9d1xstvb" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://x.com/bulamu?t=9TV8lk9_A3XW03e6gis1eA&s=09" target="_blank"><i class="fab fa-twitter"></i></a>
+      </div>
+    </div>
+  </div>
+  <p class="copyright">&copy; <span id="year"></span> Purposeful Living Church. All rights reserved.</p>
+</footer>
+
 <script>
-function openModal(element) {
-    var modal = document.getElementById("projectModal");
-    var modalImg = document.getElementById("modalImg");
-    var caption = document.getElementById("modalCaption");
-    
-    modal.style.display = "block";
-    modalImg.src = element.querySelector(".project-img").src;
-    caption.innerHTML = element.querySelector(".project-title").innerHTML + "<br>" + element.querySelector(".project-description").innerHTML;
-}
+// Mobile nav
+document.getElementById("mobileToggle").onclick = function() {
+  document.getElementById("mainNav").classList.toggle("show");
+};
+document.querySelectorAll("#mainNav a").forEach(function(link) {
+  link.addEventListener("click", function() {
+    document.getElementById("mainNav").classList.remove("show");
+  });
+});
 
+// Scroll progress
+var scrollBar = document.getElementById("scrollProgress");
+window.addEventListener("scroll", function() {
+  var docH = document.documentElement.scrollHeight - window.innerHeight;
+  if (docH > 0) scrollBar.style.width = (window.scrollY / docH * 100) + "%";
+});
+
+// Back to top
+var btt = document.getElementById("backToTop");
+window.addEventListener("scroll", function() {
+  btt.classList.toggle("visible", window.scrollY > 400);
+});
+btt.addEventListener("click", function(e) {
+  e.preventDefault();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+// Scroll reveal
+var revealObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add("revealed"); });
+}, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
+document.querySelectorAll(".reveal,.reveal-left,.reveal-right,.reveal-scale").forEach(function(el) {
+  revealObs.observe(el);
+});
+
+// Modal
+function openModal(el) {
+  var modal = document.getElementById("projectModal");
+  document.getElementById("modalImg").src = el.querySelector(".project-img").src;
+  modal.classList.add("show");
+  document.body.style.overflow = "hidden";
+}
 function closeModal() {
-    document.getElementById("projectModal").style.display = "none";
+  var modal = document.getElementById("projectModal");
+  modal.classList.remove("show");
+  document.body.style.overflow = "";
 }
+document.getElementById("projectModal").addEventListener("click", function(e) {
+  if (e.target === this) closeModal();
+});
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") closeModal();
+});
+
+// Year
+document.getElementById("year").textContent = new Date().getFullYear();
 </script>
-    
-    <section id="mission" class="section section--light">
-        <h2>Mission & Vision</h2>
-        <div class="mission-vision-grid">
-            <div class="card card--mission">
-                <h3>Our Mission</h3>
-                <p>To bring the lost into a relationship with Christ and to equip believers with the wisdom and tools to lead lives defined by divine purpose.</p>
-            </div>
-            <div class="card card--vision">
-                <h3>Our Vision</h3>
-                <p>To be a vibrant, Spirit-filled community where the promises of God are tangibly realized, and every person's divinely-inspired dreams come to fruition.</p>
-            </div>
-        </div>
-    </section>
 
-    <section id="values" class="section section--dark">
-        <h2>Our Core Values</h2>
-        <div class="values-grid">
-            <div class="value-item">
-                <i class="fas fa-users fa-2x"></i>
-                <h4>Family</h4>
-                <p>We believe that being part of God's family is the most profound blessing we receive. This sacred bond inspires us to live a life of humility, gratitude, and mutual support.</p>
-            </div>
-            <div class="value-item">
-                <i class="fas fa-hand-holding-heart fa-2x"></i>
-                <h4>Faithfulness</h4>
-                <p>We are committed to living a life of steadfast loyalty to God and His Word. We trust in His promise that He is faithful and will always provide a way through every challenge.</p>
-            </div>
-            <div class="value-item">
-                <i class="fas fa-cross fa-2x"></i>
-                <h4>Commitment</h4>
-                <p>Our highest commitment is to love the Lord our God with our entire being. This wholehearted love is demonstrated by our resolve to walk according to His statutes.</p>
-            </div>
-            <div class="value-item">
-                <i class="fas fa-people-carry-box fa-2x"></i>
-                <h4>Teamwork</h4>
-                <p>As the unified Body of Christ, we function as a single team dedicated to serving humanity. We recognize that true strength comes from every member working together in harmony.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="blocks" class="section section--light">
-        <h2>The 4 Building Blocks of Purposeful Living</h2>
-        <div class="blocks-list">
-            <article class="block-item">
-                <span class="block-number">1</span>
-                <h3>Intimate Relationship with God</h3>
-                <p>Purposeful living begins with a vibrant, personal connection with our Creator. This relationship is continually nurtured through fellowship, unconditional love, and unwavering trust.</p>
-            </article>
-            <article class="block-item">
-                <span class="block-number">2</span>
-                <h3>Reflecting the Image of God</h3>
-                <p>Humanity was created to be the visible representation of God on Earth. While this divine image was marred by sin, we are being restored in Christ to fully express His nature and character.</p>
-            </article>
-            <article class="block-item">
-                <span class="block-number">3</span>
-                <h3>Exercising Dominion</h3>
-                <p>We are empowered by God to steward and positively influence the world around us. This dominion is exercised through a life of faith, spiritual authority, and victory over all opposition.</p>
-            </article>
-            <article class="block-item">
-                <span class="block-number">4</span>
-                <h3>Spiritual Reproduction (Discipleship)</h3>
-                <p>A purposeful life is one that actively multiplies its faith by investing in others. We are committed to following the biblical mandate to make and develop mature disciples of Jesus Christ.</p>
-            </article>
-        </div>
-    </section>
-
-    <footer id="contact" class="main-footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Purposeful Living Church</h4>
-                <p>Leading with purpose, living by faith.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Reach Out</h4>
-                <ul>
-                    <li><i class="fas fa-map-marker-alt"></i> [Your Address/Location]</li>
-                    <li><i class="fas fa-phone"></i> [Your Phone Number]</li>
-                    <li><i class="fas fa-envelope"></i> [Your Email Address]</li>
-                </ul>
-            </div>
-        </div>
-        <p class="copyright">&copy; <span id="year"></span> Purposeful Living Church. All rights reserved.</p>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const navToggle = document.querySelector('.nav-toggle');
-            const nav = document.querySelector('.nav');
-            const navLinks = document.querySelectorAll('.nav__link');
-
-            // 1. Toggle mobile navigation visibility
-            navToggle.addEventListener('click', () => {
-                nav.classList.toggle('nav--visible');
-            });
-
-            // 2. Hide navigation when a link is clicked (for single-page scrolling)
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (nav.classList.contains('nav--visible')) {
-                        nav.classList.remove('nav--visible');
-                    }
-                });
-            });
-
-            // Simple script to update the copyright year
-            document.getElementById('year').textContent = new Date().getFullYear();
-        });
-    </script>
 </body>
 </html>
