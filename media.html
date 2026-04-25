@@ -1,253 +1,785 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Media Gallery | Purposeful Living Church</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Media Gallery — PURPOSEFUL LIVING CHURCH</title>
+<link rel="icon" type="image/webp" sizes="16x16" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="icon" type="image/webp" sizes="32x32" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="icon" type="image/webp" sizes="96x96" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 <style>
-/* ================= GLOBAL ================= */
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Inter', sans-serif; background:#f8f9fa; color:#222; }
-
-/* ================= NAVIGATION ================= */
-nav {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:#333;
-  padding:16px 12px;
-  gap:30px;
-  flex-wrap:wrap;
+:root {
+  --bg:#f0f4ff;--card:#ffffff;--muted:#6b7280;
+  --accent:#1a3a5c;--accent-light:#2a5a8c;
+  --gold:#c8952e;--gold-light:#e8b84a;
+  --gold-glow:rgba(200,149,46,0.15);
+  --text:#1a1a2e;--text-light:#4a4a5e;
+  --border:rgba(0,0,0,0.06);
+  --radius:16px;--radius-lg:24px;--maxw:1400px;
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md:0 8px 30px rgba(0,0,0,0.06);
+  --shadow-lg:0 20px 50px rgba(0,0,0,0.08);
+  --shadow-gold:0 8px 30px rgba(200,149,46,0.2);
+  --transition:0.4s cubic-bezier(0.25,0.46,0.45,0.94);
 }
-nav a {
-  color:white;
-  text-decoration:none;
-  font-weight:600;
-  padding:8px 14px;
-  border-radius:8px;
-  transition:0.3s;
-}
-nav a:hover { background:#555; transform:translateY(-2px); }
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:#fff}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 
 /* ================= HEADER ================= */
-header {
-  text-align:center;
-  padding:40px 15px;
-  background:#fff;
-  margin-top:20px;
-  border-radius:14px;
-  max-width:1200px;
-  margin:20px auto 10px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.06);
+.site-header{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(24px) saturate(1.8);
+  -webkit-backdrop-filter:blur(24px) saturate(1.8);
+  border-bottom:1px solid rgba(255,255,255,0.35);
+  box-shadow:0 4px 30px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.5),inset 0 -1px 0 rgba(255,255,255,0.15);
 }
-header h1 {
-  font-size:2rem;
-  font-weight:800;
-  color:#111;
-}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;max-width:1200px;margin:0 auto}
+.brand{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.03em;display:flex;align-items:center;gap:10px}
+.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-glow)}
+.main-nav{display:flex;align-items:center;gap:4px}
+.main-nav a{padding:8px 14px;border-radius:50px;color:var(--text-light);text-decoration:none;font-weight:500;font-size:0.88rem;transition:var(--transition);position:relative}
+.main-nav a::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%) scaleX(0);width:16px;height:2px;background:var(--gold);border-radius:2px;transition:transform 0.3s ease}
+.main-nav a:hover::after{transform:translateX(-50%) scaleX(1)}
+.main-nav a:hover{background:rgba(200,149,46,0.1);color:var(--gold)}
+.main-nav a.active{color:var(--gold);background:rgba(200,149,46,0.08)}
+.mobile-toggle{display:none;font-size:1.3rem;background:none;border:none;cursor:pointer;color:var(--accent);width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;transition:var(--transition)}
+.mobile-toggle:hover{background:var(--gold-glow)}
 
-/* ================= LOADER ================= */
-#loader {
-  border:6px solid #e5e5e5;
-  border-top:6px solid #888;
-  border-radius:50%;
-  width:60px;
-  height:60px;
-  animation:spin 1s linear infinite;
-  position:fixed;
-  top:50%; left:50%;
-  transform:translate(-50%, -50%);
-  z-index:2000;
-  display:none;
-}
-@keyframes spin { to { transform:translate(-50%, -50%) rotate(360deg); } }
+/* ================= SCROLL PROGRESS ================= */
+#scrollProgress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold-light),#fff,var(--gold));background-size:300% 100%;animation:progressShimmer 3s linear infinite;z-index:10001;transition:width 0.1s linear;border-radius:0 2px 2px 0}
+@keyframes progressShimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* ================= PAGE HERO ================= */
+.page-hero{position:relative;width:100%;min-height:40vh;display:flex;align-items:center;justify-content:center;background-image:url("https://ik.imagekit.io/s95tumxuk/PLC/1763336127446.jpg");background-size:cover;background-position:center;background-repeat:no-repeat;overflow:hidden}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,15,30,0.75) 0%,rgba(10,15,30,0.55) 50%,rgba(10,15,30,0.88) 100%);z-index:1}
+.page-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 50%,rgba(200,149,46,0.1),transparent 60%);z-index:2;animation:heroGlow 12s ease-in-out infinite alternate}
+@keyframes heroGlow{0%{transform:translate(0,0)}100%{transform:translate(5%,3%)}}
+.page-hero-inner{position:relative;z-index:3;color:#fff;text-align:center;max-width:700px;padding:120px 24px 60px}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;line-height:1.15;letter-spacing:-0.02em;margin-bottom:12px}
+.page-hero p{font-size:1.1rem;color:rgba(255,255,255,0.7);max-width:550px;margin:0 auto}
+.breadcrumb{display:flex;justify-content:center;gap:8px;margin-bottom:20px;font-size:0.85rem;color:rgba(255,255,255,0.5);font-weight:500;letter-spacing:0.04em;text-transform:uppercase}
+.breadcrumb a{color:var(--gold-light);text-decoration:none;transition:var(--transition)}
+.breadcrumb a:hover{color:#fff}
+
+/* ================= TOOLBAR ================= */
+.toolbar{position:sticky;top:60px;z-index:100;background:rgba(255,255,255,0.8);backdrop-filter:blur(16px) saturate(1.5);-webkit-backdrop-filter:blur(16px) saturate(1.5);border-bottom:1px solid var(--border);padding:16px 24px;transition:var(--transition)}
+.toolbar-inner{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* Filter Tabs */
+.filter-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.filter-tab{padding:8px 18px;border-radius:50px;border:1.5px solid var(--border);background:var(--card);color:var(--text-light);font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);text-decoration:none}
+.filter-tab:hover{border-color:rgba(200,149,46,0.3);color:var(--gold);background:var(--gold-glow)}
+.filter-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 4px 15px rgba(26,58,92,0.2)}
+
+/* Search */
+.search-box{position:relative}
+.search-box input{padding:9px 16px 9px 38px;border:1.5px solid var(--border);border-radius:50px;font-size:0.85rem;background:var(--card);color:var(--text);outline:none;transition:var(--transition);width:220px;font-family:'Inter',sans-serif}
+.search-box input:focus{border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-glow);width:280px}
+.search-box i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.85rem}
+
+/* View Toggle */
+.view-toggle{display:flex;gap:4px}
+.view-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:var(--transition)}
+.view-btn:hover{border-color:rgba(200,149,46,0.3);color:var(--gold)}
+.view-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Image Counter */
+.image-counter{font-size:0.82rem;color:var(--muted);font-weight:600;white-space:nowrap}
+.image-counter span{color:var(--gold);font-weight:700}
 
 /* ================= GALLERY ================= */
-.gallery {
+.gallery-section{padding:32px 0 80px}
+.gallery-grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
   gap:18px;
-  padding:25px 20px;
-  max-width:1400px;
+  max-width:var(--maxw);
   margin:0 auto;
+  padding:0 24px;
+  grid-template-columns:repeat(4,1fr);
 }
-.gallery img {
-  width:100%;
-  height:220px;
-  object-fit:cover;
-  border-radius:14px;
-  background:#ddd;
-  cursor:pointer;
-  opacity:0;
-  transform:translateY(20px);
-  transition:0.5s;
-  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+.gallery-grid.view-large{grid-template-columns:repeat(3,1fr)}
+.gallery-grid.view-small{grid-template-columns:repeat(5,1fr)}
+.gallery-grid.view-list{grid-template-columns:1fr;max-width:800px}
+
+/* Gallery Item */
+.gallery-item{
+  position:relative;border-radius:var(--radius);overflow:hidden;
+  cursor:pointer;box-shadow:var(--shadow-sm);
+  opacity:0;transform:translateY(24px) scale(0.97);
+  transition:opacity 0.5s ease,transform 0.5s ease,box-shadow 0.3s ease;
+  background:#e8e8e8;
 }
-.gallery img.show { opacity:1; transform:translateY(0); }
-.gallery img:hover { transform:scale(1.05); box-shadow:0 12px 26px rgba(0,0,0,0.22); }
+.gallery-item.visible{opacity:1;transform:translateY(0) scale(1)}
+.gallery-item:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px) scale(1)}
+.gallery-item img{width:100%;height:240px;object-fit:cover;display:block;transition:transform 0.5s ease}
+.gallery-item:hover img{transform:scale(1.08)}
+
+/* List View */
+.view-list .gallery-item{display:flex;flex-direction:row;border-radius:var(--radius);overflow:hidden}
+.view-list .gallery-item img{width:180px;height:130px;flex-shrink:0}
+.view-list .gallery-item:hover img{transform:scale(1)}
+.view-list .item-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0.5) 0%,transparent 50%);border-radius:var(--radius)}
+.view-list .item-info{position:absolute;left:190px;top:50%;transform:translateY(-50%);color:#fff;padding:0 20px}
+.view-list .item-info p{margin:0;font-size:0.88rem;opacity:0.85}
+.view-list .item-actions{position:absolute;right:20px;top:50%;transform:translateY(-50%)}
+
+/* Overlay */
+.item-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.6) 100%);
+  opacity:0;transition:opacity 0.3s ease;
+  border-radius:var(--radius);pointer-events:none;
+}
+.gallery-item:hover .item-overlay{opacity:1}
+.item-category{
+  position:absolute;top:12px;left:12px;
+  background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);
+  color:#fff;font-size:0.7rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:4px 12px;border-radius:50px;
+  border:1px solid rgba(255,255,255,0.2);
+  opacity:0;transform:translateY(-8px);
+  transition:opacity 0.3s ease 0.1s,transform 0.3s ease 0.1s;
+}
+.gallery-item:hover .item-category{opacity:1;transform:translateY(0)}
+.item-actions{
+  position:absolute;bottom:12px;right:12px;
+  display:flex;gap:6px;
+  opacity:0;transform:translateY(8px);
+  transition:opacity 0.3s ease 0.05s,transform 0.3s ease 0.05s;
+}
+.gallery-item:hover .item-actions{opacity:1;transform:translateY(0)}
+.item-action-btn{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.15);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:0.8rem;cursor:pointer;transition:var(--transition);
+  pointer-events:all;
+}
+.item-action-btn:hover{background:rgba(255,255,255,0.35);transform:scale(1.1)}
+
+/* ================= LOAD MORE / EMPTY ================= */
+.load-more-wrap{text-align:center;padding:40px 0 20px}
+.load-more-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 32px;border-radius:50px;
+  background:var(--accent);color:#fff;border:none;
+  font-size:0.9rem;font-weight:600;cursor:pointer;
+  transition:var(--transition);font-family:'Inter',sans-serif;
+}
+.load-more-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(26,58,92,0.3)}
+.empty-state{text-align:center;padding:80px 24px}
+.empty-state i{font-size:3rem;color:var(--muted);opacity:0.3;margin-bottom:16px}
+.empty-state h3{color:var(--text);margin-bottom:8px}
+.empty-state p{color:var(--muted);font-size:0.95rem}
 
 /* ================= LIGHTBOX ================= */
-#lightbox {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.85);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  visibility:hidden;
-  opacity:0;
-  transition:0.3s;
-  z-index:3000;
+.lightbox{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(10,15,30,0.95);
+  backdrop-filter:blur(12px);
+  display:none;flex-direction:column;
+  align-items:center;justify-content:center;
 }
-#lightbox.show { visibility:visible; opacity:1; }
-#lightboxImg {
-  max-width:90%;
-  max-height:90%;
-  border-radius:14px;
-  box-shadow:0 15px 35px rgba(0,0,0,0.5);
-  animation:fadeIn 0.4s;
+.lightbox.open{display:flex;animation:lbFadeIn 0.3s forwards}
+@keyframes lbFadeIn{from{opacity:0}to{opacity:1}}
+.lightbox-close{
+  position:fixed;top:20px;right:24px;z-index:10000;
+  width:46px;height:46px;border-radius:50%;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
+  color:#fff;font-size:24px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:var(--transition);
 }
-@keyframes fadeIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
+.lightbox-close:hover{background:rgba(255,255,255,0.2);transform:rotate(90deg)}
+.lightbox-counter{
+  position:fixed;top:26px;left:50%;transform:translateX(-50%);z-index:10000;
+  color:rgba(255,255,255,0.6);font-size:0.85rem;font-weight:600;
+  background:rgba(0,0,0,0.3);padding:6px 18px;border-radius:50px;
+  backdrop-filter:blur(8px);
+}
+.lightbox-img-wrap{
+  position:relative;max-width:90vw;max-height:80vh;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.lightbox-img{
+  max-width:90vw;max-height:80vh;object-fit:contain;
+  border-radius:var(--radius-lg);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  transition:transform 0.3s ease;cursor:grab;
+  user-select:none;
+}
+.lightbox-img.zoomed{cursor:zoom-out;transform:scale(1.8)}
+.lightbox-nav{
+  position:fixed;top:50%;z-index:10000;
+  width:46px;height:46px;border-radius:50%;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
+  color:#fff;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:var(--transition);transform:translateY(-50%);
+}
+.lightbox-nav:hover{background:rgba(255,255,255,0.25)}
+.lightbox-prev{left:20px}
+.lightbox-next{right:20px}
+.lightbox-actions{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:10000;
+  display:flex;gap:10px;
+  background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);
+  padding:8px 16px;border-radius:50px;
+  border:1px solid rgba(255,255,255,0.1);
+}
+.lb-action{
+  width:38px;height:38px;border-radius:50%;border:none;
+  background:rgba(255,255,255,0.1);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.85rem;cursor:pointer;transition:var(--transition);
+}
+.lb-action:hover{background:rgba(255,255,255,0.25)}
+.lb-action.active{background:var(--gold);color:#fff}
+
+/* ================= TOAST ================= */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--accent);color:#fff;
+  padding:12px 24px;border-radius:50px;
+  font-size:0.85rem;font-weight:600;
+  box-shadow:var(--shadow-lg);z-index:99999;
+  transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+  pointer-events:none;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
 
 /* ================= FOOTER ================= */
-footer {
-  background:#333;
-  color:white;
-  text-align:center;
-  padding:25px;
-  font-size:0.95rem;
-  margin-top:40px;
-}
+.main-footer{background:#0f1a2e;color:rgba(255,255,255,0.7);padding:60px 24px 0}
+.footer-content{display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;max-width:var(--maxw);margin:0 auto}
+.footer-section{flex:1;min-width:250px}
+.footer-section h4{color:var(--gold-light);font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:14px}
+.footer-section p{font-size:0.88rem;line-height:1.7;color:rgba(255,255,255,0.6)}
+.footer-section ul{list-style:none}
+.footer-section ul li{margin:8px 0;font-size:0.9rem;color:rgba(255,255,255,0.6);display:flex;align-items:flex-start;gap:8px}
+.footer-section i{color:var(--gold);margin-top:3px;font-size:0.8rem}
+.footer-social{display:flex;gap:12px;margin-top:16px}
+.footer-social a{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:1rem;transition:var(--transition);text-decoration:none}
+.footer-social a:hover{background:var(--gold);border-color:var(--gold);color:#fff}
+.copyright{text-align:center;margin-top:40px;padding:20px 0;color:rgba(255,255,255,0.35);font-size:0.82rem;border-top:1px solid rgba(255,255,255,0.06)}
+
+/* ================= BACK TO TOP ================= */
+.back-to-top{position:fixed;bottom:28px;left:28px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border:1px solid rgba(255,255,255,0.25);box-shadow:0 4px 24px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:900;opacity:0;visibility:hidden;transform:translateY(20px);transition:var(--transition);color:var(--accent);font-size:1.1rem;text-decoration:none}
+.back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+.back-to-top:hover{transform:translateY(-3px);background:rgba(200,149,46,0.2);border-color:rgba(200,149,46,0.4);color:var(--gold)}
 
 /* ================= RESPONSIVE ================= */
-@media(max-width:768px) { 
-  .gallery { grid-template-columns:repeat(2,1fr); } 
-  header h1 { font-size:1.6rem; } 
-  nav a { font-size:14px; padding:6px 10px; } 
+@media(max-width:1100px){.gallery-grid{grid-template-columns:repeat(3,1fr)}.gallery-grid.view-small{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:900px){
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  .gallery-grid.view-large{grid-template-columns:repeat(2,1fr)}
+  .gallery-grid.view-small{grid-template-columns:repeat(3,1fr)}
+  .mobile-toggle{display:flex}
+  .main-nav{display:none;flex-direction:column;background:rgba(255,255,255,0.92);backdrop-filter:blur(24px) saturate(1.8);position:absolute;right:24px;top:65px;padding:16px;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,0.3);min-width:200px}
+  .main-nav.show{display:flex}
+  .main-nav a{color:var(--text-light)!important;padding:10px 14px;border-radius:10px}
+  .main-nav a:hover{background:var(--gold-glow)!important;color:var(--gold)!important}
+  .search-box input{width:160px}.search-box input:focus{width:200px}
+  .footer-content{flex-direction:column}
+  .view-list .gallery-item{flex-direction:column}
+  .view-list .gallery-item img{width:100%;height:200px}
+  .view-list .item-overlay{background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.6) 100%)}
+  .view-list .item-info{position:absolute;bottom:14px;left:14px;top:auto;transform:none;color:#fff}
+  .view-list .item-actions{position:absolute;bottom:14px;right:14px;top:auto;transform:none}
+}
+@media(max-width:600px){
+  .gallery-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .gallery-grid.view-large{grid-template-columns:repeat(2,1fr)}
+  .gallery-grid.view-small{grid-template-columns:repeat(3,1fr)}
+  .gallery-item img{height:180px}
+  .toolbar-inner{flex-direction:column;align-items:stretch}
+  .filter-tabs{justify-content:center}
+  .search-box{order:3}
+  .search-box input{width:100%}
+  .search-box input:focus{width:100%}
+  .view-toggle{justify-content:center}
+  .image-counter{text-align:center}
+  .lightbox-nav{width:38px;height:38px;font-size:14px}
+  .lightbox-prev{left:10px}
+  .lightbox-next{right:10px}
+  .back-to-top{bottom:20px;left:20px;width:42px;height:42px}
 }
 </style>
 </head>
+
 <body>
 
-<!-- Navigation -->
-<nav>
-  <a href="index.html">Home</a>
-  <a href="kids.html">Kids Ministry</a>
-  <a href="youth.html">Youth Ministry</a>
-  <a href="outreach.html">Outreach Ministry</a>
-</nav>
+<div id="scrollProgress"></div>
 
-<header>
-  <h1>Media Gallery</h1>
+<!-- Header -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg" alt="Logo">
+      PURPOSEFUL LIVING CHURCH
+    </a>
+    <nav id="mainNav" class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="media.html" class="active">Media</a>
+      <a href="kids.html">Kids</a>
+      <a href="youth.html">Youth</a>
+      <a href="outreach.html">Outreach</a>
+      <a href="index.html#give">Give</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <button id="mobileToggle" class="mobile-toggle">☰</button>
+  </div>
 </header>
 
-<!-- Loader -->
-<div id="loader"></div>
+<!-- Hero -->
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>/</span><span>Media</span>
+    </div>
+    <h1>Media Gallery</h1>
+    <p>Browse through moments captured from our services, events, and ministry activities.</p>
+  </div>
+</section>
 
-<!-- Gallery -->
-<div class="gallery" id="gallery"></div>
-
-<!-- Lightbox -->
-<div id="lightbox" onclick="closeLightbox()">
-  <img id="lightboxImg" src="" alt="Image Preview">
+<!-- Toolbar -->
+<div class="toolbar" id="toolbar">
+  <div class="toolbar-inner">
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="church">Church</button>
+      <button class="filter-tab" data-filter="kids">Kids</button>
+      <button class="filter-tab" data-filter="youth">Youth</button>
+      <button class="filter-tab" data-filter="outreach">Outreach</button>
+      <button class="filter-tab" data-filter="events">Events</button>
+    </div>
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search images...">
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn" data-view="small" title="Small grid"><i class="fas fa-th"></i></button>
+      <button class="view-btn active" data-view="default" title="Medium grid"><i class="fas fa-th-large"></i></button>
+      <button class="view-btn" data-view="large" title="Large grid"><i class="fas fa-square"></i></button>
+      <button class="view-btn" data-view="list" title="List view"><i class="fas fa-list"></i></button>
+    </div>
+    <div class="image-counter" id="imageCounter"><span>0</span> images</div>
+  </div>
 </div>
 
-<footer>
-  © 2025 Purposeful Living Church — All Rights Reserved
+<!-- Gallery -->
+<section class="gallery-section">
+  <div class="gallery-grid" id="gallery"></div>
+  <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+    <button class="load-more-btn" id="loadMoreBtn">
+      <i class="fas fa-plus"></i> Load More
+    </button>
+  </div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <i class="fas fa-images"></i>
+    <h3>No images found</h3>
+    <p>Try adjusting your filters or search query.</p>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lbClose">&times;</button>
+  <div class="lightbox-counter" id="lbCounter">1 / 1</div>
+  <button class="lightbox-nav lightbox-prev" id="lbPrev"><i class="fas fa-chevron-left"></i></button>
+  <button class="lightbox-nav lightbox-next" id="lbNext"><i class="fas fa-chevron-right"></i></button>
+  <div class="lightbox-img-wrap">
+    <img class="lightbox-img" id="lbImg" src="" alt="Gallery Image" draggable="false">
+  </div>
+  <div class="lightbox-actions">
+    <button class="lb-action" id="lbZoom" title="Zoom"><i class="fas fa-search-plus"></i></button>
+    <button class="lb-action" id="lbDownload" title="Download"><i class="fas fa-download"></i></button>
+    <button class="lb-action" id="lbCopyLink" title="Copy link"><i class="fas fa-link"></i></button>
+    <button class="lb-action" id="lbFullscreen" title="Fullscreen"><i class="fas fa-expand"></i></button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Back to Top -->
+<a href="#" class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></a>
+
+<!-- Footer -->
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Purposeful Living Church</h4>
+      <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Address</h4>
+      <ul>
+        <li><i class="fas fa-map-marker-alt"></i> Kulambiro Kisaasi, Kampala Uganda</li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Reach Out</h4>
+      <ul>
+        <li><i class="fas fa-phone"></i> +(256) 75227 5855</li>
+        <li><i class="fas fa-envelope"></i> info@purposefullivingchurch.com</li>
+      </ul>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/PurposefulLivingMinistriesInternational" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://youtube.com/@purposefullivingchurch-1?si=zTX5j_YH9d1xstvb" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://x.com/bulamu?t=9TV8lk9_A3XW03e6gis1eA&s=09" target="_blank"><i class="fab fa-twitter"></i></a>
+      </div>
+    </div>
+  </div>
+  <p class="copyright">&copy; <span id="year"></span> Purposeful Living Church. All rights reserved.</p>
 </footer>
 
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-database-compat.js"></script>
 
 <script>
-/* ---------- FIREBASE CONFIG ---------- */
-const firebaseConfig = {
+/* ================= FIREBASE ================= */
+var firebaseConfig = {
   apiKey: "AIzaSyDaFhZ_ykNSmNXKCh6ye1M1vgoW6VhrdLU",
   authDomain: "plc-church.firebaseapp.com",
   databaseURL: "https://plc-church-default-rtdb.firebaseio.com",
-  projectId: "plc-church"
+  projectId: "plc-church",
+  storageBucket: "plc-church.firebasestorage.app",
+  messagingSenderId: "508729736386",
+  appId: "1:508729736386:web:4f6b37701e7ff9efaecf5b"
 };
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+var db = firebase.database();
 
-/* ---------- GALLERY VARIABLES ---------- */
-let currentPage = 1;
-const imagesPerPage = 20;
-let allImages = [];
-let loading = false;
+/* ================= STATE ================= */
+var allImages = [];
+var filteredImages = [];
+var currentPage = 1;
+var perPage = 20;
+var currentFilter = "all";
+var currentSearch = "";
+var currentView = "default";
+var lbIndex = 0;
+var isZoomed = false;
 
-/* ---------- LOADER FUNCTIONS ---------- */
-function showLoader(){ document.getElementById("loader").style.display="block"; }
-function hideLoader(){ document.getElementById("loader").style.display="none"; }
+/* ================= DOM ================= */
+var galleryEl = document.getElementById("gallery");
+var counterEl = document.getElementById("imageCounter");
+var emptyEl = document.getElementById("emptyState");
+var loadWrap = document.getElementById("loadMoreWrap");
+var lightboxEl = document.getElementById("lightbox");
 
-/* ---------- LIGHTBOX ---------- */
-function openLightbox(url){
-  document.getElementById("lightboxImg").src = url;
-  document.getElementById("lightbox").classList.add("show");
-}
-function closeLightbox(){
-  document.getElementById("lightbox").classList.remove("show");
-}
-
-/* ---------- LOAD IMAGES FROM FIREBASE ---------- */
-async function loadFirebaseImages(){
-  showLoader();
-  const snapshot = await db.ref("gallery").once("value");
-  const images = [];
-  snapshot.forEach(child => {
-    const data = child.val();
-    if(data.url) images.push({ url: data.url });
+/* ================= MOBILE NAV ================= */
+document.getElementById("mobileToggle").onclick = function() {
+  document.getElementById("mainNav").classList.toggle("show");
+};
+document.querySelectorAll("#mainNav a").forEach(function(a) {
+  a.addEventListener("click", function() {
+    document.getElementById("mainNav").classList.remove("show");
   });
-  // Sort newest images first (optional)
-  images.reverse();
-  allImages = images;
-  hideLoader();
+});
+
+/* ================= SCROLL PROGRESS ================= */
+var scrollBar = document.getElementById("scrollProgress");
+window.addEventListener("scroll", function() {
+  var h = document.documentElement.scrollHeight - window.innerHeight;
+  if (h > 0) scrollBar.style.width = (window.scrollY / h * 100) + "%";
+});
+
+/* ================= BACK TO TOP ================= */
+var btt = document.getElementById("backToTop");
+window.addEventListener("scroll", function() { btt.classList.toggle("visible", window.scrollY > 400); });
+btt.addEventListener("click", function(e) { e.preventDefault(); window.scrollTo({top:0,behavior:"smooth"}); });
+
+/* ================= YEAR ================= */
+document.getElementById("year").textContent = new Date().getFullYear();
+
+/* ================= TOAST ================= */
+function showToast(msg) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(function() { t.classList.remove("show"); }, 2500);
+}
+
+/* ================= FILTER TABS ================= */
+document.getElementById("filterTabs").addEventListener("click", function(e) {
+  var tab = e.target.closest(".filter-tab");
+  if (!tab) return;
+  document.querySelectorAll(".filter-tab").forEach(function(t) { t.classList.remove("active"); });
+  tab.classList.add("active");
+  currentFilter = tab.getAttribute("data-filter");
+  applyFilters();
+});
+
+/* ================= SEARCH ================= */
+var searchTimer;
+document.getElementById("searchInput").addEventListener("input", function() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(function() {
+    currentSearch = document.getElementById("searchInput").value.trim().toLowerCase();
+    applyFilters();
+  }, 300);
+});
+
+/* ================= VIEW TOGGLE ================= */
+document.querySelectorAll(".view-btn").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    document.querySelectorAll(".view-btn").forEach(function(b) { b.classList.remove("active"); });
+    btn.classList.add("active");
+    currentView = btn.getAttribute("data-view");
+    galleryEl.className = "gallery-grid";
+    if (currentView !== "default") galleryEl.classList.add("view-" + currentView);
+  });
+});
+
+/* ================= APPLY FILTERS ================= */
+function applyFilters() {
+  filteredImages = allImages.filter(function(img) {
+    var matchFilter = currentFilter === "all" || (img.category || "").toLowerCase() === currentFilter;
+    var matchSearch = !currentSearch || (img.category || "").toLowerCase().indexOf(currentSearch) !== -1;
+    return matchFilter && matchSearch;
+  });
   currentPage = 1;
-  document.getElementById("gallery").innerHTML = "";
-  loadMoreImages();
+  galleryEl.innerHTML = "";
+  renderPage();
+  updateCounter();
 }
 
-/* ---------- LOAD MORE IMAGES ---------- */
-function loadMoreImages(){
-  if(loading) return;
-  loading = true;
-  const gallery = document.getElementById("gallery");
-  const start = (currentPage-1)*imagesPerPage;
-  const end = start + imagesPerPage;
-  const pageImages = allImages.slice(start,end);
+/* ================= UPDATE COUNTER ================= */
+function updateCounter() {
+  counterEl.innerHTML = "<span>" + filteredImages.length + "</span> image" + (filteredImages.length !== 1 ? "s" : "");
+  emptyEl.style.display = filteredImages.length === 0 ? "block" : "none";
+  loadWrap.style.display = currentPage * perPage < filteredImages.length ? "block" : "none";
+}
 
-  pageImages.forEach((file,i)=>{
-    const img = document.createElement("img");
-    img.src = file.url;
-    img.onclick = ()=>openLightbox(file.url);
-    gallery.appendChild(img);
-    setTimeout(()=>img.classList.add('show'), i*100);
+/* ================= RENDER PAGE ================= */
+function renderPage() {
+  var start = (currentPage - 1) * perPage;
+  var end = start + perPage;
+  var page = filteredImages.slice(start, end);
+
+  page.forEach(function(img, i) {
+    var item = document.createElement("div");
+    item.className = "gallery-item";
+    var cat = (img.category || "church").charAt(0).toUpperCase() + (img.category || "church").slice(1);
+
+    item.innerHTML =
+      '<img src="' + img.url + '" alt="' + cat + '" loading="lazy">' +
+      '<div class="item-overlay"></div>' +
+      '<span class="item-category">' + cat + '</span>' +
+      '<div class="item-actions">' +
+        '<button class="item-action-btn" title="View" data-action="view"><i class="fas fa-expand"></i></button>' +
+        '<button class="item-action-btn" title="Download" data-action="download"><i class="fas fa-download"></i></button>' +
+      '</div>';
+
+    galleryEl.appendChild(item);
+    setTimeout(function() { item.classList.add("visible"); }, i * 60);
+
+    item.addEventListener("click", function(e) {
+      var actionBtn = e.target.closest("[data-action]");
+      if (actionBtn) {
+        e.stopPropagation();
+        var action = actionBtn.getAttribute("data-action");
+        if (action === "download") downloadImage(img.url);
+        if (action === "view") openLightbox(start + i);
+      } else {
+        openLightbox(start + i);
+      }
+    });
   });
 
-  currentPage++;
-  loading = false;
+  updateCounter();
 }
 
-/* ---------- INFINITE SCROLL ---------- */
-window.addEventListener('scroll', ()=>{
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 200){
-    const totalPages = Math.ceil(allImages.length / imagesPerPage);
-    if(currentPage <= totalPages){
-      loadMoreImages();
+/* ================= LOAD MORE ================= */
+document.getElementById("loadMoreBtn").addEventListener("click", function() {
+  currentPage++;
+  renderPage();
+});
+
+/* ================= INFINITE SCROLL ================= */
+var scrollDebounce;
+window.addEventListener("scroll", function() {
+  clearTimeout(scrollDebounce);
+  scrollDebounce = setTimeout(function() {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400) {
+      if (currentPage * perPage < filteredImages.length) {
+        currentPage++;
+        renderPage();
+      }
     }
+  }, 100);
+});
+
+/* ================= DOWNLOAD ================= */
+function downloadImage(url) {
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "plc-gallery-" + Date.now() + ".jpg";
+  a.target = "_blank";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast("Download started");
+}
+
+/* ================= LIGHTBOX ================= */
+function openLightbox(index) {
+  lbIndex = index;
+  isZoomed = false;
+  updateLightbox();
+  lightboxEl.classList.add("open");
+  document.body.style.overflow = "hidden";
+  document.getElementById("lbImg").classList.remove("zoomed");
+  document.getElementById("lbZoom").classList.remove("active");
+}
+
+function closeLightbox() {
+  lightboxEl.classList.remove("open");
+  document.body.style.overflow = "";
+  isZoomed = false;
+  document.getElementById("lbImg").classList.remove("zoomed");
+  document.getElementById("lbZoom").classList.remove("active");
+}
+
+function updateLightbox() {
+  if (filteredImages.length === 0) return;
+  lbIndex = Math.max(0, Math.min(lbIndex, filteredImages.length - 1));
+  document.getElementById("lbImg").src = filteredImages[lbIndex].url;
+  document.getElementById("lbCounter").textContent = (lbIndex + 1) + " / " + filteredImages.length;
+  isZoomed = false;
+  document.getElementById("lbImg").classList.remove("zoomed");
+  document.getElementById("lbZoom").classList.remove("active");
+}
+
+function nextImage() { lbIndex++; updateLightbox(); }
+function prevImage() { lbIndex--; updateLightbox(); }
+
+document.getElementById("lbClose").addEventListener("click", closeLightbox);
+document.getElementById("lbPrev").addEventListener("click", prevImage);
+document.getElementById("lbNext").addEventListener("click", nextImage);
+
+document.getElementById("lbImg").addEventListener("click", function() {
+  if (isZoomed) {
+    isZoomed = false;
+    this.classList.remove("zoomed");
+    document.getElementById("lbZoom").classList.remove("active");
+  } else {
+    isZoomed = true;
+    this.classList.add("zoomed");
+    document.getElementById("lbZoom").classList.add("active");
   }
 });
 
-/* ---------- AUTO REFRESH EVERY 60 SECONDS ---------- */
-setInterval(loadFirebaseImages, 60000);
+document.getElementById("lbZoom").addEventListener("click", function() {
+  isZoomed = !isZoomed;
+  document.getElementById("lbImg").classList.toggle("zoomed", isZoomed);
+  this.classList.toggle("active", isZoomed);
+});
 
-/* ---------- INITIAL LOAD ---------- */
-loadFirebaseImages();
+document.getElementById("lbDownload").addEventListener("click", function() {
+  if (filteredImages[lbIndex]) downloadImage(filteredImages[lbIndex].url);
+});
+
+document.getElementById("lbCopyLink").addEventListener("click", function() {
+  if (filteredImages[lbIndex]) {
+    navigator.clipboard.writeText(filteredImages[lbIndex].url).then(function() {
+      showToast("Image link copied!");
+    }).catch(function() {
+      showToast("Could not copy link");
+    });
+  }
+});
+
+document.getElementById("lbFullscreen").addEventListener("click", function() {
+  if (!document.fullscreenElement) {
+    lightboxEl.requestFullscreen().catch(function(){});
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+/* Keyboard navigation */
+document.addEventListener("keydown", function(e) {
+  if (!lightboxEl.classList.contains("open")) return;
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowRight") nextImage();
+  if (e.key === "ArrowLeft") prevImage();
+  if (e.key === "f" || e.key === "F") {
+    e.preventDefault();
+    isZoomed = !isZoomed;
+    document.getElementById("lbImg").classList.toggle("zoomed", isZoomed);
+    document.getElementById("lbZoom").classList.toggle("active", isZoomed);
+  }
+});
+
+/* Touch swipe for lightbox */
+var touchStartX = 0;
+document.getElementById("lbImg").addEventListener("touchstart", function(e) {
+  touchStartX = e.changedTouches[0].screenX;
+}, {passive:true});
+document.getElementById("lbImg").addEventListener("touchend", function(e) {
+  var diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 60) { diff > 0 ? nextImage() : prevImage(); }
+}, {passive:true});
+
+/* Click outside image to close */
+lightboxEl.addEventListener("click", function(e) {
+  if (e.target === this || e.target.classList.contains("lightbox-img-wrap")) closeLightbox();
+});
+
+/* ================= LOAD FROM FIREBASE ================= */
+function loadGallery() {
+  galleryEl.innerHTML = "";
+  counterEl.innerHTML = "<span>0</span> images";
+
+  db.ref("gallery").once("value", function(snapshot) {
+    var images = [];
+    snapshot.forEach(function(child) {
+      var data = child.val();
+      if (data.url) {
+        images.push({
+          url: data.url,
+          category: data.category || data.type || "church"
+        });
+      }
+    });
+    images.reverse();
+    allImages = images;
+    applyFilters();
+  });
+}
+
+/* Auto-refresh every 60s */
+setInterval(function() {
+  db.ref("gallery").once("value", function(snapshot) {
+    var images = [];
+    snapshot.forEach(function(child) {
+      var data = child.val();
+      if (data.url) images.push({ url: data.url, category: data.category || data.type || "church" });
+    });
+    images.reverse();
+    allImages = images;
+    applyFilters();
+  });
+}, 60000);
+
+/* ================= INIT ================= */
+loadGallery();
 </script>
 
 </body>
