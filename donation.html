@@ -1,184 +1,452 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Donate | Purposeful Living Church – Kulambiro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Donate | Purposeful Living Church</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f4f6f9;
-      color: #333;
-      line-height: 1.6;
-    }
+<link rel="icon" type="image/webp" sizes="16x16" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="icon" type="image/webp" sizes="32x32" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="icon" type="image/webp" sizes="96x96" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
 
-    header {
-      background: linear-gradient(135deg, #1d3557, #457b9d);
-      color: #fff;
-      padding: 50px 20px;
-      text-align: center;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
-    header h1 {
-      margin: 0;
-      font-size: 32px;
-    }
+<style>
+:root {
+  --bg:#f0f4ff;--card:#ffffff;--muted:#6b7280;
+  --accent:#1a3a5c;--accent-light:#2a5a8c;
+  --gold:#c8952e;--gold-light:#e8b84a;
+  --gold-glow:rgba(200,149,46,0.15);
+  --text:#1a1a2e;--text-light:#4a4a5e;
+  --border:rgba(0,0,0,0.06);
+  --radius:16px;--radius-lg:24px;--maxw:900px;
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md:0 8px 30px rgba(0,0,0,0.06);
+  --shadow-lg:0 20px 50px rgba(0,0,0,0.08);
+  --shadow-gold:0 8px 30px rgba(200,149,46,0.2);
+  --transition:0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:#fff}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 
-    header p {
-      margin-top: 10px;
-      font-size: 16px;
-      opacity: 0.9;
-    }
+/* ================= HEADER ================= */
+.site-header{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(24px) saturate(1.8);
+  -webkit-backdrop-filter:blur(24px) saturate(1.8);
+  border-bottom:1px solid rgba(255,255,255,0.35);
+  box-shadow:0 4px 30px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.5),inset 0 -1px 0 rgba(255,255,255,0.15);
+}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;max-width:1200px;margin:0 auto}
+.brand{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.03em;display:flex;align-items:center;gap:10px}
+.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-glow)}
+.main-nav{display:flex;align-items:center;gap:4px}
+.main-nav a{padding:8px 14px;border-radius:50px;color:var(--text-light);text-decoration:none;font-weight:500;font-size:0.88rem;transition:var(--transition);position:relative}
+.main-nav a::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%) scaleX(0);width:16px;height:2px;background:var(--gold);border-radius:2px;transition:transform 0.3s ease}
+.main-nav a:hover::after{transform:translateX(-50%) scaleX(1)}
+.main-nav a:hover{background:rgba(200,149,46,0.1);color:var(--gold)}
+.main-nav a.active{color:var(--gold);background:rgba(200,149,46,0.08)}
+.mobile-toggle{display:none;font-size:1.3rem;background:none;border:none;cursor:pointer;color:var(--accent);width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;transition:var(--transition)}
+.mobile-toggle:hover{background:var(--gold-glow)}
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 40px 20px;
-    }
+/* ================= SCROLL PROGRESS ================= */
+#scrollProgress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold-light),#fff,var(--gold));background-size:300% 100%;animation:progressShimmer 3s linear infinite;z-index:10001;transition:width 0.1s linear;border-radius:0 2px 2px 0}
+@keyframes progressShimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
 
-    .intro {
-      text-align: center;
-      margin-bottom: 40px;
-    }
+/* ================= PAGE HERO ================= */
+.page-hero{position:relative;width:100%;min-height:40vh;display:flex;align-items:center;justify-content:center;background-image:url("https://ik.imagekit.io/s95tumxuk/PLC/1763336127446.jpg");background-size:cover;background-position:center;background-repeat:no-repeat;overflow:hidden}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,15,30,0.75) 0%,rgba(10,15,30,0.55) 50%,rgba(10,15,30,0.88) 100%);z-index:1}
+.page-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 50%,rgba(200,149,46,0.1),transparent 60%);z-index:2;animation:heroGlow 12s ease-in-out infinite alternate}
+@keyframes heroGlow{0%{transform:translate(0,0)}100%{transform:translate(5%,3%)}}
+.page-hero-inner{position:relative;z-index:3;color:#fff;text-align:center;max-width:700px;padding:120px 24px 60px}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;line-height:1.15;letter-spacing:-0.02em;margin-bottom:12px}
+.page-hero p{font-size:1.1rem;color:rgba(255,255,255,0.7);max-width:550px;margin:0 auto}
+.breadcrumb{display:flex;justify-content:center;gap:8px;margin-bottom:20px;font-size:0.85rem;color:rgba(255,255,255,0.5);font-weight:500;letter-spacing:0.04em;text-transform:uppercase}
+.breadcrumb a{color:var(--gold-light);text-decoration:none;transition:var(--transition)}
+.breadcrumb a:hover{color:#fff}
 
-    .intro h2 {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
+/* ================= DONATE CONTENT ================= */
+.donate-content{padding:32px 0 100px}
 
-    .intro p {
-      font-size: 16px;
-      color: #555;
-    }
+.donate-intro{
+  text-align:center;margin-bottom:36px;
+}
+.donate-intro h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.4rem,2.8vw,1.8rem);
+  font-weight:700;color:var(--accent);letter-spacing:-0.02em;
+  margin-bottom:10px;position:relative;display:inline-block;
+}
+.donate-intro h2::after{
+  content:'';display:block;width:50px;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-light));
+  margin:12px auto 0;border-radius:2px;
+}
+.donate-intro p{font-size:0.95rem;color:var(--text-light);max-width:500px;margin:0 auto}
 
-    .card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
+/* ================= DONATION CARDS ================= */
+.donate-card{
+  background:var(--card);border-radius:var(--radius-lg);
+  padding:28px 30px;margin-bottom:22px;
+  box-shadow:var(--shadow-md);border:1px solid var(--border);
+  transition:var(--transition);position:relative;overflow:hidden;
+}
+.donate-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  opacity:0;transition:var(--transition);
+}
+.donate-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-gold)}
+.donate-card:hover::before{opacity:1}
 
-    .card h3 {
-      margin-top: 0;
-      color: #1d3557;
-    }
+.donate-card.bank::before{background:linear-gradient(90deg,#1a3a5c,#2a5a8c)}
+.donate-card.mtn::before{background:linear-gradient(90deg,#f5a623,#f7c948)}
+.donate-card.airtel::before{background:linear-gradient(90deg,#e4002b,#ff4d4d)}
 
-    .highlight {
-      background: #e9f2ff;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: bold;
-      margin: 12px 0;
-      font-size: 16px;
-    }
+.donate-card .card-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:16px;
+}
+.donate-card .card-icon{
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;
+}
+.donate-card.bank .card-icon{background:rgba(26,58,92,0.08);color:var(--accent)}
+.donate-card.mtn .card-icon{background:rgba(245,166,35,0.1);color:#f5a623}
+.donate-card.airtel .card-icon{background:rgba(228,0,43,0.08);color:#e4002b}
 
-    .note {
-      font-size: 14px;
-      color: #666;
-    }
+.donate-card h3{
+  font-size:1.05rem;font-weight:600;color:var(--accent);margin:0;
+}
+.donate-card p{font-size:0.88rem;color:var(--text-light);margin:8px 0}
 
-    blockquote {
-      background: #fff;
-      border-left: 5px solid #457b9d;
-      padding: 20px;
-      border-radius: 8px;
-      margin: 40px 0;
-      font-style: italic;
-    }
+.donate-card .detail-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg);border-radius:12px;padding:14px 18px;
+  margin:14px 0;gap:12px;flex-wrap:wrap;
+}
+.donate-card .detail-label{
+  font-size:0.8rem;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:0.04em;
+}
+.donate-card .detail-value{
+  font-size:1.15rem;font-weight:700;color:var(--text);
+  font-variant-numeric:tabular-nums;letter-spacing:0.02em;
+}
+.donate-card .detail-value.copyable{
+  cursor:pointer;transition:var(--transition);
+  position:relative;padding-right:28px;
+}
+.donate-card .detail-value.copyable:hover{color:var(--gold)}
+.donate-card .detail-value.copyable::after{
+  content:'\f0c5';font-family:'Font Awesome 6 Free';font-weight:900;
+  position:absolute;right:0;top:50%;transform:translateY(-50%);
+  font-size:0.72rem;color:var(--muted);transition:color 0.3s;
+}
+.donate-card .detail-value.copyable:hover::after{color:var(--gold)}
 
-    .thank-you {
-      text-align: center;
-      font-weight: bold;
-      margin-top: 30px;
-      font-size: 16px;
-    }
+.donate-card .card-note{
+  font-size:0.8rem;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.donate-card .card-note i{font-size:0.7rem}
 
-    footer {
-      background: #1d3557;
-      color: #fff;
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      margin-top: 50px;
-    }
+/* ================= COPY TOAST ================= */
+.toast{
+  position:fixed;bottom:30px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--accent);color:#fff;
+  padding:10px 22px;border-radius:50px;
+  font-size:0.82rem;font-weight:600;
+  box-shadow:var(--shadow-lg);z-index:99999;
+  transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+  pointer-events:none;display:flex;align-items:center;gap:8px;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
 
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 26px;
-      }
+/* ================= BIBLE VERSE ================= */
+.scripture-block{
+  position:relative;margin:40px 0;
+  background:var(--card);border-radius:var(--radius-lg);
+  padding:32px 36px;box-shadow:var(--shadow-md);
+  border:1px solid var(--border);overflow:hidden;
+}
+.scripture-block::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-light));
+}
+.scripture-block .verse-ref{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:0.78rem;font-weight:700;color:var(--gold);
+  background:var(--gold-glow);padding:4px 14px;
+  border-radius:50px;margin-bottom:14px;letter-spacing:0.02em;
+}
+.scripture-block .verse-ref i{font-size:0.7rem}
+.scripture-block blockquote{
+  border:none;padding:0;margin:0;
+  font-style:italic;font-size:1rem;color:var(--text-light);
+  line-height:1.8;font-family:'Playfair Display',serif;
+  font-weight:500;
+}
 
-      .intro h2 {
-        font-size: 24px;
-      }
-    }
-  </style>
+/* ================= THANK YOU ================= */
+.thank-you{
+  text-align:center;margin-top:36px;
+  font-family:'Playfair Display',serif;
+  font-size:1.15rem;font-weight:600;color:var(--accent);
+  position:relative;display:inline-block;
+  width:100%;
+}
+.thank-you::before,.thank-you::after{
+  content:'';position:absolute;top:50%;
+  width:60px;height:1px;background:var(--gold);
+  opacity:0.4;
+}
+.thank-you::before{left:calc(50% - 180px)}
+.thank-you::after{right:calc(50% - 180px)}
+
+/* ================= FOOTER ================= */
+.main-footer{background:#0f1a2e;color:rgba(255,255,255,0.7);padding:60px 24px 0}
+.footer-content{display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;max-width:var(--maxw);margin:0 auto}
+.footer-section{flex:1;min-width:250px}
+.footer-section h4{color:var(--gold-light);font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:14px}
+.footer-section p{font-size:0.88rem;line-height:1.7;color:rgba(255,255,255,0.6)}
+.footer-section ul{list-style:none}
+.footer-section ul li{margin:8px 0;font-size:0.9rem;color:rgba(255,255,255,0.6);display:flex;align-items:flex-start;gap:8px}
+.footer-section i{color:var(--gold);margin-top:3px;font-size:0.8rem}
+.footer-social{display:flex;gap:12px;margin-top:16px}
+.footer-social a{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:1rem;transition:var(--transition);text-decoration:none}
+.footer-social a:hover{background:var(--gold);border-color:var(--gold);color:#fff}
+.copyright{text-align:center;margin-top:40px;padding:20px 0;color:rgba(255,255,255,0.35);font-size:0.82rem;border-top:1px solid rgba(255,255,255,0.06)}
+
+/* ================= BACK TO TOP ================= */
+.back-to-top{position:fixed;bottom:28px;left:28px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border:1px solid rgba(255,255,255,0.25);box-shadow:0 4px 24px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:900;opacity:0;visibility:hidden;transform:translateY(20px);transition:var(--transition);color:var(--accent);font-size:1.1rem;text-decoration:none}
+.back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+.back-to-top:hover{transform:translateY(-3px);background:rgba(200,149,46,0.2);border-color:rgba(200,149,46,0.4);color:var(--gold)}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+  .mobile-toggle{display:flex}
+  .main-nav{display:none;flex-direction:column;background:rgba(255,255,255,0.92);backdrop-filter:blur(24px) saturate(1.8);position:absolute;right:24px;top:65px;padding:16px;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,0.3);min-width:200px}
+  .main-nav.show{display:flex}
+  .main-nav a{color:var(--text-light)!important;padding:10px 14px;border-radius:10px}
+  .main-nav a:hover{background:var(--gold-glow)!important;color:var(--gold)!important}
+  .footer-content{flex-direction:column}
+}
+@media(max-width:600px){
+  .container{padding:0 16px}
+  .donate-card{padding:22px 20px}
+  .donate-card .detail-row{flex-direction:column;align-items:flex-start;gap:4px}
+  .donate-card .detail-value{font-size:1.05rem}
+  .scripture-block{padding:24px 20px}
+  .thank-you::before,.thank-you::after{display:none}
+  .back-to-top{bottom:20px;left:20px;width:42px;height:42px}
+}
+</style>
 </head>
-
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <h1>Purposeful Living Church – Kulambiro</h1>
-    <p>We Appreciate Your Support</p>
-  </header>
+<div id="scrollProgress"></div>
 
-  <!-- MAIN CONTENT -->
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg" alt="Logo">
+      PURPOSEFUL LIVING CHURCH
+    </a>
+    <nav id="mainNav" class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="media.html">Media</a>
+      <a href="news.html">News</a>
+      <a href="kids.html">Kids</a>
+      <a href="youth.html">Youth</a>
+      <a href="outreach.html">Outreach</a>
+      <a href="live.html">Live</a>
+      <a href="index.html#give" class="active">Give</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <button id="mobileToggle" class="mobile-toggle">☰</button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>/</span><span>Donate</span>
+    </div>
+    <h1>Donate</h1>
+    <p>We appreciate your generous support toward church construction and ministry work.</p>
+  </div>
+</section>
+
+<!-- ================= CONTENT ================= -->
+<section class="donate-content">
   <div class="container">
 
-    <div class="intro">
-      <h2>Donate</h2>
-      <p>
-        Your generous giving supports church construction and
-        other Purposeful Living Church ministries.
-      </p>
+    <div class="donate-intro">
+      <h2>Support the Work</h2>
+      <p>Your generous giving supports church construction and other Purposeful Living Church ministries.</p>
     </div>
 
     <!-- ABSA BANK -->
-    <div class="card">
-      <h3>🏦 Bank Donation (ABSA Bank)</h3>
-      <p>You can make a direct bank transfer using the details below:</p>
-      <div class="highlight">Account Number: 6008451735</div>
-      <p><strong>Account Name:</strong> Kulambiro Christian Ministries</p>
-      <p class="note">Please include your name as the reference.</p>
+    <div class="donate-card bank">
+      <div class="card-header">
+        <div class="card-icon"><i class="fas fa-university"></i></div>
+        <h3>Bank Donation (ABSA Bank)</h3>
+      </div>
+      <p>Make a direct bank transfer using the details below:</p>
+      <div class="detail-row">
+        <span class="detail-label">Account Number</span>
+        <span class="detail-value copyable" onclick="copyText(this,'6008451735')">6008451735</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Account Name</span>
+        <span class="detail-value">Kulambiro Christian Ministries</span>
+      </div>
+      <p class="card-note"><i class="fas fa-info-circle"></i> Please include your name as the reference.</p>
     </div>
 
     <!-- MTN MOBILE MONEY -->
-    <div class="card">
-      <h3>📱 MTN Mobile Money</h3>
+    <div class="donate-card mtn">
+      <div class="card-header">
+        <div class="card-icon"><i class="fas fa-mobile-alt"></i></div>
+        <h3>MTN Mobile Money</h3>
+      </div>
       <p>Send your donation via MTN Mobile Money:</p>
-      <div class="highlight">+256 759 389577</div>
-      <p class="note">Registered Name: David Ssekaboga</p>
+      <div class="detail-row">
+        <span class="detail-label">Phone Number</span>
+        <span class="detail-value copyable" onclick="copyText(this,'+256 759 389577')">+256 759 389577</span>
+      </div>
+      <p class="card-note"><i class="fas fa-user"></i> Registered Name: David Ssekaboga</p>
     </div>
 
     <!-- AIRTEL MONEY -->
-    <div class="card">
-      <h3>📱 Airtel Money</h3>
+    <div class="donate-card airtel">
+      <div class="card-header">
+        <div class="card-icon"><i class="fas fa-mobile-alt"></i></div>
+        <h3>Airtel Money</h3>
+      </div>
       <p>Send your donation via Airtel Money:</p>
-      <div class="highlight">+256 773 531222</div>
-      <p class="note">Registered Name: David Ssekaboga</p>
+      <div class="detail-row">
+        <span class="detail-label">Phone Number</span>
+        <span class="detail-value copyable" onclick="copyText(this,'+256 773 531222')">+256 773 531222</span>
+      </div>
+      <p class="card-note"><i class="fas fa-user"></i> Registered Name: David Ssekaboga</p>
     </div>
 
     <!-- BIBLE VERSE -->
-    <blockquote>
-      <strong>Luke 6:38</strong><br>
-      “Give, and it will be given to you. A good measure, pressed down,
-      shaken together and running over, will be poured into your lap.
-      For with the measure you use, it will be measured to you.”
-    </blockquote>
+    <div class="scripture-block">
+      <div class="verse-ref"><i class="fas fa-book-bible"></i> Luke 6:38</div>
+      <blockquote>
+        "Give, and it will be given to you. A good measure, pressed down,
+        shaken together and running over, will be poured into your lap.
+        For with the measure you use, it will be measured to you."
+      </blockquote>
+    </div>
 
-    <p class="thank-you">
-      Thank you for loving and giving unto the Lord.
-    </p>
+    <p class="thank-you">Thank you for loving and giving unto the Lord.</p>
 
   </div>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    © Purposeful Living Church – Kulambiro
-  </footer>
+<!-- ================= TOAST ================= -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastMsg"></span></div>
+
+<!-- ================= BACK TO TOP ================= -->
+<a href="#" class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></a>
+
+<!-- ================= FOOTER ================= -->
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Purposeful Living Church</h4>
+      <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Address</h4>
+      <ul>
+        <li><i class="fas fa-map-marker-alt"></i> Kulambiro Kisaasi, Kampala Uganda</li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Reach Out</h4>
+      <ul>
+        <li><i class="fas fa-phone"></i> +(256) 75227 5855</li>
+        <li><i class="fas fa-envelope"></i> info@purposefullivingchurch.com</li>
+      </ul>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/PurposefulLivingMinistriesInternational" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://youtube.com/@purposefullivingchurch-1?si=zTX5j_YH9d1xstvb" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://x.com/bulamu?t=9TV8lk9_A3XW03e6gis1eA&s=09" target="_blank"><i class="fab fa-twitter"></i></a>
+      </div>
+    </div>
+  </div>
+  <p class="copyright">&copy; <span id="year"></span> Purposeful Living Church. All rights reserved.</p>
+</footer>
+
+<script>
+/* ================= MOBILE NAV ================= */
+document.getElementById("mobileToggle").onclick = function() {
+  document.getElementById("mainNav").classList.toggle("show");
+};
+document.querySelectorAll("#mainNav a").forEach(function(a) {
+  a.addEventListener("click", function() {
+    document.getElementById("mainNav").classList.remove("show");
+  });
+});
+
+/* ================= SCROLL PROGRESS ================= */
+var scrollBar = document.getElementById("scrollProgress");
+window.addEventListener("scroll", function() {
+  var h = document.documentElement.scrollHeight - window.innerHeight;
+  if (h > 0) scrollBar.style.width = (window.scrollY / h * 100) + "%";
+});
+
+/* ================= BACK TO TOP ================= */
+var btt = document.getElementById("backToTop");
+window.addEventListener("scroll", function() { btt.classList.toggle("visible", window.scrollY > 400); });
+btt.addEventListener("click", function(e) { e.preventDefault(); window.scrollTo({top:0,behavior:"smooth"}); });
+
+/* ================= YEAR ================= */
+document.getElementById("year").textContent = new Date().getFullYear();
+
+/* ================= COPY TO CLIPBOARD ================= */
+function copyText(el, text) {
+  navigator.clipboard.writeText(text).then(function() {
+    showToast("Copied: " + text);
+  }).catch(function() {
+    /* Fallback for older browsers */
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    showToast("Copied: " + text);
+  });
+}
+
+/* ================= TOAST ================= */
+var toastTimer;
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  var t = document.getElementById("toast");
+  document.getElementById("toastMsg").textContent = msg;
+  t.classList.add("show");
+  toastTimer = setTimeout(function() { t.classList.remove("show"); }, 2500);
+}
+</script>
 
 </body>
 </html>
