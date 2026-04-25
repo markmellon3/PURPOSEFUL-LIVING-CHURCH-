@@ -430,6 +430,500 @@ document.addEventListener("keydown", function(e) {
 
 loadKidsGallery();
 </script>
+<script>
+/**
+ * ============================================================
+ *  PLC WEBSITE ANALYTICS SYSTEM
+ *  Monitors everything and saves to Firebase → Analysis/
+ * ============================================================
+ *  
+ *  DATA STRUCTURE:
+ *  Analysis/
+ *  ├── realtime/
+ *  │   └── onlineCount        ← people currently on the site
+ *  ├── presence/
+ *  │   └── sessionId          ← active sessions (auto-cleanup)
+ *  ├── daily/
+ *  │   └── 2025-07-16/
+ *  │       ├── metrics/       ← pageViews, uniqueVisitors, newVisitors,
+ *  │       │                    returningVisitors, totalClicks, sessionCount,
+ *  │       │                    totalDuration (seconds)
+ *  │       ├── countries/      ← { "Uganda": 45, "Kenya": 12, ... }
+ *  │       ├── devices/        ← { "Mobile": 30, "Desktop": 20, ... }
+ *  │       ├── browsers/       ← { "Chrome": 35, "Safari": 15, ... }
+ *  │       ├── os/             ← { "Android": 25, "Windows": 20, ... }
+ *  │       ├── pages/          ← { "Home": 80, "About": 30, ... }
+ *  │       └── referrers/      ← { "Google": 20, "Facebook": 10, ... }
+ *  ├── visitors/
+ *  │   └── visitorId/          ← per-visitor profile with visit history
+ *  ├── sessions/
+ *  │   └── sessionId/          ← per-session details (duration, clicks, scroll)
+ *  ├── countries/
+ *  │   └── CountryName/        ← all-time country stats with flags
+ *  └── clicks/
+ *      └── 2025-07-16/
+ *          └── sessionId/      ← individual click details (batched)
+ *
+ *  Add ?analytics_debug to URL to see console logs
+ *  ============================================================
+ */
+(function(){
+  'use strict';
 
+  if(typeof firebase==='undefined'||!firebase.database){
+    console.warn('[PLC Analytics] Firebase not loaded — skipping.');
+    return;
+  }
+
+  /* ── DEBUG MODE ── */
+  var DEBUG = location.search.indexOf('analytics_debug')>-1;
+  function log(){
+    if(DEBUG) console.log.apply(console,['%c[PLC Analytics]','color:#c8952e;font-weight:bold'].concat([].slice.call(arguments)));
+  }
+
+  /* ── CONFIG ── */
+  var db   = firebase.database();
+  var SV   = firebase.database.ServerValue;
+  var PATH = 'Analysis';
+  var DB_URL = firebase.app().options.databaseURL;
+
+  /* ── LOCAL STORAGE KEYS ── */
+  var K_VID  = 'plc_vid';   // visitor id
+  var K_SID  = 'plc_sid';   // session id
+  var K_SST  = 'plc_sst';   // session start time
+  var K_GEO  = 'plc_geo';   // geo cache
+  var K_UVD  = 'plc_uvd_';  // unique-visitor-daily prefix
+
+  /* ── GENERATE IDs ── */
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).substr(2,9); }
+
+  var vid = localStorage.getItem(K_VID);
+  var isNewVisitor;
+  if(vid){
+    isNewVisitor = false;
+  } else {
+    vid = uid();
+    localStorage.setItem(K_VID, vid);
+    isNewVisitor = true;
+  }
+
+  var sid = sessionStorage.getItem(K_SID) || (function(){
+    var id = uid(); sessionStorage.setItem(K_SID, id); return id;
+  })();
+
+  var sst = parseInt(sessionStorage.getItem(K_SST)) || (function(){
+    var t = Date.now(); sessionStorage.setItem(K_SST, t); return t;
+  })();
+
+  /* ── STATE ── */
+  var geo       = null;
+  var clickBuf  = [];
+  var clickTotal= 0;
+  var maxScroll = 0;
+  var batchTimer= null;
+  var sessionEnded = false;
+
+  /* ═══════════════════════════════════════
+     UTILITY HELPERS
+     ═══════════════════════════════════════ */
+  function todayStr(){
+    var d=new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+
+  function pageName(){
+    var p = location.pathname.replace(/\.html$/,'').replace(/\/$/,'') || '/';
+    if(p==='/') return 'Home';
+    var parts = p.split('/').filter(Boolean);
+    var name = parts[parts.length-1].replace(/[-_]/g,' ');
+    return name.replace(/\b\w/g,function(c){return c.toUpperCase();});
+  }
+
+  function detectDevice(){
+    var u=navigator.userAgent;
+    if(/tablet|ipad|playbook|silk/i.test(u)||(navigator.maxTouchPoints>1&&/Macintosh/i.test(u))) return 'Tablet';
+    if(/mobile|iphone|ipod|android(?!.*tablet)|blackberry|opera mini|iemobile|wpdesktop/i.test(u)) return 'Mobile';
+    return 'Desktop';
+  }
+
+  function detectBrowser(){
+    var u=navigator.userAgent;
+    if(u.includes('Firefox/')) return 'Firefox';
+    if(u.includes('SamsungBrowser/')) return 'Samsung';
+    if(u.includes('OPR/')||u.includes('Opera/')) return 'Opera';
+    if(u.includes('Edg/')) return 'Edge';
+    if(u.includes('Chrome/')) return 'Chrome';
+    if(u.includes('Safari/')&&!u.includes('Chrome')) return 'Safari';
+    return 'Other';
+  }
+
+  function detectOS(){
+    var u=navigator.userAgent;
+    if(u.includes('Windows NT')) return 'Windows';
+    if(u.includes('Mac OS X')) return 'macOS';
+    if(u.includes('Android')) return 'Android';
+    if(/iPhone|iPad|iPod/.test(u)) return 'iOS';
+    if(u.includes('Linux')&&!u.includes('Android')) return 'Linux';
+    return 'Other';
+  }
+
+  function countryFlag(code){
+    if(!code||code.length!==2) return '\uD83C\uDF0D';
+    return code.toUpperCase().replace(/./g,function(c){
+      return String.fromCodePoint(127397+c.charCodeAt());
+    });
+  }
+
+  function detectReferrer(){
+    var r=document.referrer;
+    if(!r) return 'Direct';
+    try{
+      var h=new URL(r).hostname.toLowerCase();
+      if(h.includes('google')) return 'Google';
+      if(h.includes('facebook')||h.includes('fb.com')) return 'Facebook';
+      if(h.includes('twitter')||h.includes('x.com')) return 'Twitter/X';
+      if(h.includes('youtube')) return 'YouTube';
+      if(h.includes('instagram')) return 'Instagram';
+      if(h.includes('whatsapp')) return 'WhatsApp';
+      if(h.includes('linkedin')) return 'LinkedIn';
+      if(h.includes('tiktok')) return 'TikTok';
+      if(h.includes('bing')) return 'Bing';
+      if(h.includes('yahoo')) return 'Yahoo';
+      if(h.includes('duckduckgo')) return 'DuckDuckGo';
+      return h;
+    }catch(e){ return 'Direct'; }
+  }
+
+  /* Safe Firebase writes — never crash the page */
+  function safeSet(ref,val){ return ref.set(val).catch(function(){}); }
+  function safeUpdate(obj){ return db.ref().update(obj).catch(function(){}); }
+
+  /* Reliable write using fetch+keepalive for beforeunload */
+  function reliableUpdate(data){
+    try{
+      fetch(DB_URL+'/.json',{
+        method:'PATCH',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(data),
+        keepalive:true
+      }).catch(function(){});
+    }catch(e){}
+  }
+
+  /* ═══════════════════════════════════════
+     GEOLOCATION (cached 24h in localStorage)
+     ═══════════════════════════════════════ */
+  function fetchGeo(cb){
+    try{
+      var cached=localStorage.getItem(K_GEO);
+      if(cached){
+        var parsed=JSON.parse(cached);
+        if(Date.now()-parsed.t<86400000){ geo=parsed.d; log('Geo from cache:',geo.country); cb(); return; }
+      }
+    }catch(e){}
+
+    log('Fetching geolocation...');
+    var x=new XMLHttpRequest();
+    x.open('GET','https://ipapi.co/json/',true);
+    x.timeout=5000;
+    x.onload=function(){
+      try{
+        var d=JSON.parse(x.responseText);
+        geo={
+          country: d.country_name||'Unknown',
+          code:    d.country_code||'',
+          city:    d.city||'Unknown',
+          region:  d.region||'',
+          flag:    countryFlag(d.country_code)
+        };
+        try{ localStorage.setItem(K_GEO,JSON.stringify({d:geo,t:Date.now()})); }catch(e){}
+        log('Geo detected:',geo.country,geo.flag);
+      }catch(e){
+        geo={country:'Unknown',code:'',city:'Unknown',region:'',flag:'\uD83C\uDF0D'};
+        log('Geo parse failed, using Unknown');
+      }
+      cb();
+    };
+    x.onerror=x.ontimeout=function(){
+      geo={country:'Unknown',code:'',city:'Unknown',region:'',flag:'\uD83C\uDF0D'};
+      log('Geo request failed, using Unknown');
+      cb();
+    };
+    x.send();
+  }
+
+  /* ═══════════════════════════════════════
+     UNIQUE VISITOR CHECK (per day)
+     ═══════════════════════════════════════ */
+  function isUniqueToday(){
+    var key=K_UVD+todayStr();
+    if(localStorage.getItem(key)) return false;
+    localStorage.setItem(key,'1');
+    /* Clean old daily keys (keep last 30 days) */
+    var toRemove=[];
+    var cutoff=new Date(); cutoff.setDate(cutoff.getDate()-30);
+    var cutStr=cutoff.toISOString().slice(0,10);
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(k&&k.indexOf(K_UVD)===0){
+        var d=k.replace(K_UVD,'');
+        if(d<cutStr) toRemove.push(k);
+      }
+    }
+    toRemove.forEach(function(k){ localStorage.removeItem(k); });
+    return true;
+  }
+
+  /* ═══════════════════════════════════════
+     TRACK PAGE VIEW
+     ═══════════════════════════════════════ */
+  function trackPageView(){
+    var t  = todayStr();
+    var pg = pageName();
+    var dv = detectDevice();
+    var br = detectBrowser();
+    var os = detectOS();
+    var rf = detectReferrer();
+    var co = geo ? geo.country : 'Unknown';
+    var uq = isUniqueToday();
+
+    var u={};
+    var dp=PATH+'/daily/'+t;
+
+    /* Daily metric counters */
+    u[dp+'/metrics/pageViews']        = SV.increment(1);
+    u[dp+'/metrics/sessionCount']      = SV.increment(1);
+    if(uq) u[dp+'/metrics/uniqueVisitors']  = SV.increment(1);
+    if(isNewVisitor) u[dp+'/metrics/newVisitors']      = SV.increment(1);
+    else              u[dp+'/metrics/returningVisitors'] = SV.increment(1);
+
+    /* Daily breakdowns */
+    u[dp+'/countries/'+co]   = SV.increment(1);
+    u[dp+'/devices/'+dv]     = SV.increment(1);
+    u[dp+'/browsers/'+br]    = SV.increment(1);
+    u[dp+'/os/'+os]          = SV.increment(1);
+    u[dp+'/pages/'+pg]       = SV.increment(1);
+    u[dp+'/paths/'+location.pathname] = SV.increment(1);
+    u[dp+'/referrers/'+rf]   = SV.increment(1);
+
+    /* All-time countries reached */
+    u[PATH+'/countries/'+co+'/visits']    = SV.increment(1);
+    u[PATH+'/countries/'+co+'/lastVisit'] = SV.TIMESTAMP;
+    u[PATH+'/countries/'+co+'/flag']      = geo?geo.flag:'\uD83C\uDF0D';
+    if(geo&&geo.code) u[PATH+'/countries/'+co+'/code'] = geo.code;
+    if(geo&&geo.city&&geo.city!=='Unknown') u[PATH+'/countries/'+co+'/cities/'+geo.city] = SV.increment(1);
+
+    /* Visitor profile */
+    var vp=PATH+'/visitors/'+vid;
+    u[vp+'/lastVisit']   = SV.TIMESTAMP;
+    u[vp+'/visitCount']  = SV.increment(1);
+    u[vp+'/country']     = co;
+    u[vp+'/city']        = geo?geo.city:'Unknown';
+    u[vp+'/device']      = dv;
+    u[vp+'/browser']     = br;
+    u[vp+'/os']          = os;
+    u[vp+'/screen']      = screen.width+'x'+screen.height;
+    u[vp+'/lang']        = navigator.language||'Unknown';
+    u[vp+'/lastPage']    = pg;
+    u[vp+'/lastPath']    = location.pathname;
+    if(isNewVisitor) u[vp+'/firstVisit'] = SV.TIMESTAMP;
+
+    /* Session record */
+    var sp=PATH+'/sessions/'+sid;
+    u[sp+'/visitorId']   = vid;
+    u[sp+'/startTime']   = sst;
+    u[sp+'/page']        = pg;
+    u[sp+'/path']        = location.pathname;
+    u[sp+'/country']     = co;
+    u[sp+'/device']      = dv;
+    u[sp+'/browser']     = br;
+    u[sp+'/referrer']    = rf;
+    u[sp+'/loadTime']    = Math.round(performance.now());
+
+    log('Page view tracked:',pg,'|',co,'|',dv,'|',br,'|','New:',isNewVisitor,'|','Unique today:',uq);
+    safeUpdate(u);
+  }
+
+  /* ═══════════════════════════════════════
+     TRACK CLICKS (batched every 12 seconds)
+     ═══════════════════════════════════════ */
+  function trackClick(e){
+    clickTotal++;
+    var el=e.target;
+    var info={
+      tag: el.tagName,
+      id:  el.id||'',
+      cls: (typeof el.className==='string'?el.className:'').substring(0,150),
+      txt: (el.textContent||'').substring(0,100).trim(),
+      href: el.href||'',
+      page: pageName(),
+      path: location.pathname,
+      x: e.clientX,
+      y: e.clientY,
+      t: Date.now()
+    };
+    clickBuf.push(info);
+
+    /* Immediate counter increment */
+    safeSet(db.ref(PATH+'/daily/'+todayStr()+'/metrics/totalClicks'), SV.increment(1));
+    log('Click #'+clickTotal+':',info.tag, info.txt.substring(0,30));
+  }
+
+  function flushClicks(){
+    if(!clickBuf.length) return;
+    var batch=clickBuf.splice(0);
+    var ref=db.ref(PATH+'/clicks/'+todayStr()+'/'+sid);
+    var u={};
+    batch.forEach(function(c,i){
+      u['b'+Date.now()+'_'+i]=c;
+    });
+    ref.update(u).catch(function(){});
+
+    /* Update session click count */
+    safeSet(db.ref(PATH+'/sessions/'+sid+'/clicks'), clickTotal);
+    if(batch.length) log('Flushed '+batch.length+' clicks');
+  }
+
+  /* ═══════════════════════════════════════
+     TRACK SCROLL DEPTH
+     ═══════════════════════════════════════ */
+  function trackScroll(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    if(h<=0) return;
+    var pct=Math.min(Math.round(window.scrollY/h*100),100);
+    if(pct>maxScroll) maxScroll=pct;
+  }
+
+  /* ═══════════════════════════════════════
+     PRESENCE / ONLINE TRACKING
+     ═══════════════════════════════════════ */
+  function setupPresence(){
+    var ref=db.ref(PATH+'/presence/'+sid);
+    var presenceData={
+      ts: SV.TIMESTAMP,
+      page: pageName(),
+      country: geo?geo.country:'Unknown',
+      device: detectDevice()
+    };
+    ref.onDisconnect().remove();
+    ref.set(presenceData).catch(function(){});
+    log('Presence registered');
+
+    /* Heartbeat every 25s to stay alive */
+    setInterval(function(){
+      presenceData.ts=SV.TIMESTAMP;
+      presenceData.page=pageName();
+      presenceData.country=geo?geo.country:'Unknown';
+      ref.set(presenceData).catch(function(){});
+    },25000);
+
+    /* Listen for online count (only write when changed) */
+    var lastCount=-1;
+    db.ref(PATH+'/presence').on('value',function(snap){
+      var now=Date.now(), count=0;
+      snap.forEach(function(child){
+        var d=child.val();
+        if(d&&d.ts&&(now-d.ts)<120000) count++;
+      });
+      if(count!==lastCount){
+        lastCount=count;
+        safeSet(db.ref(PATH+'/realtime/onlineCount'), count);
+        log('Online:', count);
+      }
+    });
+  }
+
+  /* ═══════════════════════════════════════
+     END SESSION (uses keepalive for reliability)
+     ═══════════════════════════════════════ */
+  function endSession(){
+    if(sessionEnded) return;
+    sessionEnded=true;
+    clearInterval(batchTimer);
+
+    /* Flush remaining clicks via SDK (might not complete on tab close) */
+    flushClicks();
+
+    var dur=Math.round((Date.now()-sst)/1000);
+    var data={};
+    data[PATH+'/sessions/'+sid+'/duration']   = dur;
+    data[PATH+'/sessions/'+sid+'/clicks']     = clickTotal;
+    data[PATH+'/sessions/'+sid+'/maxScroll']  = maxScroll;
+    data[PATH+'/sessions/'+sid+'/endedAt']    = Date.now();
+    /* Use REST API increment format for reliable beforeunload write */
+    data[PATH+'/daily/'+todayStr()+'/metrics/totalDuration'] = {'.sv':'increment','value':dur};
+
+    /* Remove from presence */
+    data[PATH+'/presence/'+sid] = null;
+
+    log('Session ended — duration: '+dur+'s, clicks: '+clickTotal+', scroll: '+maxScroll+'%');
+
+    /* Use keepalive fetch for reliability on tab close */
+    reliableUpdate(data);
+
+    /* Also try SDK write as backup */
+    safeUpdate(data);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET SESSION (after long tab inactivity)
+     ═══════════════════════════════════════ */
+  function resetSession(){
+    sid=uid(); sessionStorage.setItem(K_SID,sid);
+    sst=Date.now(); sessionStorage.setItem(K_SST,sst);
+    clickTotal=0; maxScroll=0; clickBuf=[];
+    sessionEnded=false;
+    batchTimer=setInterval(flushClicks,12000);
+    log('New session started after inactivity');
+    trackPageView();
+    setupPresence();
+  }
+
+  /* ═══════════════════════════════════════
+     INITIALIZATION
+     ═══════════════════════════════════════ */
+  function init(){
+    log('Initializing...','Visitor:',vid,'|','Session:',sid,'|','New visitor:',isNewVisitor);
+
+    fetchGeo(function(){
+      trackPageView();
+      setupPresence();
+    });
+
+    /* Event listeners */
+    document.addEventListener('click', trackClick, {passive:true, capture:true});
+    window.addEventListener('scroll', trackScroll, {passive:true});
+
+    /* Batch flush clicks every 12 seconds */
+    batchTimer=setInterval(flushClicks, 12000);
+
+    /* End session on unload */
+    window.addEventListener('beforeunload', endSession);
+    window.addEventListener('pagehide', endSession);
+
+    /* Handle long tab inactivity (>5 min hidden = new session) */
+    var hideTime=0;
+    document.addEventListener('visibilitychange',function(){
+      if(document.hidden){
+        hideTime=Date.now();
+      } else if(hideTime&&(Date.now()-hideTime)>300000){
+        endSession();
+        setTimeout(resetSession, 100);
+        hideTime=0;
+      }
+    });
+
+    log('Analytics active ✓');
+  }
+
+  /* Start */
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+</script>
 </body>
 </html>
