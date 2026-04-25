@@ -5,290 +5,431 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Youth Ministry | Purposeful Living Church</title>
 
+<link rel="icon" type="image/webp" sizes="16x16" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="icon" type="image/webp" sizes="32x32" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="icon" type="image/webp" sizes="96x96" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin:0;
-    padding:0;
-    background:#f4f4f4;
-    color:#333;
-  }
+:root {
+  --bg:#f0f4ff;--card:#ffffff;--muted:#6b7280;
+  --accent:#1a3a5c;--accent-light:#2a5a8c;
+  --gold:#c8952e;--gold-light:#e8b84a;
+  --gold-glow:rgba(200,149,46,0.15);
+  --text:#1a1a2e;--text-light:#4a4a5e;
+  --border:rgba(0,0,0,0.06);
+  --radius:16px;--radius-lg:24px;--maxw:1100px;
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md:0 8px 30px rgba(0,0,0,0.06);
+  --shadow-lg:0 20px 50px rgba(0,0,0,0.08);
+  --shadow-gold:0 8px 30px rgba(200,149,46,0.2);
+  --transition:0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+  --youth-primary:#7c3aed;--youth-light:rgba(124,58,237,0.08);
+  --youth-glow:rgba(124,58,237,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:#fff}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 
-  /* SIMPLE CLEAN HEADER WITH HOME BUTTON */
-  .top-nav {
-    background:white;
-    padding:15px 20px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
-    display:flex;
-    align-items:center;
-  }
-  .top-nav a {
-    text-decoration:none;
-    font-size:18px;
-    font-weight:bold;
-    color:#ff4d79;
-    transition:0.3s;
-  }
-  .top-nav a:hover {
-    color:#ff884d;
-  }
+/* ================= HEADER ================= */
+.site-header{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(24px) saturate(1.8);
+  -webkit-backdrop-filter:blur(24px) saturate(1.8);
+  border-bottom:1px solid rgba(255,255,255,0.35);
+  box-shadow:0 4px 30px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.5),inset 0 -1px 0 rgba(255,255,255,0.15);
+}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;max-width:1200px;margin:0 auto}
+.brand{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.03em;display:flex;align-items:center;gap:10px}
+.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-glow)}
+.main-nav{display:flex;align-items:center;gap:4px}
+.main-nav a{padding:8px 14px;border-radius:50px;color:var(--text-light);text-decoration:none;font-weight:500;font-size:0.88rem;transition:var(--transition);position:relative}
+.main-nav a::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%) scaleX(0);width:16px;height:2px;background:var(--gold);border-radius:2px;transition:transform 0.3s ease}
+.main-nav a:hover::after{transform:translateX(-50%) scaleX(1)}
+.main-nav a:hover{background:rgba(200,149,46,0.1);color:var(--gold)}
+.main-nav a.active{color:var(--gold);background:rgba(200,149,46,0.08)}
+.mobile-toggle{display:none;font-size:1.3rem;background:none;border:none;cursor:pointer;color:var(--accent);width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;transition:var(--transition)}
+.mobile-toggle:hover{background:var(--gold-glow)}
 
-  /* CLEAN TITLE (Hero) - NO BACKGROUND COLOR */
-  .hero {
-    padding:50px 20px;
-    text-align:center;
-  }
-  .hero h1 {
-    font-size:42px;
-    margin-bottom:10px;
-    font-weight:900;
-    letter-spacing:1px;
-    color:#ff4d79;
-  }
-  .hero p {
-    font-size:18px;
-    max-width:700px;
-    margin:auto;
-    color:#444;
-  }
+/* ================= SCROLL PROGRESS ================= */
+#scrollProgress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold-light),#fff,var(--gold));background-size:300% 100%;animation:progressShimmer 3s linear infinite;z-index:10001;transition:width 0.1s linear;border-radius:0 2px 2px 0}
+@keyframes progressShimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
 
-  .container {
-    max-width:1100px;
-    margin:auto;
-    padding:20px;
-  }
+/* ================= PAGE HERO ================= */
+.page-hero{position:relative;width:100%;min-height:40vh;display:flex;align-items:center;justify-content:center;background-image:url("https://ik.imagekit.io/s95tumxuk/PLC/1763336127446.jpg");background-size:cover;background-position:center;background-repeat:no-repeat;overflow:hidden}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,15,30,0.75) 0%,rgba(10,15,30,0.55) 50%,rgba(10,15,30,0.88) 100%);z-index:1}
+.page-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 50%,rgba(200,149,46,0.1),transparent 60%);z-index:2;animation:heroGlow 12s ease-in-out infinite alternate}
+@keyframes heroGlow{0%{transform:translate(0,0)}100%{transform:translate(5%,3%)}}
+.page-hero-inner{position:relative;z-index:3;color:#fff;text-align:center;max-width:700px;padding:120px 24px 60px}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;line-height:1.15;letter-spacing:-0.02em;margin-bottom:12px}
+.page-hero p{font-size:1.1rem;color:rgba(255,255,255,0.7);max-width:550px;margin:0 auto}
+.breadcrumb{display:flex;justify-content:center;gap:8px;margin-bottom:20px;font-size:0.85rem;color:rgba(255,255,255,0.5);font-weight:500;letter-spacing:0.04em;text-transform:uppercase}
+.breadcrumb a{color:var(--gold-light);text-decoration:none;transition:var(--transition)}
+.breadcrumb a:hover{color:#fff}
 
-  /* SECTION TITLES */
-  .section-title {
-    text-align:center;
-    font-size:28px;
-    margin:40px 0 20px;
-    font-weight:700;
-    color:#ff4d79;
-  }
+/* ================= SECTION HEADINGS ================= */
+h2.section-title{
+  margin-top:50px;margin-bottom:28px;text-align:center;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.4rem,2.8vw,1.8rem);
+  font-weight:700;color:var(--accent);letter-spacing:-0.02em;
+  position:relative;
+}
+h2.section-title::after{
+  content:'';display:block;width:50px;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-light));
+  margin:12px auto 0;border-radius:2px;
+}
+h2.section-title:first-of-type{margin-top:10px}
 
-  /* ABOUT YOUTH */
-  .about {
-    background:white;
-    border-radius:15px;
-    padding:25px;
-    margin-bottom:40px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.1);
-  }
-  .about p { font-size:17px; line-height:1.7; }
+/* ================= YOUTH INTRO ================= */
+.youth-intro{
+  background:var(--card);border-radius:var(--radius-lg);
+  padding:32px 36px;box-shadow:var(--shadow-md);
+  border:1px solid var(--border);margin-bottom:10px;
+  position:relative;overflow:hidden;
+}
+.youth-intro::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,#7c3aed,#a78bfa,#7c3aed);
+  background-size:200% 100%;animation:gradientSlide 4s linear infinite;
+}
+@keyframes gradientSlide{0%{background-position:0% 0}100%{background-position:200% 0}}
+.youth-intro p{
+  font-size:1rem;color:var(--text-light);line-height:1.8;max-width:700px;margin:0 auto;text-align:center;
+}
 
-  /* PROGRAMS SECTION */
-  .programs {
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap:20px;
-  }
-  .program-box {
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.1);
-    transition:0.3s;
-    text-align:center;
-  }
-  .program-box:hover {
-    transform:translateY(-5px);
-  }
-  .program-box h3 {
-    margin-bottom:10px;
-    color:#ff4d79;
-  }
+/* ================= PROGRAM CARDS ================= */
+.programs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px}
+.program-card{
+  background:var(--card);padding:28px 24px;border-radius:var(--radius);
+  box-shadow:var(--shadow-md);border:1px solid var(--border);
+  transition:var(--transition);position:relative;overflow:hidden;text-align:center;
+}
+.program-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#7c3aed,#a78bfa);
+  opacity:0;transition:var(--transition);
+}
+.program-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.program-card:hover::before{opacity:1}
+.program-card .card-icon{
+  width:60px;height:60px;border-radius:16px;
+  background:var(--youth-light);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:1.5rem;color:#7c3aed;margin-bottom:16px;
+}
+.program-card h3{font-size:1.05rem;font-weight:600;color:var(--accent);margin-bottom:10px}
+.program-card p{font-size:0.88rem;color:var(--text-light);line-height:1.6}
 
-  /* GALLERY */
-  .gallery-title {
-    text-align:center;
-    font-size:26px;
-    margin:50px 0 20px;
-    font-weight:700;
-    color:#ff4d79;
-  }
+/* ================= YOUTH GALLERY ================= */
+.youth-gallery{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:14px;
+}
+@media(min-width:768px){.youth-gallery{grid-template-columns:repeat(4,1fr);gap:18px}}
+.gallery-item{
+  position:relative;border-radius:var(--radius);overflow:hidden;
+  cursor:pointer;box-shadow:var(--shadow-sm);
+  transition:var(--transition);background:#e8e8e8;
+  aspect-ratio:1;
+}
+.gallery-item:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px)}
+.gallery-item img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform 0.5s ease;
+}
+.gallery-item:hover img{transform:scale(1.06)}
+.gallery-item .item-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,0.4) 100%);
+  opacity:0;transition:opacity 0.3s ease;pointer-events:none;
+}
+.gallery-item:hover .item-overlay{opacity:1}
+.gallery-item .item-expand{
+  position:absolute;bottom:10px;right:10px;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.15);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:0.75rem;opacity:0;transform:translateY(6px);
+  transition:opacity 0.3s ease 0.05s,transform 0.3s ease 0.05s;
+}
+.gallery-item:hover .item-expand{opacity:1;transform:translateY(0)}
 
-  .gallery {
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
-    gap:15px;
-  }
+/* ================= LIGHTBOX ================= */
+.lightbox{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(10,15,30,0.92);backdrop-filter:blur(12px);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+}
+.lightbox.open{display:flex;animation:lbFadeIn 0.3s forwards}
+@keyframes lbFadeIn{from{opacity:0}to{opacity:1}}
+.lightbox-close{
+  position:fixed;top:20px;right:24px;z-index:10000;
+  width:46px;height:46px;border-radius:50%;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
+  color:#fff;font-size:24px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:var(--transition);
+}
+.lightbox-close:hover{background:rgba(255,255,255,0.2);transform:rotate(90deg)}
+.lightbox-img{
+  max-width:90vw;max-height:80vh;object-fit:contain;
+  border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+.lightbox-counter{
+  position:fixed;top:26px;left:50%;transform:translateX(-50%);z-index:10000;
+  color:rgba(255,255,255,0.6);font-size:0.85rem;font-weight:600;
+  background:rgba(0,0,0,0.3);padding:6px 18px;border-radius:50px;
+  backdrop-filter:blur(8px);
+}
+.lightbox-nav{
+  position:fixed;top:50%;z-index:10000;
+  width:46px;height:46px;border-radius:50%;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
+  color:#fff;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:var(--transition);transform:translateY(-50%);
+}
+.lightbox-nav:hover{background:rgba(255,255,255,0.25)}
+.lightbox-prev{left:20px}
+.lightbox-next{right:20px}
 
-  .gallery-item {
-    position: relative;
-    cursor:pointer;
-    overflow:hidden;
-    border-radius:12px;
-    height:180px;
-  }
+/* ================= EMPTY STATE ================= */
+.empty-state{text-align:center;padding:60px 24px;grid-column:1/-1}
+.empty-state i{font-size:3rem;color:var(--muted);opacity:0.25;margin-bottom:14px}
+.empty-state h3{color:var(--text);margin-bottom:6px;font-size:1.1rem}
+.empty-state p{color:var(--muted);font-size:0.92rem}
 
-  .gallery-item img, .gallery-item video {
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    transition:0.3s;
-  }
-  .gallery-item:hover img, .gallery-item:hover video {
-    transform: scale(1.1);
-  }
+/* ================= CTA SECTION ================= */
+.youth-cta{
+  text-align:center;padding:60px 24px;margin-top:50px;
+  background:var(--card);position:relative;overflow:hidden;
+}
+.youth-cta::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,#7c3aed,#a78bfa,#7c3aed);
+  background-size:200% 100%;animation:gradientSlide 4s linear infinite;
+}
+.youth-cta h2{
+  font-family:'Playfair Display',serif;font-size:clamp(1.3rem,2.5vw,1.6rem);
+  font-weight:700;color:var(--accent);margin-bottom:10px;
+}
+.youth-cta p{font-size:0.95rem;color:var(--text-light);margin-bottom:22px;max-width:450px;margin-left:auto;margin-right:auto}
+.youth-cta a{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 30px;border-radius:50px;
+  background:var(--accent);color:#fff;
+  text-decoration:none;font-weight:600;font-size:0.9rem;
+  transition:var(--transition);box-shadow:0 4px 15px rgba(26,58,92,0.2);
+}
+.youth-cta a:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(26,58,92,0.3)}
 
-  /* POPUP */
-  #imagePopup {
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    justify-content:center;
-    align-items:center;
-    background:rgba(0,0,0,0.7);
-    z-index:10000;
-  }
+/* ================= FOOTER ================= */
+.main-footer{background:#0f1a2e;color:rgba(255,255,255,0.7);padding:60px 24px 0}
+.footer-content{display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;max-width:var(--maxw);margin:0 auto}
+.footer-section{flex:1;min-width:250px}
+.footer-section h4{color:var(--gold-light);font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:14px}
+.footer-section p{font-size:0.88rem;line-height:1.7;color:rgba(255,255,255,0.6)}
+.footer-section ul{list-style:none}
+.footer-section ul li{margin:8px 0;font-size:0.9rem;color:rgba(255,255,255,0.6);display:flex;align-items:flex-start;gap:8px}
+.footer-section i{color:var(--gold);margin-top:3px;font-size:0.8rem}
+.footer-social{display:flex;gap:12px;margin-top:16px}
+.footer-social a{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:1rem;transition:var(--transition);text-decoration:none}
+.footer-social a:hover{background:var(--gold);border-color:var(--gold);color:#fff}
+.copyright{text-align:center;margin-top:40px;padding:20px 0;color:rgba(255,255,255,0.35);font-size:0.82rem;border-top:1px solid rgba(255,255,255,0.06)}
 
-  #popupBox {
-    background:white;
-    border-radius:15px;
-    padding:20px;
-    width:90%;
-    max-width:700px;
-    animation: popupZoom 0.3s ease-in-out;
-    text-align:center;
-  }
+/* ================= BACK TO TOP ================= */
+.back-to-top{position:fixed;bottom:28px;left:28px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border:1px solid rgba(255,255,255,0.25);box-shadow:0 4px 24px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:900;opacity:0;visibility:hidden;transform:translateY(20px);transition:var(--transition);color:var(--accent);font-size:1.1rem;text-decoration:none}
+.back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+.back-to-top:hover{transform:translateY(-3px);background:rgba(200,149,46,0.2);border-color:rgba(200,149,46,0.4);color:var(--gold)}
 
-  #popupImg {
-    width:100%;
-    border-radius:12px;
-    max-height:450px;
-    object-fit:cover;
-  }
-
-  #closePopup {
-    font-size:30px;
-    color:#ff4d79;
-    cursor:pointer;
-    font-weight:bold;
-    float:right;
-  }
-
-  @keyframes popupZoom {
-    from { transform:scale(0.7); opacity:0; }
-    to { transform:scale(1); opacity:1; }
-  }
-
-  /* CLEAN FOOTER (NO BACKGROUND COLOR) */
-  .cta {
-    text-align:center;
-    padding:40px 20px;
-    background:white;
-    color:#333;
-    margin-top:50px;
-  }
-  .cta h2 { font-size:30px; margin-bottom:10px; color:#ff4d79; }
-  .cta p { font-size:18px; margin-bottom:20px; color:#444; }
-  .cta a {
-    display:inline-block;
-    padding:12px 25px;
-    background:#ff4d79;
-    color:white;
-    border-radius:30px;
-    text-decoration:none;
-    font-weight:bold;
-    transition:0.3s;
-  }
-  .cta a:hover { background:#ff884d; }
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+  .mobile-toggle{display:flex}
+  .main-nav{display:none;flex-direction:column;background:rgba(255,255,255,0.92);backdrop-filter:blur(24px) saturate(1.8);position:absolute;right:24px;top:65px;padding:16px;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,0.3);min-width:200px}
+  .main-nav.show{display:flex}
+  .main-nav a{color:var(--text-light)!important;padding:10px 14px;border-radius:10px}
+  .main-nav a:hover{background:var(--gold-glow)!important;color:var(--gold)!important}
+  .footer-content{flex-direction:column}
+}
+@media(max-width:600px){
+  .container{padding:0 16px}
+  .youth-intro{padding:24px 20px}
+  .programs{grid-template-columns:1fr}
+  .youth-gallery{grid-template-columns:repeat(2,1fr);gap:10px}
+  .lightbox-nav{width:38px;height:38px;font-size:14px}
+  .lightbox-prev{left:10px}
+  .lightbox-next{right:10px}
+  .back-to-top{bottom:20px;left:20px;width:42px;height:42px}
+}
 </style>
 </head>
-
 <body>
 
-<!-- HOME NAVIGATION BUTTON -->
-<div class="top-nav">
-  <a href="index.html">&larr; Home</a>
-</div>
+<div id="scrollProgress"></div>
 
-<!-- TITLE AREA (No Background) -->
-<section class="hero">
-  <h1>Purposeful Youth</h1>
-  <p>Empowering young people to grow in faith, discover their identity, and become leaders with purpose.</p>
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg" alt="Logo">
+      PURPOSEFUL LIVING CHURCH
+    </a>
+    <nav id="mainNav" class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="media.html">Media</a>
+      <a href="news.html">News</a>
+      <a href="kids.html">Kids</a>
+      <a href="youth.html" class="active">Youth</a>
+      <a href="outreach.html">Outreach</a>
+      <a href="live.html">Live</a>
+      <a href="index.html#give">Give</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <button id="mobileToggle" class="mobile-toggle">☰</button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>/</span><span>Youth Ministry</span>
+    </div>
+    <h1>Purposeful Youth</h1>
+    <p>Empowering young people to grow in faith, discover their identity, and become leaders with purpose.</p>
+  </div>
 </section>
 
-<div class="container">
+<!-- ================= CONTENT ================= -->
+<section style="padding:32px 0 80px">
+  <div class="container">
 
-  <!-- ABOUT -->
-  <div class="about">
-    <h2 class="section-title">About Our Youth Ministry</h2>
-    <p>
-      The Purposeful Living Youth Ministry is a vibrant community for teenagers and young adults.
-      We create a safe, fun, and spiritually uplifting atmosphere where young people can connect,
-      grow, and build a strong foundation in Christ.
-    </p>
+    <div class="youth-intro">
+      <p>The Purposeful Living Youth Ministry is a vibrant community for teenagers and young adults. We create a safe, fun, and spiritually uplifting atmosphere where young people can connect, grow, and build a strong foundation in Christ.</p>
+    </div>
+
+    <h2 class="section-title">Youth Programs & Activities</h2>
+    <div class="programs">
+      <div class="program-card">
+        <div class="card-icon"><i class="fas fa-hands-praying"></i></div>
+        <h3>Weekly Youth Service</h3>
+        <p>Dynamic worship, teachings, and discussions for today's youth.</p>
+      </div>
+      <div class="program-card">
+        <div class="card-icon"><i class="fas fa-guitar"></i></div>
+        <h3>Talent & Skills Trainings</h3>
+        <p>Music, dance, media, leadership, and more.</p>
+      </div>
+      <div class="program-card">
+        <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+        <h3>Youth Hangouts</h3>
+        <p>Fun, games, bonding, and real friendships.</p>
+      </div>
+      <div class="program-card">
+        <div class="card-icon"><i class="fas fa-hand-holding-heart"></i></div>
+        <h3>Community Outreach</h3>
+        <p>Serving the community through youth-led mission work.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Gallery</h2>
+    <div class="youth-gallery" id="gallery"></div>
+
   </div>
+</section>
 
-  <!-- PROGRAMS -->
-  <h2 class="section-title">Youth Programs & Activities</h2>
-  <div class="programs">
-    <div class="program-box">
-      <h3>Weekly Youth Service</h3>
-      <p>Dynamic worship, teachings, and discussions for today's youth.</p>
-    </div>
-    <div class="program-box">
-      <h3>Talent & Skills Trainings</h3>
-      <p>Music, dance, media, leadership, and more.</p>
-    </div>
-    <div class="program-box">
-      <h3>Youth Hangouts</h3>
-      <p>Fun, games, bonding, and real friendships.</p>
-    </div>
-    <div class="program-box">
-      <h3>Community Outreach</h3>
-      <p>Serving the community through youth-led mission work.</p>
-    </div>
-  </div>
-  
-<!-- GALLERY -->
-<h2>Gallery</h2>
+<!-- ================= CTA ================= -->
+<section class="youth-cta">
+  <h2>Join the Youth Movement!</h2>
+  <p>Be part of a family that grows, learns, and transforms together.</p>
+  <a href="index.html#contact"><i class="fas fa-arrow-right"></i> Get Connected</a>
+</section>
 
-<style>
-  /* Responsive grid */
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Mobile: 2 columns */
-    gap: 12px;
-  }
-
-  @media (min-width: 768px) {
-    .gallery {
-      grid-template-columns: repeat(4, 1fr); /* Desktop: 4 columns */
-      gap: 18px;
-    }
-  }
-
-  .gallery img {
-    width: 100%;
-    border-radius: 14px;
-    cursor: pointer;
-    transition: transform 0.25s ease-in-out;
-  }
-
-  .gallery img:hover {
-    transform: scale(1.03);
-  }
-</style>
-
-<div class="gallery" id="gallery"></div>
-
-<!-- LIGHTBOX POPUP -->
-<div id="lightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
-  <div style="position:relative; max-width:800px; width:90%; text-align:center; animation:popupZoom 0.3s ease-in-out; background:#fff; border-radius:20px; padding:20px;">
-    <span onclick="closeLightbox()" style="position:absolute; top:10px; right:15px; font-size:40px; cursor:pointer; font-weight:bold; color:#333;">&times;</span>
-    <img id="lightboxImg" style="width:100%; max-height:500px; object-fit:cover; border-radius:12px;">
-  </div>
+<!-- ================= LIGHTBOX ================= -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">&times;</button>
+  <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev"><i class="fas fa-chevron-left"></i></button>
+  <button class="lightbox-nav lightbox-next" id="lightboxNext"><i class="fas fa-chevron-right"></i></button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="Youth Gallery">
 </div>
 
+<!-- ================= BACK TO TOP ================= -->
+<a href="#" class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></a>
+
+<!-- ================= FOOTER ================= -->
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Purposeful Living Church</h4>
+      <p>Purposeful Living Church is a Bible-based, family centered, non denominational church with a mission of winning the lost to Christ and teaching the saved to live a purposeful life.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Address</h4>
+      <ul>
+        <li><i class="fas fa-map-marker-alt"></i> Kulambiro Kisaasi, Kampala Uganda</li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Reach Out</h4>
+      <ul>
+        <li><i class="fas fa-phone"></i> +(256) 75227 5855</li>
+        <li><i class="fas fa-envelope"></i> info@purposefullivingchurch.com</li>
+      </ul>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/PurposefulLivingMinistriesInternational" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://youtube.com/@purposefullivingchurch-1?si=zTX5j_YH9d1xstvb" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://x.com/bulamu?t=9TV8lk9_A3XW03e6gis1eA&s=09" target="_blank"><i class="fab fa-twitter"></i></a>
+      </div>
+    </div>
+  </div>
+  <p class="copyright">&copy; <span id="year"></span> Purposeful Living Church. All rights reserved.</p>
+</footer>
+
+<script>
+/* ================= MOBILE NAV ================= */
+document.getElementById("mobileToggle").onclick = function() {
+  document.getElementById("mainNav").classList.toggle("show");
+};
+document.querySelectorAll("#mainNav a").forEach(function(a) {
+  a.addEventListener("click", function() {
+    document.getElementById("mainNav").classList.remove("show");
+  });
+});
+
+/* ================= SCROLL PROGRESS ================= */
+var scrollBar = document.getElementById("scrollProgress");
+window.addEventListener("scroll", function() {
+  var h = document.documentElement.scrollHeight - window.innerHeight;
+  if (h > 0) scrollBar.style.width = (window.scrollY / h * 100) + "%";
+});
+
+/* ================= BACK TO TOP ================= */
+var btt = document.getElementById("backToTop");
+window.addEventListener("scroll", function() { btt.classList.toggle("visible", window.scrollY > 400); });
+btt.addEventListener("click", function(e) { e.preventDefault(); window.scrollTo({top:0,behavior:"smooth"}); });
+
+/* ================= YEAR ================= */
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+<!-- ================= GALLERY LOGIC (UNTTOUCHED CORE) ================= -->
 <script>
 let allImages = [];
 const folderURL = "https://ik.imagekit.io/s95tumxuk/youth-gallery/";
+let lbIndex = 0;
 
-// Check if an image exists
+/* Check if an image exists (untouched) */
 function checkImage(url) {
   return new Promise(resolve => {
     const img = new Image();
@@ -298,7 +439,7 @@ function checkImage(url) {
   });
 }
 
-// Automatically discover images
+/* Automatically discover images (untouched) */
 async function discoverImages() {
   let index = 1;
   let newImages = [];
@@ -318,72 +459,80 @@ async function discoverImages() {
   displayImages();
 }
 
-// Display ALL images (no pagination)
+/* Display ALL images (untouched core, enhanced rendering) */
 function displayImages() {
   const gallery = document.getElementById("gallery");
   gallery.innerHTML = "";
 
+  if (allImages.length === 0) {
+    gallery.innerHTML = '<div class="empty-state"><i class="fas fa-images"></i><h3>No photos yet</h3><p>Youth ministry photos will appear here soon.</p></div>';
+    return;
+  }
+
   allImages.forEach((file, i) => {
-    const img = document.createElement("img");
-    img.src = file.url;
-    img.onclick = () => openLightbox(file.url);
-    gallery.appendChild(img);
+    const item = document.createElement("div");
+    item.className = "gallery-item";
+    item.innerHTML =
+      '<img src="' + file.url + '" alt="Youth Gallery" loading="lazy">' +
+      '<div class="item-overlay"></div>' +
+      '<div class="item-expand"><i class="fas fa-expand"></i></div>';
+    item.addEventListener("click", function() {
+      openLightbox(i);
+    });
+    gallery.appendChild(item);
   });
 }
 
-// Lightbox functions
-function openLightbox(url) {
-  document.getElementById('lightboxImg').src = url;
-  document.getElementById('lightbox').style.display = "flex";
+/* ================= LIGHTBOX (NEW — uses existing allImages array) ================= */
+function openLightbox(index) {
+  lbIndex = index;
+  updateLightbox();
+  document.getElementById("lightbox").classList.add("open");
+  document.body.style.overflow = "hidden";
 }
 
 function closeLightbox() {
-  document.getElementById('lightbox').style.display = "none";
+  document.getElementById("lightbox").classList.remove("open");
+  document.body.style.overflow = "";
 }
 
-// Refresh every 60 seconds to detect new images
+function updateLightbox() {
+  if (allImages.length === 0) return;
+  lbIndex = Math.max(0, Math.min(lbIndex, allImages.length - 1));
+  document.getElementById("lightboxImg").src = allImages[lbIndex].url;
+  document.getElementById("lightboxCounter").textContent = (lbIndex + 1) + " / " + allImages.length;
+}
+
+document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
+document.getElementById("lightboxPrev").addEventListener("click", function() { lbIndex--; updateLightbox(); });
+document.getElementById("lightboxNext").addEventListener("click", function() { lbIndex++; updateLightbox(); });
+document.getElementById("lightbox").addEventListener("click", function(e) {
+  if (e.target === this) closeLightbox();
+});
+
+/* Keyboard navigation */
+document.addEventListener("keydown", function(e) {
+  if (!document.getElementById("lightbox").classList.contains("open")) return;
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowRight") { lbIndex++; updateLightbox(); }
+  if (e.key === "ArrowLeft") { lbIndex--; updateLightbox(); }
+});
+
+/* Touch swipe */
+var touchStartX = 0;
+document.getElementById("lightboxImg").addEventListener("touchstart", function(e) {
+  touchStartX = e.changedTouches[0].screenX;
+}, {passive:true});
+document.getElementById("lightboxImg").addEventListener("touchend", function(e) {
+  var diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 60) { diff > 0 ? (lbIndex++, updateLightbox()) : (lbIndex--, updateLightbox()); }
+}, {passive:true});
+
+/* Refresh every 60 seconds (untouched) */
 setInterval(discoverImages, 60000);
 
-// Start automatically
+/* Start automatically (untouched) */
 discoverImages();
-</script>
-  
-
-<!-- CLEAN FOOTER (NO COLOR BACKGROUND) -->
-<section class="cta">
-  <h2>Join the Youth Movement!</h2>
-  <p>Be part of a family that grows, learns, and transforms together.</p>
-  <a href="#contact">Get Connected</a>
-</section>
-
-<!-- POPUP SCRIPT -->
-<div id="imagePopup">
-  <div id="popupBox">
-    <span id="closePopup">&times;</span>
-    <img id="popupImg"/>
-    <div id="popupCaption"></div>
-  </div>
-</div>
-
-<script>
-const popup = document.getElementById("imagePopup");
-const popupImg = document.getElementById("popupImg");
-const caption = document.getElementById("popupCaption");
-const closePopup = document.getElementById("closePopup");
-
-document.querySelectorAll(".gallery-item img").forEach(img => {
-  img.addEventListener("click", () => {
-    popup.style.display = "flex";
-    popupImg.src = img.src;
-    caption.textContent = img.alt || "";
-  });
-});
-
-closePopup.addEventListener("click", () => popup.style.display = "none");
-
-popup.addEventListener("click", e => {
-  if (e.target === popup) popup.style.display = "none";
-});
 </script>
 
 </body>
