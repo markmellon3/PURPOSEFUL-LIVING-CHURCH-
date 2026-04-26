@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PLC Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-storage-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f0f4ff;--card:#ffffff;--muted:#6b7280;--accent:#1a3a5c;--accent-light:#2a5a8c;--accent-dark:#0f1a2e;--gold:#c8952e;--gold-light:#e8b84a;--gold-glow:rgba(200,149,46,0.15);--text:#1a1a2e;--text-light:#4a4a5e;--border:rgba(0,0,0,0.06);--radius:14px;--radius-lg:20px;--shadow-sm:0 2px 8px rgba(0,0,0,0.04);--shadow-md:0 8px 30px rgba(0,0,0,0.06);--shadow-lg:0 20px 50px rgba(0,0,0,0.08);--shadow-gold:0 8px 30px rgba(200,149,46,0.2);--sidebar-w:260px;--transition:0.3s cubic-bezier(0.25,0.46,0.45,0.94)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--gold);color:#fff}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.12);border-radius:10px}
+
+#loginScreen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,var(--accent-dark) 0%,var(--accent) 50%,var(--accent-light) 100%);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:var(--card);border-radius:var(--radius-lg);padding:44px 36px;max-width:420px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,0.3);text-align:center;animation:scaleUp .5s ease}
+@keyframes scaleUp{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.login-logo{width:80px;height:80px;border-radius:50%;border:3px solid var(--gold);overflow:hidden;margin:0 auto 20px;box-shadow:var(--shadow-gold)}
+.login-logo img{width:100%;height:100%;object-fit:cover}
+.login-box h2{font-family:'Playfair Display',serif;color:var(--accent);font-size:1.6rem;margin-bottom:4px}
+.login-box p{color:var(--muted);font-size:.88rem;margin-bottom:24px}
+.login-box input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:.95rem;background:var(--bg);color:var(--text);outline:none;transition:var(--transition);font-family:'Inter',sans-serif;margin-bottom:12px}
+.login-box input:focus{border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-glow)}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent-light));color:#fff;font-size:1rem;font-weight:600;border-radius:12px;border:none;cursor:pointer;transition:var(--transition);font-family:'Inter',sans-serif;touch-action:manipulation}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(26,58,92,0.3)}
+.login-error{color:#dc3545;font-size:.85rem;margin-top:10px;display:none}
+
+#dashboard{display:none}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);background:linear-gradient(180deg,var(--accent-dark) 0%,#0f2840 100%);z-index:100;display:flex;flex-direction:column;transition:var(--transition);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.sidebar-header{padding:20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.sidebar-logo{width:42px;height:42px;border-radius:50%;border:2px solid rgba(200,149,46,0.4);overflow:hidden;flex-shrink:0}
+.sidebar-logo img{width:100%;height:100%;object-fit:cover}
+.sidebar-brand h2{color:#fff;font-family:'Playfair Display',serif;font-size:1.05rem;letter-spacing:.03em;line-height:1.2}
+.sidebar-brand small{color:var(--gold-light);font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.sidebar-nav{flex:1;padding:16px 12px}
+.nav-section{margin-bottom:20px}
+.nav-section-label{font-size:.68rem;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:.15em;padding:0 12px;margin-bottom:8px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;color:rgba(255,255,255,0.6);font-size:.88rem;font-weight:500;cursor:pointer;transition:var(--transition);margin-bottom:2px;position:relative;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+.nav-item.active{background:linear-gradient(135deg,rgba(200,149,46,0.2),rgba(200,149,46,0.08));color:var(--gold-light);font-weight:600}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:20px;background:var(--gold);border-radius:0 3px 3px 0}
+.nav-item i{width:20px;text-align:center;font-size:1rem}
+.nav-badge{margin-left:auto;background:var(--gold);color:#fff;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:50px;min-width:20px;text-align:center}
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,0.06)}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.05)}
+.sidebar-user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem}
+.sidebar-user-info{flex:1;min-width:0}
+.sidebar-user-name{color:#fff;font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user-role{color:rgba(255,255,255,0.4);font-size:.72rem}
+.sidebar-logout{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;padding:8px;border-radius:8px;transition:var(--transition);font-size:1rem;touch-action:manipulation}
+.sidebar-logout:hover{background:rgba(220,53,69,0.15);color:#ff6b6b}
+
+.main{margin-left:var(--sidebar-w);min-height:100vh;padding:0}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.6);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.3);box-shadow:0 4px 20px rgba(0,0,0,0.04);padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.topbar-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--accent);font-weight:700}
+.topbar-breadcrumb{font-size:.8rem;color:var(--muted)}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.online-badge{display:flex;align-items:center;gap:6px;background:rgba(0,200,100,0.1);border:1px solid rgba(0,200,100,0.2);padding:6px 14px;border-radius:50px;font-size:.82rem;font-weight:600;color:#16a34a}
+.online-dot{width:8px;height:8px;background:#00ff5a;border-radius:50%;box-shadow:0 0 8px rgba(0,255,90,0.5);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.hamburger{display:none;background:var(--card);border:1px solid var(--border);font-size:1.2rem;color:var(--accent);cursor:pointer;padding:10px 12px;border-radius:10px;box-shadow:var(--shadow-sm);transition:var(--transition);z-index:60;position:relative;touch-action:manipulation}
+
+.content{padding:28px}
+.page{display:none}.page.active{display:block}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+.stat-card{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:var(--transition);position:relative;overflow:hidden}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.stat-card::after{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;opacity:.06;transform:translate(20px,-20px)}
+.stat-card.blue::after{background:var(--accent)}.stat-card.gold::after{background:var(--gold)}.stat-card.green::after{background:#16a34a}.stat-card.red::after{background:#dc3545}
+.stat-card-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:10px}
+.stat-card.blue .stat-card-icon{background:rgba(26,58,92,0.1);color:var(--accent)}
+.stat-card.gold .stat-card-icon{background:var(--gold-glow);color:var(--gold)}
+.stat-card.green .stat-card-icon{background:rgba(22,163,74,0.1);color:#16a34a}
+.stat-card.red .stat-card-icon{background:rgba(220,53,69,0.1);color:#dc3545}
+.stat-card-value{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:800;color:var(--text);line-height:1}
+.stat-card-label{font-size:.8rem;color:var(--muted);margin-top:4px;font-weight:500}
+
+.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:28px}
+.chart-card{background:var(--card);border-radius:var(--radius);padding:24px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.chart-card h3{font-family:'Playfair Display',serif;color:var(--accent);font-size:1.05rem;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.chart-card h3 i{color:var(--gold);font-size:.9rem}
+.chart-wrap{position:relative;height:260px}
+.chart-wrap canvas{width:100%!important;height:100%!important}
+.chart-full{grid-column:1/-1}
+
+.country-list{max-height:340px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.country-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px}
+.country-item:hover{background:var(--bg)}
+.country-flag{font-size:1.5rem;width:32px;text-align:center}
+.country-name{flex:1;font-size:.88rem;font-weight:500;color:var(--text)}
+.country-visits{font-size:.85rem;font-weight:700;color:var(--accent);background:rgba(26,58,92,0.06);padding:3px 10px;border-radius:50px}
+.country-bar{height:4px;background:var(--bg);border-radius:4px;margin-top:4px;overflow:hidden}
+.country-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:4px;transition:width 1s ease}
+
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{text-align:left;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:12px 16px;border-bottom:2px solid var(--border)}
+.data-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.9rem;color:var(--text-light)}
+.data-table tr:hover td{background:rgba(200,149,46,0.03)}
+.data-table .page-name{font-weight:600;color:var(--text)}
+.table-bar{height:6px;background:var(--bg);border-radius:6px;min-width:80px;overflow:hidden}
+.table-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:6px;transition:width 1s ease}
+
+.panel{background:var(--card);border-radius:var(--radius-lg);padding:28px;border:1px solid var(--border);box-shadow:var(--shadow-sm);margin-bottom:24px}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.panel-title{font-family:'Playfair Display',serif;color:var(--accent);font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.panel-title i{color:var(--gold)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:6px}
+.form-group input,.form-group textarea,.form-group select{padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;background:var(--bg);color:var(--text);outline:none;transition:var(--transition);font-family:'Inter',sans-serif;touch-action:manipulation}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-glow);background:var(--card)}
+.form-group textarea{min-height:120px;resize:vertical}
+
+.file-picker-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;transition:var(--transition);background:var(--bg);position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.file-picker-zone:hover,.file-picker-zone.dragover{border-color:var(--gold);background:var(--gold-glow)}
+.file-picker-zone:active{transform:scale(.99)}
+.file-picker-zone i{font-size:2.2rem;color:var(--gold);margin-bottom:8px;opacity:.6}
+.file-picker-zone p{color:var(--muted);font-size:.9rem;font-weight:500}
+.file-picker-zone small{color:var(--muted);font-size:.75rem;opacity:.7;display:block;margin-top:4px}
+.file-picker-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2}
+
+.upload-inline-preview{margin-top:14px;display:none}
+.upload-inline-preview .preview-img{max-width:100%;max-height:200px;object-fit:contain;border-radius:var(--radius);box-shadow:var(--shadow-md)}
+.upload-inline-preview .preview-audio{width:100%;margin-top:4px}
+.upload-inline-preview .preview-info{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:.82rem;color:var(--muted)}
+.upload-inline-preview .preview-remove{background:none;border:none;color:#dc3545;cursor:pointer;font-size:.9rem;padding:6px;border-radius:6px;transition:var(--transition);touch-action:manipulation}
+.upload-inline-preview .preview-remove:hover{background:rgba(220,53,69,0.1)}
+.upload-progress-inline{margin-top:10px;display:none}
+.upload-progress-bar{height:6px;background:var(--bg);border-radius:10px;overflow:hidden}
+.upload-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:10px;transition:width .3s ease;width:0%}
+.upload-progress-text{font-size:.78rem;color:var(--muted);margin-top:4px}
+
+.url-fallback{margin-top:10px}
+.url-fallback input{display:none;margin-top:6px}
+.url-fallback-toggle{background:none;border:none;color:var(--muted);font-size:.82rem;cursor:pointer;padding:6px 0;text-decoration:underline;font-family:'Inter',sans-serif;touch-action:manipulation}
+.url-fallback-toggle:hover{color:var(--accent)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 22px;border-radius:10px;font-weight:600;font-size:.9rem;text-decoration:none;transition:var(--transition);border:none;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.01em;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-light));color:#fff;box-shadow:0 4px 15px rgba(26,58,92,0.2)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(26,58,92,0.3)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#fff;box-shadow:var(--shadow-gold)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(200,149,46,0.35)}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn-danger{background:#dc3545;color:#fff}
+.btn-danger:hover{background:#a71d2a;transform:translateY(-2px)}
+.btn-sm{padding:10px 16px;font-size:.82rem;border-radius:8px;min-height:40px;min-width:40px}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--bg);color:var(--text)}
+
+.items-list{max-height:520px;overflow-y:auto;-webkit-overflow-scrolling:touch;margin-top:4px}
+.item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;transition:var(--transition);display:flex;gap:16px;align-items:flex-start}
+.item:hover{box-shadow:var(--shadow-sm);border-color:rgba(200,149,46,0.15)}
+.item-img{width:120px;height:90px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--border)}
+.item-body{flex:1;min-width:0}
+.item-title{font-weight:700;font-size:.95rem;color:var(--text);margin-bottom:2px}
+.item-meta{font-size:.78rem;color:var(--muted);margin-bottom:6px}
+.item-desc{font-size:.85rem;color:var(--text-light);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.item-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;align-items:flex-start}
+.item-audio{width:100%;margin-top:6px}
+
+.msg-preview{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:8px;overflow:hidden;white-space:nowrap}
+.msg-preview span{display:inline-block;animation:scrollLeft 8s linear infinite;color:var(--accent);font-weight:600;font-size:.9rem}
+@keyframes scrollLeft{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+
+.preview-frame{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:#fff}
+.preview-frame iframe{width:100%;height:600px;border:none}
+
+.toast{position:fixed;bottom:24px;right:24px;z-index:10001;background:var(--card);border-radius:var(--radius);padding:14px 22px;box-shadow:var(--shadow-lg);border:1px solid var(--border);display:flex;align-items:center;gap:10px;font-size:.9rem;font-weight:500;transform:translateY(100px);opacity:0;transition:var(--transition);max-width:400px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-left:4px solid #16a34a}.toast.success i{color:#16a34a}
+.toast.error{border-left:4px solid #dc3545}.toast.error i{color:#dc3545}
+.toast.info{border-left:4px solid var(--accent)}.toast.info i{color:var(--accent)}
+
+.date-filter{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.date-filter input[type="date"]{padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.85rem;background:var(--card);color:var(--text);outline:none;font-family:'Inter',sans-serif;touch-action:manipulation}
+.date-filter input[type="date"]:focus{border-color:var(--gold)}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state i{font-size:3rem;opacity:.2;margin-bottom:12px;display:block}
+.empty-state p{font-size:.95rem}
+
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;display:none;opacity:0;transition:opacity .3s}
+.sidebar-overlay.show{display:block;opacity:1}
+
+.modal-overlay{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--card);border-radius:var(--radius-lg);padding:28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:modalUp .25s ease}
+@keyframes modalUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-box p{margin-bottom:18px;font-size:.95rem;color:var(--text);font-weight:600;line-height:1.5}
+.modal-box .modal-input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;background:var(--bg);color:var(--text);outline:none;font-family:'Inter',sans-serif;margin-bottom:16px;touch-action:manipulation}
+.modal-box .modal-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-glow)}
+.modal-btns{display:flex;gap:10px}
+.modal-btns button{flex:1;padding:12px;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;font-family:'Inter',sans-serif;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.modal-btn-cancel{background:var(--bg);border:1px solid var(--border);color:var(--muted)}
+.modal-btn-cancel:hover{background:var(--border)}
+.modal-btn-danger{background:#dc3545;border:none;color:#fff}
+.modal-btn-danger:hover{background:#a71d2a}
+.modal-btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-light));border:none;color:#fff}
+.modal-btn-primary:hover{box-shadow:0 4px 15px rgba(26,58,92,0.3)}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hamburger{display:flex!important}
+  .chart-grid{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .item{flex-direction:column}
+  .item-img{width:100%;height:180px}
+  .item-actions{width:100%}
+  .item-actions .btn{flex:1}
+}
+@media(max-width:600px){
+  .content{padding:16px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .topbar{padding:10px 16px}
+  .topbar-title{font-size:1.1rem}
+  .online-badge span.badge-text{display:none}
+  .panel{padding:20px}
+  .date-filter{flex-direction:column;align-items:stretch}
+  .stat-card-value{font-size:1.4rem}
+  .modal-box{padding:22px;margin:0 10px}
+}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo"><img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg" alt="PLC"></div>
+    <h2>PLC Dashboard</h2>
+    <p>Sign in to access the admin panel</p>
+    <input type="email" id="loginEmail" placeholder="Admin Email" autocomplete="email">
+    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+    <button class="login-btn" id="loginBtn">Sign In</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<div id="dashboard">
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo"><img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg" alt="PLC"></div>
+    <div class="sidebar-brand"><h2>PLC Dashboard</h2><small>Admin Panel</small></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section"><div class="nav-section-label">Analytics</div>
+      <div class="nav-item active" data-page="overview"><i class="fas fa-chart-pie"></i> Overview</div>
+      <div class="nav-item" data-page="audience"><i class="fas fa-globe-africa"></i> Audience</div>
+      <div class="nav-item" data-page="pages"><i class="fas fa-file-alt"></i> Pages</div>
+      <div class="nav-item" onclick="window.location.href='finance.html'"><i class="fas fa-credit-card"></i> Financing</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Content</div>
+      <div class="nav-item" data-page="news"><i class="fas fa-newspaper"></i> News <span class="nav-badge" id="newsBadge">0</span></div>
+      <div class="nav-item" data-page="events"><i class="fas fa-calendar-alt"></i> Events <span class="nav-badge" id="eventsBadge">0</span></div>
+      <div class="nav-item" data-page="media"><i class="fas fa-images"></i> Media <span class="nav-badge" id="mediaBadge">0</span></div>
+      <div class="nav-item" data-page="kids"><i class="fas fa-child"></i> Kids Gallery</div>
+      <div class="nav-item" data-page="devotions"><i class="fas fa-headphones"></i> Devotions</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Tools</div>
+      <div class="nav-item" data-page="message"><i class="fas fa-bullhorn"></i> Scrolling Message</div>
+      <div class="nav-item" data-page="preview"><i class="fas fa-eye"></i> Live Preview</div>
+     <div class="nav-item" onclick="window.location.href='developer.html'"><i class="fas fa-code"></i> Developer</div>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar">AD</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name" id="adminName">Admin</div><div class="sidebar-user-role">Administrator</div></div>
+      <button class="sidebar-logout" id="logoutBtn" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+      <div><div class="topbar-title" id="topbarTitle">Overview</div><div class="topbar-breadcrumb" id="topbarBreadcrumb">Analytics / Overview</div></div>
+    </div>
+    <div class="topbar-right"><div class="online-badge"><div class="online-dot"></div><span class="badge-text">Online: </span><strong id="onlineCount">0</strong></div></div>
+  </div>
+  <div class="content">
+
+    <div class="page active" id="page-overview">
+      <div class="date-filter" style="margin-bottom:20px;">
+        <i class="fas fa-calendar" style="color:var(--gold);"></i>
+        <input type="date" id="filterDate">
+        <button class="btn btn-ghost btn-sm" id="refreshBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+        <button class="btn btn-ghost btn-sm" id="todayBtn">Today</button>
+        <button class="btn btn-ghost btn-sm" id="yesterdayBtn">Yesterday</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card blue"><div class="stat-card-icon"><i class="fas fa-eye"></i></div><div class="stat-card-value" id="statViews">0</div><div class="stat-card-label">Page Views</div></div>
+        <div class="stat-card gold"><div class="stat-card-icon"><i class="fas fa-users"></i></div><div class="stat-card-value" id="statUnique">0</div><div class="stat-card-label">Unique Visitors</div></div>
+        <div class="stat-card green"><div class="stat-card-icon"><i class="fas fa-user-plus"></i></div><div class="stat-card-value" id="statNew">0</div><div class="stat-card-label">New Visitors</div></div>
+        <div class="stat-card blue"><div class="stat-card-icon"><i class="fas fa-user-check"></i></div><div class="stat-card-value" id="statReturning">0</div><div class="stat-card-label">Returning Visitors</div></div>
+        <div class="stat-card gold"><div class="stat-card-icon"><i class="fas fa-mouse-pointer"></i></div><div class="stat-card-value" id="statClicks">0</div><div class="stat-card-label">Total Clicks</div></div>
+        <div class="stat-card green"><div class="stat-card-icon"><i class="fas fa-clock"></i></div><div class="stat-card-value" id="statDuration">0m</div><div class="stat-card-label">Avg. Session</div></div>
+        <div class="stat-card blue"><div class="stat-card-icon"><i class="fas fa-layer-group"></i></div><div class="stat-card-value" id="statSessions">0</div><div class="stat-card-label">Sessions</div></div>
+        <div class="stat-card red"><div class="stat-card-icon"><i class="fas fa-percentage"></i></div><div class="stat-card-value" id="statBounce">0%</div><div class="stat-card-label">Bounce Rate</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card"><h3><i class="fas fa-chart-line"></i> Page Views (Last 14 Days)</h3><div class="chart-wrap"><canvas id="viewsChart"></canvas></div></div>
+        <div class="chart-card"><h3><i class="fas fa-mobile-alt"></i> Devices</h3><div class="chart-wrap"><canvas id="devicesChart"></canvas></div></div>
+        <div class="chart-card"><h3><i class="fas fa-chart-bar"></i> Browsers</h3><div class="chart-wrap"><canvas id="browsersChart"></canvas></div></div>
+        <div class="chart-card"><h3><i class="fas fa-laptop"></i> Operating Systems</h3><div class="chart-wrap"><canvas id="osChart"></canvas></div></div>
+        <div class="chart-card chart-full"><h3><i class="fas fa-link"></i> Traffic Sources</h3><div class="chart-wrap" style="height:200px;"><canvas id="referrersChart"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-audience">
+      <div class="chart-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="chart-card"><h3><i class="fas fa-globe-africa"></i> Countries Reached</h3><div class="country-list" id="countriesList"></div></div>
+        <div class="chart-card"><h3><i class="fas fa-map-marker-alt"></i> Distribution</h3><div class="chart-wrap"><canvas id="countriesChart"></canvas></div></div>
+      </div>
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-history"></i> Recent Visitors</div></div><div class="items-list" id="recentVisitorsList" style="max-height:400px;"></div></div>
+    </div>
+
+    <div class="page" id="page-pages">
+      <div class="chart-card chart-full"><h3><i class="fas fa-file-alt"></i> Page Views Breakdown</h3><table class="data-table" id="pagesTable"><thead><tr><th>Page</th><th>Views</th><th>Distribution</th></tr></thead><tbody></tbody></table></div>
+      <div class="chart-card chart-full" style="margin-top:18px;"><h3><i class="fas fa-chart-bar"></i> Pages Chart</h3><div class="chart-wrap" style="height:250px;"><canvas id="pagesChart"></canvas></div></div>
+    </div>
+
+    <div class="page" id="page-news">
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-plus-circle"></i> Add / Edit News</div></div><input type="hidden" id="newsId"><div class="form-grid"><div class="form-group"><label>Title</label><input id="newsTitle" placeholder="News Title"></div><div class="form-group"><label>Date</label><input type="date" id="newsDate"></div><div class="form-group full"><label>Content</label><textarea id="newsContent" placeholder="News Content"></textarea></div><div class="form-group full"><button class="btn btn-primary" id="saveNewsBtn"><i class="fas fa-save"></i> Save News</button></div></div></div>
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-list"></i> All News</div></div><div class="items-list" id="newsList"></div></div>
+    </div>
+
+    <div class="page" id="page-events">
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-plus-circle"></i> Add Event Image</div></div><input type="hidden" id="eventStoredUrl"><div class="form-grid"><div class="form-group"><label>Title (optional)</label><input id="eventTitleInput" placeholder="e.g. Easter Conference 2025"></div><div class="form-group"></div><div class="form-group full"><label>Choose Image</label><div class="file-picker-zone" id="eventPickerZone"><i class="fas fa-camera"></i><p>Tap to pick from gallery</p><small>JPG, PNG, WebP — Max 10MB</small><input type="file" id="eventFile" accept="image/*"></div><div class="upload-inline-preview" id="eventPreview"><img class="preview-img" id="eventPreviewImg" src="" alt=""><div class="preview-info"><span id="eventPreviewStatus">Ready</span><button class="preview-remove" id="eventRemoveBtn"><i class="fas fa-times-circle"></i></button></div></div><div class="upload-progress-inline" id="eventProgress"><div class="upload-progress-bar"><div class="upload-progress-fill" id="eventProgressFill"></div></div><div class="upload-progress-text" id="eventProgressText">0%</div></div><div class="url-fallback"><button class="url-fallback-toggle" id="eventUrlToggle"><i class="fas fa-link"></i> Or paste a URL instead</button><input id="eventUrlInput" placeholder="https://example.com/image.jpg"></div></div><div class="form-group full"><button class="btn btn-gold" id="eventAddBtn" disabled><i class="fas fa-plus"></i> Add Event</button></div></div></div>
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-images"></i> All Events</div></div><div class="items-list" id="eventList"></div></div>
+    </div>
+
+    <div class="page" id="page-media">
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-plus-circle"></i> Add Media Image</div></div><input type="hidden" id="mediaStoredUrl"><div class="form-grid"><div class="form-group full"><label>Choose Image</label><div class="file-picker-zone" id="mediaPickerZone"><i class="fas fa-camera"></i><p>Tap to pick from gallery</p><small>JPG, PNG, WebP — Max 10MB</small><input type="file" id="mediaFile" accept="image/*"></div><div class="upload-inline-preview" id="mediaPreview"><img class="preview-img" id="mediaPreviewImg" src="" alt=""><div class="preview-info"><span id="mediaPreviewStatus">Ready</span><button class="preview-remove" id="mediaRemoveBtn"><i class="fas fa-times-circle"></i></button></div></div><div class="upload-progress-inline" id="mediaProgress"><div class="upload-progress-bar"><div class="upload-progress-fill" id="mediaProgressFill"></div></div><div class="upload-progress-text" id="mediaProgressText">0%</div></div><div class="url-fallback"><button class="url-fallback-toggle" id="mediaUrlToggle"><i class="fas fa-link"></i> Or paste a URL instead</button><input id="mediaUrlInput" placeholder="https://example.com/image.jpg"></div></div><div class="form-group full"><button class="btn btn-gold" id="mediaAddBtn" disabled><i class="fas fa-plus"></i> Add Media</button></div></div></div>
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-images"></i> All Media</div></div><div class="items-list" id="mediaList"></div></div>
+    </div>
+
+    <div class="page" id="page-kids">
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-plus-circle"></i> Add Kids Image</div></div><input type="hidden" id="kidsStoredUrl"><div class="form-grid"><div class="form-group"><label>Caption (optional)</label><input id="kidsCaption" placeholder="Image caption"></div><div class="form-group"></div><div class="form-group full"><label>Choose Image</label><div class="file-picker-zone" id="kidsPickerZone"><i class="fas fa-camera"></i><p>Tap to pick from gallery</p><small>JPG, PNG, WebP — Max 10MB</small><input type="file" id="kidsFile" accept="image/*"></div><div class="upload-inline-preview" id="kidsPreview"><img class="preview-img" id="kidsPreviewImg" src="" alt=""><div class="preview-info"><span id="kidsPreviewStatus">Ready</span><button class="preview-remove" id="kidsRemoveBtn"><i class="fas fa-times-circle"></i></button></div></div><div class="upload-progress-inline" id="kidsProgress"><div class="upload-progress-bar"><div class="upload-progress-fill" id="kidsProgressFill"></div></div><div class="upload-progress-text" id="kidsProgressText">0%</div></div><div class="url-fallback"><button class="url-fallback-toggle" id="kidsUrlToggle"><i class="fas fa-link"></i> Or paste a URL instead</button><input id="kidsUrlInput" placeholder="https://example.com/image.jpg"></div></div><div class="form-group full"><button class="btn btn-gold" id="kidsAddBtn" disabled><i class="fas fa-plus"></i> Add Image</button></div></div></div>
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-child"></i> Kids Gallery</div></div><div class="items-list" id="kidsList"></div></div>
+    </div>
+
+    <div class="page" id="page-devotions">
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-plus-circle"></i> Add Devotion</div></div><input type="hidden" id="devotionStoredUrl"><div class="form-grid"><div class="form-group"><label>Title / Comment</label><input id="devotionTitle" placeholder="Devotion Title"></div><div class="form-group"><label>Date</label><input type="date" id="devotionDate"></div><div class="form-group full"><label>Choose Audio File</label><div class="file-picker-zone" id="devotionPickerZone"><i class="fas fa-headphones"></i><p>Tap to pick an audio file</p><small>MP3, M4A, OGG — Max 50MB</small><input type="file" id="devotionFile" accept="audio/*"></div><div class="upload-inline-preview" id="devotionPreview"><audio controls class="preview-audio" id="devotionPreviewAudio"></audio><div class="preview-info"><span id="devotionPreviewStatus">Ready</span><button class="preview-remove" id="devotionRemoveBtn"><i class="fas fa-times-circle"></i></button></div></div><div class="upload-progress-inline" id="devotionProgress"><div class="upload-progress-bar"><div class="upload-progress-fill" id="devotionProgressFill"></div></div><div class="upload-progress-text" id="devotionProgressText">0%</div></div><div class="url-fallback"><button class="url-fallback-toggle" id="devotionUrlToggle"><i class="fas fa-link"></i> Or paste an audio URL instead</button><input id="devotionUrlInput" placeholder="https://example.com/audio.mp3"></div></div><div class="form-group full"><button class="btn btn-gold" id="devotionAddBtn" disabled><i class="fas fa-plus"></i> Add Devotion</button></div></div></div>
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-headphones"></i> All Devotions</div></div><div class="items-list" id="devotionList"></div></div>
+    </div>
+
+    <div class="page" id="page-message">
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-bullhorn"></i> Scrolling Message</div></div><div class="form-grid"><div class="form-group full"><label>Message Text</label><textarea id="scrollMsg" placeholder="Enter the scrolling message text..." style="min-height:80px;"></textarea></div><div class="form-group"><label>Status</label><select id="scrollMsgEnabled"><option value="true">Enabled</option><option value="false">Disabled</option></select></div><div class="form-group" style="display:flex;align-items:flex-end;"><button class="btn btn-gold" id="saveMsgBtn" style="width:100%;"><i class="fas fa-save"></i> Save Message</button></div></div><div style="margin-top:12px;"><label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;">Preview:</label><div class="msg-preview" id="msgPreview"><span>No message set</span></div></div></div>
+    </div>
+
+    <div class="page" id="page-preview">
+      <div class="panel"><div class="panel-header"><div class="panel-title"><i class="fas fa-eye"></i> Live Website Preview</div><button class="btn btn-ghost btn-sm" id="previewRefreshBtn"><i class="fas fa-sync-alt"></i> Refresh</button></div><div class="preview-frame"><iframe id="livePreview" src="https://purposefullivingchurchplc.org/"></iframe></div></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script>
+var firebaseConfig={apiKey:"AIzaSyDaFhZ_ykNSmNXKCh6ye1M1vgoW6VhrdLU",authDomain:"plc-church.firebaseapp.com",databaseURL:"https://plc-church-default-rtdb.firebaseio.com",projectId:"plc-church",storageBucket:"plc-church.firebasestorage.app",messagingSenderId:"508729736386",appId:"1:508729736386:web:4f6b37701e7ff9efaecf5b"};
+firebase.initializeApp(firebaseConfig);
+var db=firebase.database(),auth=firebase.auth(),storageRef=null;
+try{storageRef=firebase.storage();}catch(e){}
+var IMGBB_KEY="47f7dff148164ff31a5947e6ee635363",_cache={};
+
+/* Custom Modal (replaces confirm/prompt for mobile) */
+function showModal(html){var ov=document.createElement('div');ov.className='modal-overlay';ov.innerHTML='<div class="modal-box">'+html+'</div>';document.body.appendChild(ov);return ov;}
+function closeModal(ov){if(ov&&ov.parentNode)ov.parentNode.removeChild(ov);}
+function customConfirm(message,onYes){var ov=showModal('<p>'+esc(message)+'</p><div class="modal-btns"><button class="modal-btn-cancel" id="_mC">Cancel</button><button class="modal-btn-danger" id="_mY">Delete</button></div>');document.getElementById('_mY').addEventListener('click',function(){closeModal(ov);onYes();});document.getElementById('_mC').addEventListener('click',function(){closeModal(ov);});ov.addEventListener('click',function(e){if(e.target===ov)closeModal(ov);});}
+function customPrompt(message,defaultVal,onOk){var ov=showModal('<p style="text-align:left;">'+esc(message)+'</p><input class="modal-input" id="_mI" type="text"><div class="modal-btns"><button class="modal-btn-cancel" id="_mC">Cancel</button><button class="modal-btn-primary" id="_mO">OK</button></div>');var inp=document.getElementById('_mI');inp.value=defaultVal||'';setTimeout(function(){inp.focus();inp.select();},100);function finish(v){closeModal(ov);onOk(v);}document.getElementById('_mO').addEventListener('click',function(){finish(inp.value);});document.getElementById('_mC').addEventListener('click',function(){finish(null);});ov.addEventListener('click',function(e){if(e.target===ov)finish(null);});inp.addEventListener('keydown',function(e){if(e.key==='Enter')finish(inp.value);if(e.key==='Escape')finish(null);});}
+
+/* Auth */
+document.getElementById('loginBtn').addEventListener('click',handleLogin);
+document.getElementById('loginPassword').addEventListener('keydown',function(e){if(e.key==='Enter')handleLogin();});
+document.getElementById('logoutBtn').addEventListener('click',function(){auth.signOut().then(function(){location.reload();});});
+function handleLogin(){var em=document.getElementById('loginEmail').value.trim(),pw=document.getElementById('loginPassword').value,er=document.getElementById('loginError');if(!em||!pw){er.textContent='Please fill in all fields';er.style.display='block';return;}er.style.display='none';auth.signInWithEmailAndPassword(em,pw).then(function(r){document.getElementById('adminName').textContent=r.user.email.split('@')[0];document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';initDashboard();}).catch(function(e){er.textContent=e.message;er.style.display='block';});}
+
+/* Navigation */
+var pageTitles={overview:['Overview','Analytics / Overview'],audience:['Audience','Analytics / Audience'],pages:['Pages','Analytics / Pages'],news:['News','Content / News'],events:['Events','Content / Events'],media:['Media','Content / Media'],kids:['Kids Gallery','Content / Kids Gallery'],devotions:['Devotions','Content / Devotions'],message:['Scrolling Message','Tools / Scrolling Message'],preview:['Live Preview','Tools / Live Preview']};
+document.querySelectorAll('.nav-item').forEach(function(n){n.addEventListener('click',function(){var pg=this.dataset.page;if(!pg)return;document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active');});this.classList.add('active');document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active');});var el=document.getElementById('page-'+pg);if(el)el.classList.add('active');var t=pageTitles[pg]||[pg,pg];document.getElementById('topbarTitle').textContent=t[0];document.getElementById('topbarBreadcrumb').textContent=t[1];closeSidebar();});});
+
+/* Sidebar */
+document.getElementById('hamburgerBtn').addEventListener('click',toggleSidebar);
+document.getElementById('sidebarOverlay').addEventListener('click',closeSidebar);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSidebar();});
+function toggleSidebar(){var sb=document.getElementById('sidebar'),ov=document.getElementById('sidebarOverlay');if(sb.classList.contains('open')){closeSidebar();}else{sb.classList.add('open');ov.style.display='block';requestAnimationFrame(function(){ov.classList.add('show');});}}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');var ov=document.getElementById('sidebarOverlay');ov.classList.remove('show');setTimeout(function(){ov.style.display='none';},300);}
+
+/* Toast */
+var toastTimer;
+function showToast(msg,type){type=type||'success';var t=document.getElementById('toast'),ic={success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle'};t.className='toast '+type;t.querySelector('i').className='fas '+(ic[type]||ic.info);document.getElementById('toastMsg').textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},3500);}
+
+/* ============================================================
+   CHARTS — property key "data" is a string, NOT a variable.
+   {data: vals} means "property named 'data' = value of vals"
+   This is SAFE and is what Chart.js requires.
+   ============================================================ */
+var cC={accent:'#1a3a5c',accentL:'#2a5a8c',gold:'#c8952e',goldL:'#e8b84a',green:'#16a34a',red:'#dc3545',purple:'#7c3aed',teal:'#0d9488',orange:'#ea580c',pink:'#db2777',indigo:'#4f46e5',lime:'#65a30d'};
+var cArr=Object.values(cC);
+var cDef={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Inter',size:12},padding:14,usePointStyle:true,pointStyle:'circle'}}}};
+var vCI=null,dCI=null,bCI=null,oCI=null,rCI=null,coCI=null,pCI=null;
+function destroyChart(c){if(c){c.destroy();}return null;}
+
+function mkViews(labels,vals){
+  vCI=destroyChart(vCI);
+  vCI=new Chart(document.getElementById('viewsChart'),{
+    type:'line',
+    data:{labels:labels,datasets:[{label:'Page Views',data:vals,borderColor:cC.gold,backgroundColor:'rgba(200,149,46,0.1)',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:cC.gold,pointBorderWidth:0}]},
+    options:Object.assign({},cDef,{scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}}})
+  });
+}
+function mkDevices(labels,vals){
+  dCI=destroyChart(dCI);
+  dCI=new Chart(document.getElementById('devicesChart'),{
+    type:'doughnut',
+    data:{labels:labels,datasets:[{data:vals,backgroundColor:[cC.accent,cC.gold,cC.green,cC.purple],borderWidth:0,hoverOffset:8}]},
+    options:Object.assign({},cDef,{cutout:'65%'})
+  });
+}
+function mkBrowsers(labels,vals){
+  bCI=destroyChart(bCI);
+  bCI=new Chart(document.getElementById('browsersChart'),{
+    type:'bar',
+    data:{labels:labels,datasets:[{label:'Sessions',data:vals,backgroundColor:cArr.slice(0,labels.length),borderRadius:6,borderSkipped:false}]},
+    options:Object.assign({},cDef,{indexAxis:'y',scales:{x:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.04)'}},y:{grid:{display:false}}},plugins:{legend:{display:false}}})
+  });
+}
+function mkOS(labels,vals){
+  oCI=destroyChart(oCI);
+  oCI=new Chart(document.getElementById('osChart'),{
+    type:'doughnut',
+    data:{labels:labels,datasets:[{data:vals,backgroundColor:cArr.slice(0,labels.length),borderWidth:0,hoverOffset:8}]},
+    options:Object.assign({},cDef,{cutout:'55%'})
+  });
+}
+function mkReferrers(labels,vals){
+  rCI=destroyChart(rCI);
+  rCI=new Chart(document.getElementById('referrersChart'),{
+    type:'bar',
+    data:{labels:labels,datasets:[{label:'Visits',data:vals,backgroundColor:cC.accent,borderRadius:6,borderSkipped:false}]},
+    options:Object.assign({},cDef,{scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}})
+  });
+}
+function mkCountries(labels,vals){
+  coCI=destroyChart(coCI);
+  coCI=new Chart(document.getElementById('countriesChart'),{
+    type:'polarArea',
+    data:{labels:labels,datasets:[{data:vals,backgroundColor:cArr.slice(0,labels.length).map(function(c){return c+'88';}),borderColor:cArr.slice(0,labels.length),borderWidth:1}]},
+    options:Object.assign({},cDef,{scales:{r:{ticks:{display:false},grid:{color:'rgba(0,0,0,0.05)'}}}})
+  });
+}
+function mkPages(labels,vals){
+  pCI=destroyChart(pCI);
+  pCI=new Chart(document.getElementById('pagesChart'),{
+    type:'bar',
+    data:{labels:labels,datasets:[{label:'Views',data:vals,backgroundColor:cC.accent,borderRadius:6,borderSkipped:false}]},
+    options:Object.assign({},cDef,{scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}},plugins:{legend:{display:false}}})
+  });
+}
+
+/* Analytics */
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+document.getElementById('refreshBtn').addEventListener('click',loadAnalyticsForDate);
+document.getElementById('todayBtn').addEventListener('click',function(){document.getElementById('filterDate').value=todayStr();loadAnalyticsForDate();});
+document.getElementById('yesterdayBtn').addEventListener('click',function(){var d=new Date();d.setDate(d.getDate()-1);document.getElementById('filterDate').value=d.toISOString().slice(0,10);loadAnalyticsForDate();});
+document.getElementById('filterDate').addEventListener('change',loadAnalyticsForDate);
+
+function loadAnalyticsForDate(){
+  var date=document.getElementById('filterDate').value||todayStr();
+  db.ref('Analysis/daily/'+date).once('value').then(function(snap){
+    var raw=snap.val()||{},m=raw.metrics||{};
+    document.getElementById('statViews').textContent=(m.pageViews||0).toLocaleString();
+    document.getElementById('statUnique').textContent=(m.uniqueVisitors||0).toLocaleString();
+    document.getElementById('statNew').textContent=(m.newVisitors||0).toLocaleString();
+    document.getElementById('statReturning').textContent=(m.returningVisitors||0).toLocaleString();
+    document.getElementById('statClicks').textContent=(m.totalClicks||0).toLocaleString();
+    document.getElementById('statSessions').textContent=(m.sessionCount||0).toLocaleString();
+    var dur=m.totalDuration||0,sess=m.sessionCount||0;
+    document.getElementById('statDuration').textContent=(sess>0?(dur/sess/60).toFixed(1):'0')+'m';
+    var bounce=sess>0?Math.round(((sess-(m.uniqueVisitors||0))/sess)*100):0;
+    document.getElementById('statBounce').textContent=Math.min(100,Math.max(0,bounce))+'%';
+    var devs=raw.devices||{},devL=Object.keys(devs).sort(function(a,b){return devs[b]-devs[a];});
+    mkDevices(devL,devL.map(function(k){return devs[k];}));
+    var brs=raw.browsers||{},brL=Object.keys(brs).sort(function(a,b){return brs[b]-brs[a];}).slice(0,6);
+    mkBrowsers(brL,brL.map(function(k){return brs[k];}));
+    var oss=raw.os||{},osL=Object.keys(oss).sort(function(a,b){return oss[b]-oss[a];}).slice(0,6);
+    mkOS(osL,osL.map(function(k){return oss[k];}));
+    var refs=raw.referrers||{},rfL=Object.keys(refs).sort(function(a,b){return refs[b]-refs[a];}).slice(0,8);
+    mkReferrers(rfL,rfL.map(function(k){return refs[k];}));
+    var pages=raw.pages||{},pgKeys=Object.keys(pages).sort(function(a,b){return pages[b]-pages[a];});
+    var maxPV=1;pgKeys.forEach(function(k){if(pages[k]>maxPV)maxPV=pages[k];});
+    var tbody=document.querySelector('#pagesTable tbody');tbody.innerHTML='';
+    pgKeys.forEach(function(pg){var v=pages[pg];tbody.innerHTML+='<tr><td class="page-name">'+esc(pg)+'</td><td><strong>'+v+'</strong></td><td><div class="table-bar"><div class="table-bar-fill" style="width:'+(v/maxPV*100).toFixed(1)+'%"></div></div></td></tr>';});
+    mkPages(pgKeys.slice(0,8),pgKeys.slice(0,8).map(function(k){return pages[k];}));
+  }).catch(function(){});
+  load14DayTrend();
+}
+function load14DayTrend(){
+  var labels=[],vals=[],promises=[];
+  for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var ds=d.toISOString().slice(0,10);labels.push(d.toLocaleDateString('en',{month:'short',day:'numeric'}));(function(ds2){promises.push(db.ref('Analysis/daily/'+ds2+'/metrics/pageViews').once('value').then(function(s){vals.push(s.val()||0);}));})(ds);}
+  Promise.all(promises).then(function(){mkViews(labels,vals);});
+}
+db.ref('Analysis/realtime/onlineCount').on('value',function(s){document.getElementById('onlineCount').textContent=s.val()||0;});
+
+function loadCountries(){
+  db.ref('Analysis/countries').once('value').then(function(snap){
+    var list=document.getElementById('countriesList'),countries=[];
+    snap.forEach(function(c){var d=c.val();countries.push({name:c.key,visits:d.visits||0,flag:d.flag||'\uD83C\uDF0D',cities:d.cities||{}});});
+    countries.sort(function(a,b){return b.visits-a.visits;});
+    var maxV=1;countries.forEach(function(c){if(c.visits>maxV)maxV=c.visits;});
+    list.innerHTML='';
+    countries.forEach(function(c){
+      var cl=Object.keys(c.cities).sort(function(a,b){return c.cities[b]-c.cities[a];}).slice(0,3).map(function(city){return esc(city)+' ('+c.cities[city]+')';}).join(', ');
+      list.innerHTML+='<div class="country-item"><span class="country-flag">'+c.flag+'</span><div style="flex:1;min-width:0;"><div class="country-name">'+esc(c.name)+'</div>'+(cl?'<div style="font-size:.75rem;color:var(--muted);margin-top:1px;">'+cl+'</div>':'')+'<div class="country-bar"><div class="country-bar-fill" style="width:'+(c.visits/maxV*100).toFixed(1)+'%"></div></div></div><span class="country-visits">'+c.visits.toLocaleString()+'</span></div>';
+    });
+    if(!countries.length)list.innerHTML='<div class="empty-state"><i class="fas fa-globe"></i><p>No country data yet</p></div>';
+    mkCountries(countries.slice(0,8).map(function(c){return c.name;}),countries.slice(0,8).map(function(c){return c.visits;}));
+  });
+}
+function loadRecentVisitors(){
+  db.ref('Analysis/visitors').orderByChild('lastVisit').limitToLast(20).once('value').then(function(snap){
+    var list=document.getElementById('recentVisitorsList'),visitors=[];
+    snap.forEach(function(c){visitors.push(c.val());});visitors.reverse();list.innerHTML='';
+    visitors.forEach(function(v){list.innerHTML+='<div class="item" style="padding:12px 16px;"><div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem;flex-shrink:0;">'+esc((v.country||'?').substring(0,2).toUpperCase())+'</div><div class="item-body"><div class="item-title">'+esc(v.country||'Unknown')+' '+(v.flag||'')+'</div><div class="item-meta">'+esc(v.device||'Unknown')+' &middot; '+esc(v.browser||'')+' '+esc(v.os||'')+'</div><div class="item-desc" style="font-size:.78rem;">Last: '+timeAgo(v.lastVisit)+' &middot; Page: '+esc(v.lastPage||v.lastPath||'/')+'</div></div></div>';});
+    if(!visitors.length)list.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>No visitor data yet</p></div>';
+  });
+}
+function timeAgo(ts){if(!ts)return'Unknown';var s=Math.floor((Date.now()-ts)/1000);if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+
+/* Image Upload Engine */
+function compressImage(file,quality){quality=quality||0.75;return new Promise(function(resolve){var img=new Image(),reader=new FileReader();reader.onload=function(e){img.src=e.target.value;};img.onload=function(){var c=document.createElement('canvas'),ctx=c.getContext('2d'),scale=Math.min(1400/img.width,1);c.width=img.width*scale;c.height=img.height*scale;ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(function(b){resolve(b);},'image/jpeg',quality);};reader.readAsDataURL(file);});}
+function uploadImageToImgbb(file,fillEl,textEl,statusEl,storedEl,btnEl,btnLabel){
+  btnLabel=btnLabel||'Add';btnEl.disabled=true;btnEl.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';fillEl.style.width='10%';textEl.textContent='Compressing...';statusEl.textContent='Compressing...';
+  compressImage(file).then(function(compressed){fillEl.style.width='40%';textEl.textContent='40%';statusEl.textContent='Uploading...';var fd=new FormData();fd.append('image',compressed);var prog=40,progInt=setInterval(function(){prog=Math.min(prog+Math.random()*8,92);fillEl.style.width=prog+'%';textEl.textContent=Math.round(prog)+'%';},350);fetch('https://api.imgbb.com/1/upload?key='+IMGBB_KEY,{method:'POST',body:fd}).then(function(r){return r.json();}).then(function(result){clearInterval(progInt);if(!result.success){fillEl.style.width='0%';statusEl.innerHTML='<span style="color:#dc3545;">Failed</span>';btnEl.innerHTML='<i class="fas fa-plus"></i> '+btnLabel;showToast('Upload failed','error');return;}fillEl.style.width='100%';textEl.textContent='100%';statusEl.innerHTML='<span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Upload complete</span>';storedEl.value=result.data.url;btnEl.disabled=false;btnEl.innerHTML='<i class="fas fa-plus"></i> '+btnLabel;showToast('Image uploaded!');}).catch(function(err){clearInterval(progInt);fillEl.style.width='0%';statusEl.innerHTML='<span style="color:#dc3545;">'+err.message+'</span>';btnEl.innerHTML='<i class="fas fa-plus"></i> '+btnLabel;showToast('Upload failed','error');});});
+}
+
+/* Audio Upload Engine */
+function uploadAudioToStorage(file,fillEl,textEl,statusEl,storedEl,btnEl){
+  if(!storageRef){statusEl.innerHTML='<span style="color:#dc3545;">Storage not configured</span>';showToast('Firebase Storage not available','error');return;}
+  btnEl.disabled=true;btnEl.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';statusEl.textContent='Uploading audio...';
+  var ref=storageRef.ref('devotions/'+Date.now()+'_'+file.name),task=ref.put(file);
+  task.on('state_changed',function(snap){var p=Math.round((snap.bytesTransferred/snap.totalBytes)*100);fillEl.style.width=p+'%';textEl.textContent=p+'%';statusEl.textContent='Uploading... '+p+'%';},function(err){statusEl.innerHTML='<span style="color:#dc3545;">'+err.message+'</span>';fillEl.style.width='0%';btnEl.disabled=false;btnEl.innerHTML='<i class="fas fa-plus"></i> Add Devotion';showToast('Audio upload failed','error');},function(){ref.getDownloadURL().then(function(url){storedEl.value=url;fillEl.style.width='100%';textEl.textContent='100%';statusEl.innerHTML='<span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Upload complete</span>';btnEl.disabled=false;btnEl.innerHTML='<i class="fas fa-plus"></i> Add Devotion';checkDevotionReady();showToast('Audio uploaded!');}).catch(function(){statusEl.innerHTML='<span style="color:#dc3545;">Could not get URL</span>';btnEl.disabled=false;btnEl.innerHTML='<i class="fas fa-plus"></i> Add Devotion';});});
+}
+
+/* URL Fallback */
+function setupUrlToggle(toggleId,inputId,storedId,btnId){
+  document.getElementById(toggleId).addEventListener('click',function(){var inp=document.getElementById(inputId);if(inp.style.display==='block'){inp.style.display='none';inp.value='';}else{inp.style.display='block';inp.focus();}});
+  document.getElementById(inputId).addEventListener('input',function(){document.getElementById(storedId).value=this.value.trim();document.getElementById(btnId).disabled=!this.value.trim();if(btnId==='devotionAddBtn')checkDevotionReady();});
+}
+
+/* Upload sections setup helpers */
+function setupImageSection(fileId,previewId,previewImgId,progressId,progressFillId,progressTextId,previewStatusId,removeBtnId,storedUrlId,addBtnId,urlToggleId,urlInputId,pickerZoneId,btnLabel,saveFn,resetFn){
+  document.getElementById(fileId).addEventListener('change',function(){
+    var file=this.files[0];if(!file)return;
+    if(!file.type.startsWith('image/')){showToast('Please select an image','error');this.value='';return;}
+    if(file.size>10*1024*1024){showToast('File too large (max 10MB)','error');this.value='';return;}
+    document.getElementById(previewImgId).src=URL.createObjectURL(file);
+    document.getElementById(previewId).style.display='block';
+    document.getElementById(progressId).style.display='block';
+    var urlInp=document.getElementById(urlInputId);if(urlInp){urlInp.style.display='none';urlInp.value='';}
+    uploadImageToImgbb(file,document.getElementById(progressFillId),document.getElementById(progressTextId),document.getElementById(previewStatusId),document.getElementById(storedUrlId),document.getElementById(addBtnId),btnLabel);
+  });
+  document.getElementById(removeBtnId).addEventListener('click',resetFn);
+  document.getElementById(addBtnId).addEventListener('click',saveFn);
+  if(pickerZoneId){var zone=document.getElementById(pickerZoneId);zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('dragover');});zone.addEventListener('dragleave',function(){zone.classList.remove('dragover');});zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remove('dragover');if(e.dataTransfer&&e.dataTransfer.files.length){var fi=document.getElementById(fileId),dt=new DataTransfer();dt.items.add(e.dataTransfer.files[0]);fi.files=dt.files;fi.dispatchEvent(new Event('change'));}});}
+}
+
+/* Events */
+function resetEventUpload(){document.getElementById('eventFile').value='';document.getElementById('eventPreview').style.display='none';document.getElementById('eventProgress').style.display='none';document.getElementById('eventStoredUrl').value='';document.getElementById('eventAddBtn').disabled=true;document.getElementById('eventAddBtn').innerHTML='<i class="fas fa-plus"></i> Add Event';}
+function addEvent(){var url=document.getElementById('eventStoredUrl').value.trim(),title=document.getElementById('eventTitleInput').value.trim();if(!url){showToast('Pick an image or paste a URL first','error');return;}db.ref('events').push({imageUrl:url,title:title||''});document.getElementById('eventTitleInput').value='';resetEventUpload();showToast('Event added!');}
+function loadEvents(){db.ref('events').on('value',function(s){var list=document.getElementById('eventList');list.innerHTML='';var arr=[];s.forEach(function(c){var id=c.key,d=c.val();_cache[id]=d;arr.push({id:id,imageUrl:d.imageUrl,title:d.title});});document.getElementById('eventsBadge').textContent=arr.length;if(!arr.length){list.innerHTML='<div class="empty-state"><i class="fas fa-calendar"></i><p>No events yet</p></div>';return;}arr.forEach(function(c){list.innerHTML+='<div class="item"><img class="item-img" src="'+esc(c.imageUrl)+'" alt="" onerror="this.style.background=\'#eee\'"><div class="item-body"><div class="item-title">'+esc(c.title||'Event')+'</div></div><div class="item-actions"><button class="btn btn-sm btn-primary" data-id="'+c.id+'" data-action="edit"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" data-id="'+c.id+'" data-action="delete"><i class="fas fa-trash"></i></button></div></div>';});});}
+document.getElementById('eventList').addEventListener('click',function(e){var btn=e.target.closest('[data-action]');if(!btn)return;var id=btn.getAttribute('data-id'),action=btn.getAttribute('data-action');if(action==='delete'){customConfirm('Delete this event?',function(){db.ref('events/'+id).remove().then(function(){showToast('Deleted!');});});}if(action==='edit'){var d=_cache[id];if(!d)return;customPrompt('Update image URL:',d.imageUrl,function(nu){if(nu===null)return;customPrompt('Update title:',d.title||'',function(nt){if(nt===null)return;db.ref('events/'+id).update({imageUrl:nu,title:nt||''});showToast('Event updated!');});});}});
+
+/* Media */
+function resetMediaUpload(){document.getElementById('mediaFile').value='';document.getElementById('mediaPreview').style.display='none';document.getElementById('mediaProgress').style.display='none';document.getElementById('mediaStoredUrl').value='';document.getElementById('mediaAddBtn').disabled=true;document.getElementById('mediaAddBtn').innerHTML='<i class="fas fa-plus"></i> Add Media';}
+function addMedia(){var url=document.getElementById('mediaStoredUrl').value.trim();if(!url){showToast('Pick an image or paste a URL first','error');return;}db.ref('gallery').push({url:url});resetMediaUpload();showToast('Media added!');}
+function loadMedia(){db.ref('gallery').on('value',function(s){var list=document.getElementById('mediaList');list.innerHTML='';var arr=[];s.forEach(function(c){var id=c.key,d=c.val();_cache[id]=d;arr.push({id:id,url:d.url});});document.getElementById('mediaBadge').textContent=arr.length;if(!arr.length){list.innerHTML='<div class="empty-state"><i class="fas fa-images"></i><p>No media yet</p></div>';return;}arr.forEach(function(c){list.innerHTML+='<div class="item"><img class="item-img" src="'+esc(c.url)+'" alt="" onerror="this.style.background=\'#eee\'"><div class="item-actions"><button class="btn btn-sm btn-primary" data-id="'+c.id+'" data-action="edit"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" data-id="'+c.id+'" data-action="delete"><i class="fas fa-trash"></i></button></div></div>';});});}
+document.getElementById('mediaList').addEventListener('click',function(e){var btn=e.target.closest('[data-action]');if(!btn)return;var id=btn.getAttribute('data-id'),action=btn.getAttribute('data-action');if(action==='delete'){customConfirm('Delete this media?',function(){db.ref('gallery/'+id).remove().then(function(){showToast('Deleted!');});});}if(action==='edit'){var d=_cache[id];if(!d)return;customPrompt('Update URL:',d.url,function(nu){if(nu!==null){db.ref('gallery/'+id).update({url:nu});showToast('Updated!');}});}});
+
+/* Kids */
+function resetKidsUpload(){document.getElementById('kidsFile').value='';document.getElementById('kidsPreview').style.display='none';document.getElementById('kidsProgress').style.display='none';document.getElementById('kidsStoredUrl').value='';document.getElementById('kidsAddBtn').disabled=true;document.getElementById('kidsAddBtn').innerHTML='<i class="fas fa-plus"></i> Add Image';}
+function addKidsImage(){var url=document.getElementById('kidsStoredUrl').value.trim(),cap=document.getElementById('kidsCaption').value.trim();if(!url){showToast('Pick an image or paste a URL first','error');return;}db.ref('kidsGallery').push({url:url,caption:cap||'',timestamp:Date.now()});document.getElementById('kidsCaption').value='';resetKidsUpload();showToast('Kids image added!');}
+function loadKids(){db.ref('kidsGallery').on('value',function(s){var list=document.getElementById('kidsList');list.innerHTML='';if(!s.exists()){list.innerHTML='<div class="empty-state"><i class="fas fa-child"></i><p>No kids images yet</p></div>';return;}var arr=[];s.forEach(function(c){var id=c.key,d=c.val();_cache[id]=d;arr.push({id:id,url:d.url,caption:d.caption});});arr.forEach(function(c){list.innerHTML+='<div class="item"><img class="item-img" src="'+esc(c.url)+'" alt="" onerror="this.style.background=\'#eee\'"><div class="item-body"><div class="item-title">'+esc(c.caption||'Kids Image')+'</div></div><div class="item-actions"><button class="btn btn-sm btn-primary" data-id="'+c.id+'" data-action="edit"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" data-id="'+c.id+'" data-action="delete"><i class="fas fa-trash"></i></button></div></div>';});});}
+document.getElementById('kidsList').addEventListener('click',function(e){var btn=e.target.closest('[data-action]');if(!btn)return;var id=btn.getAttribute('data-id'),action=btn.getAttribute('data-action');if(action==='delete'){customConfirm('Delete this image?',function(){db.ref('kidsGallery/'+id).remove().then(function(){showToast('Deleted!');});});}if(action==='edit'){var d=_cache[id];if(!d)return;customPrompt('Update URL:',d.url,function(nu){if(nu===null)return;customPrompt('Update caption:',d.caption||'',function(nc){if(nc===null)return;db.ref('kidsGallery/'+id).update({url:nu,caption:nc||''});showToast('Updated!');});});}});
+
+/* Devotions */
+function resetDevotionUpload(){document.getElementById('devotionFile').value='';document.getElementById('devotionPreview').style.display='none';document.getElementById('devotionProgress').style.display='none';document.getElementById('devotionStoredUrl').value='';document.getElementById('devotionAddBtn').disabled=true;document.getElementById('devotionAddBtn').innerHTML='<i class="fas fa-plus"></i> Add Devotion';checkDevotionReady();}
+function checkDevotionReady(){var url=document.getElementById('devotionStoredUrl').value.trim(),title=document.getElementById('devotionTitle').value.trim(),date=document.getElementById('devotionDate').value;document.getElementById('devotionAddBtn').disabled=!(url&&title&&date);}
+document.getElementById('devotionTitle').addEventListener('input',checkDevotionReady);
+document.getElementById('devotionDate').addEventListener('input',checkDevotionReady);
+document.getElementById('devotionFile').addEventListener('change',function(){var file=this.files[0];if(!file)return;if(!file.type.startsWith('audio/')){showToast('Please select an audio file','error');this.value='';return;}if(file.size>50*1024*1024){showToast('File too large (max 50MB)','error');this.value='';return;}document.getElementById('devotionPreviewAudio').src=URL.createObjectURL(file);document.getElementById('devotionPreview').style.display='block';document.getElementById('devotionProgress').style.display='block';var urlInp=document.getElementById('devotionUrlInput');if(urlInp){urlInp.style.display='none';urlInp.value='';}uploadAudioToStorage(file,document.getElementById('devotionProgressFill'),document.getElementById('devotionProgressText'),document.getElementById('devotionPreviewStatus'),document.getElementById('devotionStoredUrl'),document.getElementById('devotionAddBtn'));});
+document.getElementById('devotionAddBtn').addEventListener('click',function(){var url=document.getElementById('devotionStoredUrl').value.trim(),title=document.getElementById('devotionTitle').value.trim(),date=document.getElementById('devotionDate').value;if(!url||!title||!date){showToast('Fill all fields','error');return;}if(url.indexOf('dropbox.com')>-1)url=url.replace('www.dropbox.com','dl.dropboxusercontent.com').replace('?dl=0','?raw=1');db.ref('devotionPrograms').push({title:title,url:url,date:date,timestamp:new Date(date).getTime()});document.getElementById('devotionTitle').value='';document.getElementById('devotionDate').value='';resetDevotionUpload();showToast('Devotion added!');});
+function loadDevotions(){db.ref('devotionPrograms').on('value',function(s){var list=document.getElementById('devotionList');list.innerHTML='';var arr=[];s.forEach(function(c){var id=c.key,d=c.val();_cache[id]=d;arr.push({id:id,title:d.title,url:d.url,date:d.date,ts:d.timestamp||0});});arr.sort(function(a,b){return b.ts-a.ts;});if(!arr.length){list.innerHTML='<div class="empty-state"><i class="fas fa-headphones"></i><p>No devotions yet</p></div>';return;}arr.forEach(function(d){list.innerHTML+='<div class="item"><div class="item-body"><div class="item-title">'+esc(d.title)+'</div><div class="item-meta">'+esc(d.date||'')+'</div><audio controls class="item-audio"><source src="'+esc(d.url)+'" type="audio/mpeg"></audio></div><div class="item-actions"><button class="btn btn-sm btn-primary" data-id="'+d.id+'" data-action="edit"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" data-id="'+d.id+'" data-action="delete"><i class="fas fa-trash"></i></button></div></div>';});});}
+document.getElementById('devotionList').addEventListener('click',function(e){var btn=e.target.closest('[data-action]');if(!btn)return;var id=btn.getAttribute('data-id'),action=btn.getAttribute('data-action');if(action==='delete'){customConfirm('Delete this devotion?',function(){db.ref('devotionPrograms/'+id).remove().then(function(){showToast('Deleted!');});});}if(action==='edit'){var d=_cache[id];if(!d)return;customPrompt('Update title:',d.title,function(nt){if(!nt)return;customPrompt('Update audio URL:',d.url,function(nu){if(!nu)return;customPrompt('Update date (YYYY-MM-DD):',d.date,function(nd){if(!nd)return;if(nu.indexOf('dropbox.com')>-1)nu=nu.replace('www.dropbox.com','dl.dropboxusercontent.com').replace('?dl=0','?raw=1');db.ref('devotionPrograms/'+id).update({title:nt,url:nu,date:nd,timestamp:new Date(nd).getTime()});showToast('Updated!');});});});}});
+
+/* News */
+document.getElementById('saveNewsBtn').addEventListener('click',function(){var title=document.getElementById('newsTitle').value||'',date=document.getElementById('newsDate').value||'',content=document.getElementById('newsContent').value||'';if(!title){showToast('Enter a title','error');return;}var id=document.getElementById('newsId').value;if(id){db.ref('news/'+id).update({title:title,date:date,content:content});}else{db.ref('news').push({title:title,date:date,content:content,views:0});}document.getElementById('newsId').value='';document.getElementById('newsTitle').value='';document.getElementById('newsDate').value='';document.getElementById('newsContent').value='';showToast(id?'News updated!':'News added!');});
+function loadNews(){db.ref('news').on('value',function(s){var list=document.getElementById('newsList');list.innerHTML='';var arr=[];s.forEach(function(c){var id=c.key,d=c.val();_cache[id]=d;var n={id:id,title:d.title,date:d.date,content:d.content,views:d.views};n.ts=n.date?new Date(n.date).getTime():0;arr.push(n);});arr.sort(function(a,b){return b.ts-a.ts;});document.getElementById('newsBadge').textContent=arr.length;if(!arr.length){list.innerHTML='<div class="empty-state"><i class="fas fa-newspaper"></i><p>No news yet</p></div>';return;}arr.forEach(function(n){list.innerHTML+='<div class="item"><div class="item-body"><div class="item-title">'+esc(n.title)+'</div><div class="item-meta">'+esc(n.date||'No date')+' &middot; Views: '+(n.views||0)+'</div><div class="item-desc">'+esc(n.content)+'</div></div><div class="item-actions"><button class="btn btn-sm btn-primary" data-id="'+n.id+'" data-action="edit"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" data-id="'+n.id+'" data-action="delete"><i class="fas fa-trash"></i></button></div></div>';});});}
+document.getElementById('newsList').addEventListener('click',function(e){var btn=e.target.closest('[data-action]');if(!btn)return;var id=btn.getAttribute('data-id'),action=btn.getAttribute('data-action');if(action==='delete'){customConfirm('Delete this news?',function(){db.ref('news/'+id).remove().then(function(){showToast('Deleted!');});});}if(action==='edit'){var n=_cache[id];if(!n)return;document.getElementById('newsId').value=id;document.getElementById('newsTitle').value=n.title||'';document.getElementById('newsDate').value=n.date||'';document.getElementById('newsContent').value=n.content||'';window.scrollTo({top:0,behavior:'smooth'});showToast('Editing - make changes and click Save','info');}});
+
+/* Scrolling Message */
+function loadScrollMsg(){db.ref('scrollMessage').once('value').then(function(s){var d=s.val();if(d){document.getElementById('scrollMsg').value=d.message||'';document.getElementById('scrollMsgEnabled').value=d.enabled?'true':'false';updateMsgPreview(d);}});}
+function updateMsgPreview(d){var el=document.getElementById('msgPreview');if(d&&d.enabled&&d.message){el.innerHTML='<span>'+esc(d.message)+'</span>';}else{el.innerHTML='<span style="color:var(--muted);font-style:italic;">Message disabled or not set</span>';}}
+document.getElementById('saveMsgBtn').addEventListener('click',function(){var msg=document.getElementById('scrollMsg').value.trim(),enabled=document.getElementById('scrollMsgEnabled').value==='true';if(!msg){showToast('Enter a message','error');return;}db.ref('scrollMessage').set({message:msg,enabled:enabled}).then(function(){updateMsgPreview({message:msg,enabled:enabled});showToast('Message saved!');});});
+
+/* Utility */
+function esc(s){if(!s)return'';var d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
+
+/* Live Preview */
+document.getElementById('previewRefreshBtn').addEventListener('click',function(){var f=document.getElementById('livePreview');f.src=f.src;});
+
+/* Init */
+function initDashboard(){
+  document.getElementById('filterDate').value=todayStr();
+  loadAnalyticsForDate();loadCountries();loadRecentVisitors();
+  loadNews();loadEvents();loadMedia();loadKids();loadDevotions();loadScrollMsg();
+  setupUrlToggle('eventUrlToggle','eventUrlInput','eventStoredUrl','eventAddBtn');
+  setupUrlToggle('mediaUrlToggle','mediaUrlInput','mediaStoredUrl','mediaAddBtn');
+  setupUrlToggle('kidsUrlToggle','kidsUrlInput','kidsStoredUrl','kidsAddBtn');
+  setupUrlToggle('devotionUrlToggle','devotionUrlInput','devotionStoredUrl','devotionAddBtn');
+  /* Setup image file pickers */
+  setupImageSection('eventFile','eventPreview','eventPreviewImg','eventProgress','eventProgressFill','eventProgressText','eventPreviewStatus','eventRemoveBtn','eventStoredUrl','eventAddBtn','eventUrlToggle','eventUrlInput','eventPickerZone','Add Event',addEvent,resetEventUpload);
+  setupImageSection('mediaFile','mediaPreview','mediaPreviewImg','mediaProgress','mediaProgressFill','mediaProgressText','mediaPreviewStatus','mediaRemoveBtn','mediaStoredUrl','mediaAddBtn','mediaUrlToggle','mediaUrlInput','mediaPickerZone','Add Media',addMedia,resetMediaUpload);
+  setupImageSection('kidsFile','kidsPreview','kidsPreviewImg','kidsProgress','kidsProgressFill','kidsProgressText','kidsPreviewStatus','kidsRemoveBtn','kidsStoredUrl','kidsAddBtn','kidsUrlToggle','kidsUrlInput','kidsPickerZone','Add Image',addKidsImage,resetKidsUpload);
+  /* Devotion picker zone drag-drop */
+  var dz=document.getElementById('devotionPickerZone');
+  dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('dragover');});
+  dz.addEventListener('dragleave',function(){dz.classList.remove('dragover');});
+  dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('dragover');if(e.dataTransfer&&e.dataTransfer.files.length){var fi=document.getElementById('devotionFile'),dt=new DataTransfer();dt.items.add(e.dataTransfer.files[0]);fi.files=dt.files;fi.dispatchEvent(new Event('change'));}});
+}
+auth.onAuthStateChanged(function(u){if(u){document.getElementById('adminName').textContent=u.email.split('@')[0];document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';initDashboard();}});
+</script>
+</body>
+</html>

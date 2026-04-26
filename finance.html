@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLC CHURCH • Finance & Communication</title>
+    <link rel="icon" type="image/webp" sizes="16x16" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+    <link rel="icon" type="image/webp" sizes="32x32" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+    <link rel="icon" type="image/webp" sizes="96x96" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600&display=swap');
+        *{transition-property:color,background-color,border-color,fill,stroke,box-shadow,opacity,transform;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:150ms}
+        .modal{animation:modalPop .3s cubic-bezier(.34,1.56,.64,1)}
+        @keyframes modalPop{0%{transform:scale(.95);opacity:0}100%{transform:scale(1);opacity:1}}
+        .table-row:hover{background-color:#f8fafc}
+        .nav-link.active{background:#eff6ff;color:#1e40af;font-weight:600}
+        .nav-link.active .nav-icon{background:#1e40af;color:#fff}
+        .sidebar-open{transform:translateX(0)!important}
+        .stat-card{position:relative;overflow:hidden}
+        .stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.08}
+        .stat-card.blue::after{background:#1e40af}.stat-card.green::after{background:#059669}
+        .stat-card.amber::after{background:#d97706}.stat-card.purple::after{background:#7c3aed}
+        .stat-card.rose::after{background:#e11d48}.stat-card.cyan::after{background:#0891b2}
+        .filter-btn.active{background:#1e40af;color:#fff}
+        .fin-tab.active{border-color:#1e40af;color:#1e40af;background:#eff6ff}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
+        @media(max-width:1024px){.desktop-sidebar{transform:translateX(-100%);position:fixed;z-index:200;top:0;left:0;bottom:0}.desktop-sidebar.sidebar-open{transform:translateX(0)}}
+        .contrib-bar{height:6px;border-radius:6px;background:#f1f5f9;overflow:hidden}
+        .contrib-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#1e40af,#3b82f6);transition:width .6s ease}
+        .dup-warn{animation:shake .4s ease}
+        @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+        .receipt-box{font-family:'Courier New',monospace;font-size:12px;line-height:1.5;background:#fff;color:#000;padding:24px;max-width:320px;margin:0 auto}
+        .receipt-box hr{border:none;border-top:1px dashed #999;margin:8px 0}
+        .toggle-switch{position:relative;width:44px;height:24px;cursor:pointer}
+        .toggle-switch input{opacity:0;width:0;height:0}
+        .toggle-slider{position:absolute;inset:0;background:#cbd5e1;border-radius:24px;transition:.3s}
+        .toggle-slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+        .toggle-switch input:checked+.toggle-slider{background:#1e40af}
+        .toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px)}
+    </style>
+</head>
+<body class="bg-slate-50 font-[Inter]">
+
+<!-- LOGIN -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 p-4">
+    <div class="max-w-md w-full bg-white rounded-3xl shadow-2xl p-10">
+        <div class="flex justify-center mb-8">
+            <div class="w-20 h-20 rounded-full border-4 border-blue-200 overflow-hidden shadow-lg">
+                <img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg" alt="PLC" class="w-full h-full object-cover">
+            </div>
+        </div>
+        <h1 class="text-3xl font-bold text-center text-slate-900 mb-1 tracking-tight font-[Space_Grotesk]">PLC Church</h1>
+        <p class="text-slate-400 text-center mb-8 text-sm">Finance & Communication System</p>
+        <div class="space-y-5">
+            <div><label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Email</label><input id="login-email" type="email" class="w-full px-4 py-3.5 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="admin@plcchurch.com"></div>
+            <div><label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Password</label><input id="login-password" type="password" class="w-full px-4 py-3.5 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleLogin()"></div>
+            <button onclick="handleLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-2xl text-sm shadow-lg shadow-blue-600/20">Sign In</button>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" class="hidden min-h-screen flex">
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-[199] hidden" onclick="toggleSidebar()"></div>
+<div id="sidebar" class="desktop-sidebar w-72 bg-white border-r border-slate-100 flex flex-col shrink-0">
+    <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-blue-200 shrink-0"><img src="https://ik.imagekit.io/s95tumxuk/1763291103188.jpg" alt="PLC" class="w-full h-full object-cover"></div>
+        <div class="min-w-0"><h2 class="font-bold text-lg tracking-tight text-slate-900 font-[Space_Grotesk] truncate">PLC Church</h2><p class="text-[11px] text-slate-400 font-medium">Finance System</p></div>
+        <button class="lg:hidden ml-auto text-slate-400 hover:text-slate-600 text-xl" onclick="toggleSidebar()">✕</button>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <a onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-link active flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-600 font-medium text-sm cursor-pointer"><span class="nav-icon w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-base shrink-0">📊</span> Dashboard</a>
+        <a onclick="navigateTo('members')" id="nav-members" class="nav-link flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-600 font-medium text-sm cursor-pointer"><span class="nav-icon w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-base shrink-0">👥</span> Members</a>
+        <a onclick="navigateTo('finances')" id="nav-finances" class="nav-link flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-600 font-medium text-sm cursor-pointer"><span class="nav-icon w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-base shrink-0">💰</span> Finances</a>
+        <a onclick="navigateTo('sms')" id="nav-sms" class="nav-link flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-600 font-medium text-sm cursor-pointer"><span class="nav-icon w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-base shrink-0">📱</span> SMS</a>
+        <a onclick="navigateTo('email')" id="nav-email" class="nav-link flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-600 font-medium text-sm cursor-pointer"><span class="nav-icon w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-base shrink-0">✉️</span> Email</a>
+    <div class="nav-item" onclick="window.location.href='admin.html'"><i class="fas fa-home"></i> Home</div>
+    </nav>
+    <div class="p-4 border-t border-slate-100"><div onclick="logout()" class="flex items-center gap-3 text-slate-400 hover:text-red-500 cursor-pointer text-sm font-medium px-2 py-2 rounded-xl hover:bg-red-50"><span>🚪</span><span>Logout</span></div></div>
+</div>
+
+<div class="flex-1 flex flex-col min-w-0">
+    <div class="bg-white border-b border-slate-100 px-4 lg:px-8 py-4 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+            <button class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 text-xl" onclick="toggleSidebar()">☰</button>
+            <h1 id="page-title" class="text-xl lg:text-2xl font-bold text-slate-900 font-[Space_Grotesk]">Dashboard</h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="showQuickSMSModal()" class="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-2xl shadow-sm">📨 Quick SMS</button>
+            <div class="w-8 h-8 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center text-sm font-bold" id="user-avatar">A</div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="section-dashboard" class="flex-1 p-4 lg:p-8 overflow-auto">
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+            <div class="stat-card blue bg-white rounded-2xl p-5 shadow-sm border border-slate-100"><p class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Members</p><p id="stat-members" class="text-3xl font-bold text-slate-900 mt-1">0</p></div>
+            <div class="stat-card green bg-white rounded-2xl p-5 shadow-sm border border-slate-100"><p class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Today</p><p id="stat-today" class="text-3xl font-bold text-emerald-600 mt-1">0</p></div>
+            <div class="stat-card amber bg-white rounded-2xl p-5 shadow-sm border border-slate-100"><p class="text-slate-400 text-xs font-semibold uppercase tracking-wider">This Week</p><p id="stat-week" class="text-3xl font-bold text-amber-600 mt-1">0</p></div>
+            <div class="stat-card purple bg-white rounded-2xl p-5 shadow-sm border border-slate-100"><p class="text-slate-400 text-xs font-semibold uppercase tracking-wider">This Month</p><p id="stat-month" class="text-3xl font-bold text-purple-600 mt-1">0</p></div>
+            <div class="stat-card rose bg-white rounded-2xl p-5 shadow-sm border border-slate-100"><p class="text-slate-400 text-xs font-semibold uppercase tracking-wider">This Year</p><p id="stat-year" class="text-3xl font-bold text-rose-600 mt-1">0</p></div>
+            <div class="stat-card cyan bg-white rounded-2xl p-5 shadow-sm border border-slate-100"><p class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Expenses</p><p id="stat-expenses" class="text-3xl font-bold text-cyan-600 mt-1">0</p></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Net Income (All Time)</p>
+                <p id="stat-total" class="text-4xl font-bold text-slate-900">0</p>
+                <p class="text-slate-400 text-xs mt-1">UGX (Income − Expenses)</p>
+                <div class="mt-5 space-y-3" id="type-breakdown"></div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 lg:col-span-2">
+                <h3 class="font-semibold text-sm text-slate-700 mb-4">Monthly Trend (Last 6 Months)</h3>
+                <div style="height:220px"><canvas id="trendChart"></canvas></div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100"><h3 class="font-semibold text-sm text-slate-700 mb-4">Recent Transactions</h3><div id="recent-transactions" class="space-y-3 text-sm max-h-64 overflow-auto"></div></div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100"><h3 class="font-semibold text-sm text-slate-700 mb-4">Top Contributors</h3><div id="top-contributors" class="space-y-3 text-sm max-h-64 overflow-auto"></div></div>
+            <div class="space-y-4">
+                <div onclick="navigateTo('members')" class="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md border border-slate-100 flex items-center gap-3"><div class="text-3xl">👤</div><div class="flex-1 min-w-0"><h3 class="font-bold text-sm">Add Member</h3><p class="text-slate-400 text-[11px] truncate">From contacts or manually</p></div><span class="text-blue-600 font-bold text-lg">+</span></div>
+                <div onclick="navigateTo('finances')" class="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md border border-slate-100 flex items-center gap-3"><div class="text-3xl">📥</div><div class="flex-1 min-w-0"><h3 class="font-bold text-sm">Record Income</h3><p class="text-slate-400 text-[11px] truncate">Tithes, Offerings, Donations</p></div><span class="text-blue-600 font-bold text-lg">+</span></div>
+                <div onclick="showExpenseModal()" class="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md border border-slate-100 flex items-center gap-3"><div class="text-3xl">📤</div><div class="flex-1 min-w-0"><h3 class="font-bold text-sm">Record Expense</h3><p class="text-slate-400 text-[11px] truncate">Rent, utilities, supplies</p></div><span class="text-red-500 font-bold text-lg">+</span></div>
+                <div onclick="generateMonthlyReport()" class="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md border border-slate-100 flex items-center gap-3"><div class="text-3xl">📄</div><div class="flex-1 min-w-0"><h3 class="font-bold text-sm">Monthly Report</h3><p class="text-slate-400 text-[11px] truncate">Download PDF report</p></div><span class="text-slate-400 font-bold text-lg">→</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div id="section-members" class="flex-1 p-4 lg:p-8 overflow-auto hidden">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <h2 class="text-xl font-bold">Member Directory</h2>
+            <div class="flex flex-wrap gap-3 w-full sm:w-auto">
+                <input id="member-search" type="text" placeholder="Search..." onkeyup="filterMembers()" class="px-4 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-full sm:w-48">
+                <select id="member-group-filter" onchange="filterMembers()" class="px-4 py-2.5 border border-slate-200 rounded-2xl focus:outline-none text-sm"><option value="">All Groups</option></select>
+                <button onclick="showAddMemberModal()" class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-2xl font-medium text-sm whitespace-nowrap">+ Manual</button>
+                <button onclick="showContactPickerModal()" class="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2.5 rounded-2xl font-medium text-sm whitespace-nowrap">📱 From Contacts</button>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100 overflow-x-auto">
+            <table class="w-full min-w-[640px]">
+                <thead><tr class="border-b bg-slate-50"><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Name</th><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Phone</th><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Email</th><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Group</th><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Total Given</th><th class="w-20"></th></tr></thead>
+                <tbody id="members-table" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- FINANCES -->
+    <div id="section-finances" class="flex-1 p-4 lg:p-8 overflow-auto hidden">
+        <div class="flex items-center gap-2 mb-5">
+            <button onclick="switchFinTab('records')" id="fin-tab-records" class="fin-tab active px-5 py-2.5 rounded-2xl text-sm font-semibold border-2 border-transparent cursor-pointer">📄 Records</button>
+            <button onclick="switchFinTab('members')" id="fin-tab-members" class="fin-tab px-5 py-2.5 rounded-2xl text-sm font-semibold border-2 border-transparent cursor-pointer text-slate-400">👥 Members</button>
+            <button onclick="switchFinTab('expenses')" id="fin-tab-expenses" class="fin-tab px-5 py-2.5 rounded-2xl text-sm font-semibold border-2 border-transparent cursor-pointer text-slate-400">📤 Expenses</button>
+        </div>
+
+        <!-- RECORDS -->
+        <div id="fin-view-records">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+                <div><h2 class="text-xl font-bold">Financial Records</h2><p class="text-slate-400 text-sm">Income • Tithes • Offerings • Donations</p></div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex border border-slate-200 rounded-2xl overflow-hidden">
+                        <button onclick="setFinanceFilter('all')" id="filter-all" class="filter-btn active px-3 py-2 text-xs font-medium">All</button>
+                        <button onclick="setFinanceFilter('tithes')" id="filter-tithes" class="filter-btn px-3 py-2 text-xs font-medium">Tithes</button>
+                        <button onclick="setFinanceFilter('offerings')" id="filter-offerings" class="filter-btn px-3 py-2 text-xs font-medium">Offerings</button>
+                        <button onclick="setFinanceFilter('donations')" id="filter-donations" class="filter-btn px-3 py-2 text-xs font-medium">Donations</button>
+                    </div>
+                    <input type="date" id="finance-date-filter" onchange="filterFinances()" class="px-3 py-2 border border-slate-200 rounded-2xl text-sm">
+                    <input type="date" id="finance-date-filter-to" onchange="filterFinances()" class="px-3 py-2 border border-slate-200 rounded-2xl text-sm">
+                    <button onclick="clearFinanceFilters()" class="text-xs font-medium px-3 py-2 rounded-2xl border border-slate-200 text-slate-500 hover:bg-slate-100">✕</button>
+                    <button onclick="showAddFinanceModal()" class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-2xl font-medium text-sm whitespace-nowrap">+ Record</button>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100">
+                <div class="px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-b">
+                    <div class="flex items-center gap-6"><div><span class="text-slate-400 text-[10px] font-semibold uppercase tracking-wider">Total</span><p id="finance-total-display" class="text-2xl font-bold text-emerald-600">UGX 0</p></div><div id="finance-count" class="text-slate-400 text-xs">0 records</div></div>
+                    <div class="flex gap-2"><button onclick="exportCSV()" class="text-blue-600 text-xs font-medium px-3 py-1.5 rounded-xl hover:bg-blue-50">📤 CSV</button><button onclick="exportPDF()" class="text-blue-600 text-xs font-medium px-3 py-1.5 rounded-xl hover:bg-blue-50">📄 PDF</button></div>
+                </div>
+                <div class="overflow-x-auto"><table class="w-full min-w-[580px]"><thead><tr class="border-b bg-slate-50"><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Date</th><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Type</th><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Member</th><th class="text-right py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Amount</th><th class="w-24"></th></tr></thead><tbody id="finances-table" class="divide-y divide-slate-100"></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- MEMBER SUMMARY -->
+        <div id="fin-view-members" class="hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div><h2 class="text-xl font-bold">Member Contributions</h2><p class="text-slate-400 text-sm">Per-member breakdown</p></div>
+                <input id="contrib-search" type="text" placeholder="Search..." onkeyup="renderContribSummary()" class="px-4 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-full sm:w-56">
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100">
+                <div class="px-6 py-4 border-b"><span class="text-slate-400 text-[10px] font-semibold uppercase tracking-wider">All Members Who Contributed</span><p id="contrib-total-display" class="text-2xl font-bold text-emerald-600 mt-0.5">UGX 0</p></div>
+                <div class="overflow-x-auto"><table class="w-full min-w-[500px]"><thead><tr class="border-b bg-slate-50"><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">#</th><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Member</th><th class="text-right py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Tithes</th><th class="text-right py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Offerings</th><th class="text-right py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Donations</th><th class="text-right py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Total</th></tr></thead><tbody id="contrib-table" class="divide-y divide-slate-100"></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- EXPENSES -->
+        <div id="fin-view-expenses" class="hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div><h2 class="text-xl font-bold">Expenses</h2><p class="text-slate-400 text-sm">Church expenditures</p></div>
+                <div class="flex gap-3"><input type="date" id="exp-date-filter" onchange="renderExpenses()" class="px-3 py-2 border border-slate-200 rounded-2xl text-sm"><button onclick="showExpenseModal()" class="flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-2xl font-medium text-sm">+ Record Expense</button></div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100">
+                <div class="px-6 py-4 border-b"><span class="text-slate-400 text-[10px] font-semibold uppercase tracking-wider">Total Expenses</span><p id="expense-total-display" class="text-2xl font-bold text-red-600 mt-0.5">UGX 0</p></div>
+                <div class="overflow-x-auto"><table class="w-full min-w-[500px]"><thead><tr class="border-b bg-slate-50"><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Date</th><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Category</th><th class="text-left py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Description</th><th class="text-right py-4 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Amount</th><th class="w-20"></th></tr></thead><tbody id="expenses-table" class="divide-y divide-slate-100"></tbody></table></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SMS -->
+    <div id="section-sms" class="flex-1 p-4 lg:p-8 overflow-auto hidden">
+        <h2 class="text-xl font-bold mb-6">SMS Communication</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl p-6 border border-slate-100">
+                <h3 class="font-semibold mb-4">Send Message</h3>
+                <textarea id="sms-message" rows="4" class="w-full border border-slate-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none text-sm" placeholder="Type your message..."></textarea>
+                <div class="my-5"><label class="block text-slate-400 text-xs font-semibold mb-2 uppercase tracking-wider">Recipients</label><div class="flex flex-wrap gap-2"><button onclick="selectSMSMode('all')" id="sms-mode-all" class="sms-mode-btn px-4 py-2 bg-emerald-100 text-emerald-700 rounded-2xl text-xs font-medium">All</button><button onclick="selectSMSMode('group')" id="sms-mode-group" class="sms-mode-btn px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-2xl text-xs font-medium">Group</button><button onclick="selectSMSMode('individual')" id="sms-mode-individual" class="sms-mode-btn px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-2xl text-xs font-medium">Selected</button></div></div>
+                <div id="group-selector" class="hidden mb-5"><select id="sms-group-select" class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm"></select></div>
+                <div id="individual-selector" class="hidden mb-5"><div id="sms-member-list" class="max-h-48 overflow-auto border border-slate-200 rounded-2xl p-3 grid grid-cols-2 gap-1 text-xs"></div></div>
+                <button onclick="sendSMS()" class="w-full bg-emerald-600 hover:bg-emerald-700 py-3.5 text-white font-semibold rounded-2xl text-sm">Send SMS</button>
+            </div>
+            <div><div class="flex justify-between mb-4"><h3 class="font-semibold">History</h3><span onclick="clearSMSHistory()" class="text-red-400 text-xs cursor-pointer hover:underline">Clear</span></div><div id="sms-history" class="bg-white border border-slate-100 rounded-2xl h-[420px] overflow-auto p-4 space-y-3"></div></div>
+        </div>
+    </div>
+
+    <!-- EMAIL -->
+    <div id="section-email" class="flex-1 p-4 lg:p-8 overflow-auto hidden">
+        <h2 class="text-xl font-bold mb-6">Email Notifications</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl p-6 border border-slate-100">
+                <h3 class="font-semibold mb-4">Send Email</h3>
+                <input id="email-subject" type="text" placeholder="Subject" class="w-full mb-4 px-4 py-3 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                <textarea id="email-message" rows="5" class="w-full border border-slate-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none text-sm" placeholder="Body..."></textarea>
+                <div class="my-5"><label class="block text-slate-400 text-xs font-semibold mb-2 uppercase tracking-wider">Recipients</label><div class="flex flex-wrap gap-2"><button onclick="selectEmailMode('all')" id="email-mode-all" class="email-mode-btn px-4 py-2 bg-indigo-100 text-indigo-700 rounded-2xl text-xs font-medium">All</button><button onclick="selectEmailMode('group')" id="email-mode-group" class="email-mode-btn px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-2xl text-xs font-medium">Group</button><button onclick="selectEmailMode('individual')" id="email-mode-individual" class="email-mode-btn px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-2xl text-xs font-medium">Selected</button></div></div>
+                <div id="email-group-selector" class="hidden mb-5"><select id="email-group-select" class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm"></select></div>
+                <div id="email-individual-selector" class="hidden mb-5"><div id="email-member-list" class="max-h-48 overflow-auto border border-slate-200 rounded-2xl p-3 grid grid-cols-1 gap-1 text-xs"></div></div>
+                <button onclick="sendEmail()" class="w-full bg-indigo-600 hover:bg-indigo-700 py-3.5 text-white font-semibold rounded-2xl text-sm">Send Email</button>
+            </div>
+            <div><div class="flex justify-between mb-4"><h3 class="font-semibold">History</h3><span onclick="clearEmailHistory()" class="text-red-400 text-xs cursor-pointer hover:underline">Clear</span></div><div id="email-history" class="bg-white border border-slate-100 rounded-2xl h-[420px] overflow-auto p-4 space-y-3"></div></div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- MODALS -->
+<div onclick="if(event.target===this)hideModals()" id="member-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div class="modal bg-white rounded-3xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
+        <h3 id="member-modal-title" class="text-xl font-bold mb-6">Add Member</h3>
+        <div class="space-y-5">
+            <div class="grid grid-cols-2 gap-4"><div><label class="text-slate-400 text-xs font-semibold">Full Name *</label><input id="member-name" type="text" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"></div><div><label class="text-slate-400 text-xs font-semibold">Phone *</label><input id="member-phone" type="tel" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"></div></div>
+            <div><label class="text-slate-400 text-xs font-semibold">Email</label><input id="member-email" type="email" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"></div>
+            <div class="grid grid-cols-2 gap-4"><div><label class="text-slate-400 text-xs font-semibold">Group</label><input id="member-group" type="text" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Youth"></div><div><label class="text-slate-400 text-xs font-semibold">Address</label><input id="member-address" type="text" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"></div></div>
+        </div>
+        <div class="flex gap-3 mt-8"><button onclick="hideModals()" class="flex-1 py-3.5 border border-slate-300 rounded-2xl font-medium text-sm text-slate-600">Cancel</button><button onclick="saveMember()" class="flex-1 py-3.5 bg-blue-600 text-white rounded-2xl font-medium text-sm">Save</button></div>
+    </div>
+</div>
+
+<div onclick="if(event.target===this)hideModals()" id="finance-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div class="modal bg-white rounded-3xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
+        <h3 id="finance-modal-title" class="text-xl font-bold mb-6">Record Contribution</h3>
+        <div id="dup-warning" class="hidden bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium px-4 py-3 rounded-2xl mb-4 dup-warn">⚠️ Possible duplicate — same member, type, and amount recorded on this date.</div>
+        <div class="space-y-5">
+            <div><label class="text-slate-400 text-xs font-semibold">Type</label><select id="finance-type" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"><option value="tithes">Tithes</option><option value="offerings">Offerings</option><option value="donations">Donations</option></select></div>
+            <div class="grid grid-cols-2 gap-4"><div><label class="text-slate-400 text-xs font-semibold">Amount (UGX) *</label><input id="finance-amount" type="number" min="1" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" oninput="checkDuplicate()"></div><div><label class="text-slate-400 text-xs font-semibold">Date *</label><input id="finance-date" type="date" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" oninput="checkDuplicate()"></div></div>
+            <div><label class="text-slate-400 text-xs font-semibold">Member</label><select id="finance-member" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" onchange="checkDuplicate()"><option value="">— Anonymous —</option></select><p id="finance-member-count" class="text-[11px] text-slate-400 mt-1"></p></div>
+            <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" id="finance-bulk" class="w-4 h-4 rounded accent-blue-600"><span class="text-sm font-medium">Bulk mode — keep modal open after saving</span></label>
+        </div>
+        <div class="flex gap-3 mt-8"><button onclick="hideModals()" class="flex-1 py-3.5 border border-slate-300 rounded-2xl font-medium text-sm text-slate-600">Cancel</button><button onclick="saveFinance()" class="flex-1 py-3.5 bg-blue-600 text-white rounded-2xl font-medium text-sm">Save</button></div>
+    </div>
+</div>
+
+<div onclick="if(event.target===this)hideModals()" id="expense-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div class="modal bg-white rounded-3xl w-full max-w-lg p-8">
+        <h3 class="text-xl font-bold mb-6">Record Expense</h3>
+        <div class="space-y-5">
+            <div><label class="text-slate-400 text-xs font-semibold">Category</label><select id="expense-category" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-red-500 outline-none text-sm"><option value="rent">Rent</option><option value="utilities">Utilities</option><option value="supplies">Supplies</option><option value="transport">Transport</option><option value="events">Events</option><option value="maintenance">Maintenance</option><option value="salary">Salary</option><option value="other">Other</option></select></div>
+            <div><label class="text-slate-400 text-xs font-semibold">Description</label><input id="expense-desc" type="text" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-red-500 outline-none text-sm" placeholder="e.g. Electricity bill for March"></div>
+            <div class="grid grid-cols-2 gap-4"><div><label class="text-slate-400 text-xs font-semibold">Amount (UGX) *</label><input id="expense-amount" type="number" min="1" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-red-500 outline-none text-sm"></div><div><label class="text-slate-400 text-xs font-semibold">Date *</label><input id="expense-date" type="date" class="w-full mt-1 px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-red-500 outline-none text-sm"></div></div>
+        </div>
+        <div class="flex gap-3 mt-8"><button onclick="hideModals()" class="flex-1 py-3.5 border border-slate-300 rounded-2xl font-medium text-sm text-slate-600">Cancel</button><button onclick="saveExpense()" class="flex-1 py-3.5 bg-red-600 text-white rounded-2xl font-medium text-sm">Save Expense</button></div>
+    </div>
+</div>
+
+<div onclick="if(event.target===this)hideModals()" id="contact-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div class="modal bg-white rounded-3xl w-full max-w-md p-8 max-h-[90vh] overflow-y-auto">
+        <h3 class="text-xl font-bold mb-2">Add from Phone Contacts</h3>
+        <p class="text-slate-400 text-sm mb-6">Select contacts and they'll be added as members. Existing phone numbers will be skipped.</p>
+        <input type="file" id="contact-file-input" accept=".vcf,.json,.csv,text/csv" class="w-full text-sm file:mr-4 file:py-2 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        <div class="mt-4 text-center text-xs text-slate-400">Supports: .vcf (vCard), .csv, .json files exported from phone contacts</div>
+        <div id="contact-preview" class="mt-4 max-h-64 overflow-auto hidden"><div class="text-xs font-semibold text-slate-500 mb-2">Contacts found:</div><div id="contact-list"></div></div>
+        <div class="flex gap-3 mt-6"><button onclick="hideModals()" class="flex-1 py-3.5 border border-slate-300 rounded-2xl font-medium text-sm text-slate-600">Cancel</button><button id="import-contacts-btn" onclick="importContacts()" class="flex-1 py-3.5 bg-emerald-600 text-white rounded-2xl font-medium text-sm" disabled>Import Selected</button></div>
+    </div>
+</div>
+
+<div onclick="if(event.target===this)hideModals()" id="receipt-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div class="modal bg-white rounded-3xl w-full max-w-sm p-8">
+        <div id="receipt-content"></div>
+        <div class="flex gap-3 mt-6"><button onclick="hideModals()" class="flex-1 py-3 border border-slate-300 rounded-2xl font-medium text-sm text-slate-600">Close</button><button onclick="downloadReceipt()" class="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-medium text-sm">Download PDF</button></div>
+    </div>
+</div>
+
+<div onclick="if(event.target===this)hideModals()" id="delete-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div class="modal bg-white rounded-3xl w-full max-w-sm p-8 text-center">
+        <div class="mx-auto w-14 h-14 bg-red-100 text-red-500 rounded-2xl flex items-center justify-center text-3xl mb-5">🗑️</div>
+        <h3 class="font-bold text-lg mb-2">Confirm Deletion</h3><p id="delete-message" class="text-slate-400 text-sm mb-8">This cannot be undone.</p>
+        <div class="flex gap-3"><button onclick="hideModals()" class="flex-1 py-3.5 text-slate-500 font-medium border border-slate-300 rounded-2xl text-sm">Cancel</button><button onclick="confirmDelete()" class="flex-1 py-3.5 bg-red-600 text-white font-medium rounded-2xl text-sm">Delete</button></div>
+    </div>
+</div>
+
+<div onclick="if(event.target===this)hideModals()" id="quick-sms-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div class="modal bg-white rounded-3xl w-full max-w-md p-8"><h3 class="text-xl font-bold mb-6">Quick SMS</h3><textarea id="quick-sms-text" rows="4" class="w-full border border-slate-200 rounded-2xl p-4 resize-none focus:ring-2 focus:ring-emerald-500 text-sm" placeholder="Type announcement..."></textarea><div class="mt-6 flex justify-between items-center"><button onclick="hideModals()" class="px-6 py-3 border border-slate-300 rounded-2xl text-sm">Cancel</button><button onclick="sendQuickSMS()" class="px-8 py-3.5 bg-emerald-600 text-white font-semibold rounded-2xl text-sm">Send Now</button></div></div>
+</div>
+
+<div onclick="if(event.target===this)hideModals()" id="member-history-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    
+    <div class="modal bg-white rounded-3xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
+        <h3 id="mh-name" class="text-xl font-bold mb-1">Member Name</h3>
+        <p id="mh-phone" class="text-slate-400 text-sm mb-4"></p>
+        <div id="mh-stats" class="grid grid-cols-3 gap-3 mb-5"></div>
+        <div id="mh-timeline" class="space-y-3 max-h-80 overflow-auto"></div>
+        <button onclick="hideModals()" class="w-full mt-6 py-3 border border-slate-300 rounded-2xl font-medium text-sm text-slate-600">Close</button>
+    </div>
+</div>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyCGEiJit1wYK5ZDm2ZN3ZNH1JachzFO-KU",authDomain:"church-system-c0690.firebaseapp.com",databaseURL:"https://church-system-c0690-default-rtdb.firebaseio.com",projectId:"church-system-c0690",storageBucket:"church-system-c0690.firebasestorage.app",messagingSenderId:"999600861820",appId:"1:999600861820:web:b5dc0ea1f708b025330ff9"};
+const EMAILJS_SERVICE_ID="service_nngszhq",EMAILJS_TEMPLATE_ID="template_jeenfim",EMAILJS_PUBLIC_KEY="ZLpt6ZIylXN2cLQ1x";
+
+let app,auth,database;
+let membersData={},financesData={},expensesData={},smsLogsData={},emailLogsData={};
+let currentEditId=null,deleteTarget=null,deleteType=null,financeFilterMode='all';
+let smsSelectedMode='all',emailSelectedMode='all';
+let selectedIndividualPhones=[],selectedIndividualEmails=[];
+let trendChartInst=null,contactBuffer=[];
+
+function initFirebase(){
+    if(!firebase.apps.length)app=firebase.initializeApp(firebaseConfig);
+    auth=firebase.auth();database=firebase.database();
+    try{emailjs.init(EMAILJS_PUBLIC_KEY);}catch(e){}
+}
+function setupListeners(){
+    database.ref('members').on('value',s=>{membersData=s.val()||{};renderMembers();populateGroupFilters();renderSMSMemberList();renderEmailMemberList();});
+    database.ref('finances').on('value',s=>{financesData=s.val()||{};renderFinances();updateDashboardStats();});
+    database.ref('expenses').on('value',s=>{expensesData=s.val()||{};renderExpenses();updateDashboardStats();});
+    database.ref('smsLogs').on('value',s=>{smsLogsData=s.val()||{};renderSMSHistory();});
+    database.ref('emailLogs').on('value',s=>{emailLogsData=s.val()||{};renderEmailHistory();});
+}
+
+function handleLogin(){
+    const e=document.getElementById('login-email').value.trim(),p=document.getElementById('login-password').value;
+    if(!e||!p)return alert("Enter email and password");
+    auth.signInWithEmailAndPassword(e,p).then(u=>{document.getElementById('login-screen').classList.add('hidden');document.getElementById('main-app').classList.remove('hidden');document.getElementById('user-avatar').textContent=u.user.email[0].toUpperCase();initApp();}).catch(err=>alert("Login failed: "+err.message));
+}
+function logout(){auth.signOut().then(()=>location.reload());}
+function initApp(){setupListeners();navigateTo('dashboard');}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('sidebar-open');document.getElementById('sidebar-overlay').classList.toggle('hidden');}
+function navigateTo(section){
+    document.querySelectorAll('[id^="section-"]').forEach(s=>s.classList.add('hidden'));
+    document.getElementById('section-'+section).classList.remove('hidden');
+    const titles={dashboard:'Dashboard',members:'Members',finances:'Finances',sms:'SMS',email:'Email'};
+    document.getElementById('page-title').textContent=titles[section]||section;
+    document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+    const nav=document.getElementById('nav-'+section);if(nav)nav.classList.add('active');
+    if(window.innerWidth<1024){document.getElementById('sidebar').classList.remove('sidebar-open');document.getElementById('sidebar-overlay').classList.add('hidden');}
+    if(section==='finances'){renderFinances();renderContribSummary();renderExpenses();}
+}
+
+function todayStr(){return new Date().toISOString().split('T')[0];}
+function getWeekStart(){const d=new Date();d.setDate(d.getDate()-d.getDay());return d.toISOString().split('T')[0];}
+function getMonthStart(){return new Date().toISOString().split('T')[0].substring(0,8)+'01';}
+function getYearStart(){return new Date().getFullYear()+'-01-01';}
+function sumRange(data,start,end,type){let s=0;Object.values(data).forEach(r=>{if(!r.date)return;if(type&&r.type!==type)return;if(r.date>=start&&(!end||r.date<=end))s+=parseInt(r.amount)||0;});return s;}
+function esc(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):'';}
+function getMemberTotal(name){let t=0;Object.values(financesData).forEach(r=>{if(r.memberName===name)t+=parseInt(r.amount)||0;});return t;}
+function fmt(n){return(n||0).toLocaleString();}
+
+/* ===== DASHBOARD ===== */
+function updateDashboardStats(){
+    document.getElementById('stat-members').textContent=Object.keys(membersData).length;
+    const td=todayStr(),ws=getWeekStart(),ms=getMonthStart(),ys=getYearStart();
+    document.getElementById('stat-today').textContent=fmt(sumRange(financesData,td,td));
+    document.getElementById('stat-week').textContent=fmt(sumRange(financesData,ws));
+    document.getElementById('stat-month').textContent=fmt(sumRange(financesData,ms));
+    document.getElementById('stat-year').textContent=fmt(sumRange(financesData,ys));
+    let totalExp=0;Object.values(expensesData).forEach(r=>totalExp+=parseInt(r.amount)||0);
+    document.getElementById('stat-expenses').textContent=fmt(totalExp);
+    let totalInc=0;Object.values(financesData).forEach(r=>totalInc+=parseInt(r.amount)||0);
+    document.getElementById('stat-total').textContent=fmt(totalInc-totalExp);
+
+    const types={tithes:{label:'Tithes',bg:'bg-amber-500',total:0},offerings:{label:'Offerings',bg:'bg-purple-500',total:0},donations:{label:'Donations',bg:'bg-teal-500',total:0}};
+    Object.values(financesData).forEach(r=>{if(types[r.type])types[r.type].total+=parseInt(r.amount)||0;});
+    const tb=document.getElementById('type-breakdown');tb.innerHTML='';
+    Object.values(types).forEach(t=>{const p=totalInc>0?((t.total/totalInc)*100).toFixed(0):0;tb.innerHTML+=`<div><div class="flex justify-between text-xs mb-1"><span class="text-slate-500">${t.label}</span><span class="font-semibold text-slate-700">UGX ${fmt(t.total)}</span></div><div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full rounded-full ${t.bg}" style="width:${p}%"></div></div></div>`;});
+
+    const contribs={};Object.values(financesData).forEach(r=>{if(r.memberName)contribs[r.memberName]=(contribs[r.memberName]||0)+(parseInt(r.amount)||0);});
+    const tc=document.getElementById('top-contributors');tc.innerHTML='';
+    const sorted=Object.entries(contribs).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    if(!sorted.length)tc.innerHTML='<p class="text-slate-400 text-xs">No data</p>';
+    else sorted.forEach(([name,amt],i)=>{tc.innerHTML+=`<div class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">${i+1}</span><span class="flex-1 text-xs font-medium truncate">${esc(name)}</span><span class="text-xs font-semibold text-emerald-600">UGX ${fmt(amt)}</span></div>`;});
+
+    const rc=document.getElementById('recent-transactions');rc.innerHTML='';
+    const recent=Object.entries(financesData).sort((a,b)=>(b[1].date||'')>(a[1].date||'')?1:-1).slice(0,5);
+    if(!recent.length)rc.innerHTML='<p class="text-slate-400 text-xs">No transactions</p>';
+    else recent.forEach(([,r])=>{const tc2={tithes:'bg-amber-100 text-amber-700',offerings:'bg-purple-100 text-purple-700',donations:'bg-teal-100 text-teal-700'};rc.innerHTML+=`<div class="flex items-center justify-between py-2 border-b border-slate-50 last:border-0"><div class="flex items-center gap-2 min-w-0"><span class="px-2 py-0.5 text-[10px] font-semibold rounded-lg capitalize ${tc2[r.type]||''}">${r.type}</span><span class="text-xs truncate">${esc(r.memberName||'Anonymous')}</span></div><span class="text-xs font-bold text-emerald-600 whitespace-nowrap ml-2">UGX ${fmt(parseInt(r.amount)||0)}</span></div>`;});
+    renderTrendChart();
+}
+
+function renderTrendChart(){
+    const labels=[],incData=[],expData=[];
+    for(let i=5;i>=0;i--){const d=new Date();d.setMonth(d.getMonth()-i);const ms=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');labels.push(d.toLocaleDateString('en',{month:'short',year:'2-digit'}));let is=0,es=0;Object.values(financesData).forEach(r=>{if(r.date&&r.date.startsWith(ms))is+=parseInt(r.amount)||0;});Object.values(expensesData).forEach(r=>{if(r.date&&r.date.startsWith(ms))es+=parseInt(r.amount)||0;});incData.push(is);expData.push(es);}
+    if(trendChartInst)trendChartInst.destroy();
+    trendChartInst=new Chart(document.getElementById('trendChart'),{type:'bar',data:{labels,datasets:[{label:'Income',data:incData,backgroundColor:'rgba(30,64,175,0.8)',borderRadius:6,borderSkipped:false},{label:'Expenses',data:expData,backgroundColor:'rgba(225,29,72,0.6)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},usePointStyle:true,pointStyle:'circle',padding:16}}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.04)'},ticks:{callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},x:{grid:{display:false}}}}});
+}
+
+/* ===== MEMBERS ===== */
+function renderMembers(filtered){
+    const tbody=document.getElementById('members-table');tbody.innerHTML='';
+    const data=filtered||Object.entries(membersData);
+    if(!data||!data.length){tbody.innerHTML='<tr><td colspan="6" class="py-12 text-center text-slate-400 text-sm">No members</td></tr>';return;}
+    data.forEach(([id,m])=>{const tg=getMemberTotal(m.name);const row=document.createElement('tr');row.className='table-row';row.innerHTML=`<td class="px-6 py-4 font-medium text-sm">${esc(m.name)}</td><td class="px-6 py-4 text-sm">${esc(m.phone)}</td><td class="px-6 py-4 text-sm text-slate-500">${esc(m.email)}</td><td class="px-6 py-4"><span class="px-2.5 py-1 bg-blue-50 text-blue-600 text-[11px] font-semibold rounded-lg">${esc(m.group||'General')}</span></td><td class="px-6 py-4 text-sm font-semibold ${tg>0?'text-emerald-600':'text-slate-300'} cursor-pointer hover:underline" onclick="showMemberHistory('${esc(m.name)}','${esc(m.phone)}')">UGX ${fmt(tg)}</td><td class="px-6 py-4 text-right"><button onclick="editMember('${id}')" class="text-blue-500 hover:text-blue-700 mx-0.5">✏️</button><button onclick="deleteMember('${id}')" class="text-red-400 hover:text-red-600 mx-0.5">🗑️</button></td>`;tbody.appendChild(row);});
+}
+function filterMembers(){const s=document.getElementById('member-search').value.toLowerCase(),g=document.getElementById('member-group-filter').value;renderMembers(Object.entries(membersData).filter(([,m])=>{const ms=!s||(m.name||'').toLowerCase().includes(s)||(m.phone||'').includes(s);return ms&&(!g||m.group===g);}));}
+function populateGroupFilters(){const sel=document.getElementById('member-group-filter');const gs=new Set();Object.values(membersData).forEach(m=>{if(m.group)gs.add(m.group);});sel.innerHTML='<option value="">All Groups</option>';gs.forEach(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;sel.appendChild(o);});}
+function showAddMemberModal(){currentEditId=null;document.getElementById('member-modal-title').textContent='Add Member';['member-name','member-phone','member-email','member-group','member-address'].forEach(id=>document.getElementById(id).value='');document.getElementById('member-modal').classList.remove('hidden');}
+function editMember(id){currentEditId=id;const m=membersData[id];if(!m)return;document.getElementById('member-modal-title').textContent='Edit Member';document.getElementById('member-name').value=m.name||'';document.getElementById('member-phone').value=m.phone||'';document.getElementById('member-email').value=m.email||'';document.getElementById('member-group').value=m.group||'';document.getElementById('member-address').value=m.address||'';document.getElementById('member-modal').classList.remove('hidden');}
+function saveMember(){const name=document.getElementById('member-name').value.trim(),phone=document.getElementById('member-phone').value.trim();if(!name||!phone)return alert("Name and phone required");const data={name,phone,email:document.getElementById('member-email').value.trim()||null,group:document.getElementById('member-group').value.trim()||'General',address:document.getElementById('member-address').value.trim()||null,lastUpdated:firebase.database.ServerValue.TIMESTAMP};const ref=database.ref('members');if(currentEditId)ref.child(currentEditId).update(data).then(()=>hideModals());else ref.push({...data,createdAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>hideModals());}
+function deleteMember(id){deleteTarget=id;deleteType='members';document.getElementById('delete-message').innerHTML=`Delete <strong>${esc(membersData[id]?.name||'')}</strong>?`;document.getElementById('delete-modal').classList.remove('hidden');}
+
+/* ===== PHONE CONTACTS ===== */
+function showContactPickerModal(){contactBuffer=[];document.getElementById('contact-file-input').value='';document.getElementById('contact-preview').classList.add('hidden');document.getElementById('contact-list').innerHTML='';document.getElementById('import-contacts-btn').disabled=true;document.getElementById('contact-modal').classList.remove('hidden');}
+document.getElementById('contact-file-input').addEventListener('change',function(e){
+    const file=e.target.files[0];if(!file)return;
+    contactBuffer=[];const reader=new FileReader();
+    const ext=file.name.split('.').pop().toLowerCase();
+    reader.onload=function(ev){
+        const text=ev.target.result;
+        if(ext==='csv'||ext==='json'){
+            try{
+                let rows;
+                if(ext==='json'){const j=JSON.parse(text);rows=Array.isArray(j)?j:[j];}
+                else{rows=text.split('\n').map(r=>r.split(',').map(c=>c.trim().replace(/^"|"$/g,'')));}
+                rows.forEach(r=>{
+                    let name='',phone='',email='';
+                    if(ext==='json'){name=r.name||r.Name||'';phone=(r.phone||r.Phone||r.mobile||r.Mobile||'').toString().replace(/[^0-9+]/g,'');email=r.email||r.Email||'';}
+                    else{name=r[0]||'';phone=(r[1]||'').replace(/[^0-9+]/g,'');email=r[2]||'';}
+                    if(phone)contactBuffer.push({name:name||'Unknown',phone,email:email||''});
+                });
+            }catch(err){alert('Could not parse file: '+err.message);return;}
+        }else if(ext==='vcf'){
+            const lines=text.split('END:VCARD');lines.forEach(block=>{
+                if(!block.trim())return;let name='',phone='',email='';
+                const n=block.match(/FN:(.+)/i);if(n)name=n[1].trim();
+                const t=block.match(/TEL[^:]*:(.+)/i);if(t)phone=t[1].trim().replace(/[^0-9+]/g,'');
+                const em=block.match(/EMAIL[^:]*:(.+)/i);if(em)email=em[1].trim();
+                if(phone)contactBuffer.push({name:name||'Unknown',phone,email:email||''});
+            });
+        }else{alert('Unsupported file format. Use .vcf, .csv, or .json');return;}
+        renderContactPreview();
+    };
+    reader.readAsText(file);
+});
+function renderContactPreview(){
+    if(!contactBuffer.length){document.getElementById('contact-preview').classList.add('hidden');document.getElementById('import-contacts-btn').disabled=true;return;}
+    document.getElementById('contact-preview').classList.remove('hidden');
+    document.getElementById('import-contacts-btn').disabled=false;
+    const cl=document.getElementById('contact-list');cl.innerHTML='';
+    /* Dedupe by phone */
+    const seen=new Set();const unique=[];
+    contactBuffer.forEach(c=>{if(!seen.has(c.phone)){seen.add(c.phone);unique.push(c);}});
+    contactBuffer=unique;
+    /* Check existing */
+    const existing=new Set(Object.values(membersData).map(m=>m.phone));
+    contactBuffer.forEach((c,i)=>{
+        const exists=existing.has(c.phone);
+        cl.innerHTML+=`<label class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 cursor-pointer text-xs ${exists?'opacity-50':''}"><input type="checkbox" value="${i}" ${exists?'disabled':''}><span class="font-medium truncate">${esc(c.name)}</span><span class="text-slate-400 ml-auto">${c.phone}</span>${exists?'<span class="text-amber-500 ml-1">exists</span>':''}</label>`;
+    });
+}
+function importContacts(){
+    const checks=document.querySelectorAll('#contact-list input[type=checkbox]:checked');
+    if(!checks.length)return alert('Select contacts to import');
+    let count=0;
+    checks.forEach(cb=>{
+        const c=contactBuffer[parseInt(cb.value)];if(!c)return;
+        database.ref('members').push({name:c.name,phone:c.phone,email:c.email||null,group:'General',address:null,createdAt:firebase.database.ServerValue.TIMESTAMP,lastUpdated:firebase.database.ServerValue.TIMESTAMP});
+        count++;
+    });
+    alert(count+' contact(s) imported successfully!');hideModals();
+}
+
+/* ===== MEMBER HISTORY ===== */
+function showMemberHistory(name,phone){
+    document.getElementById('mh-name').textContent=name;
+    document.getElementById('mh-phone').textContent=phone;
+    const records=Object.entries(financesData).filter(([,r])=>r.memberName===name).sort((a,b)=>(b[1].date||'')>(a[1].date||''));
+    const total=getMemberTotal(name);
+    const tithes=records.filter(([,r])=>r.type==='tithes').reduce((s,[,r])=>s+(parseInt(r.amount)||0),0);
+    const offerings=records.filter(([,r])=>r.type==='offerings').reduce((s,[,r])=>s+(parseInt(r.amount)||0),0);
+    const donations=records.filter(([,r])=>r.type==='donations').reduce((s,[,r])=>s+(parseInt(r.amount)||0),0);
+    document.getElementById('mh-stats').innerHTML=`
+        <div class="bg-amber-50 rounded-xl p-3 text-center"><p class="text-[10px] text-slate-400 uppercase font-semibold">Tithes</p><p class="font-bold text-amber-700 text-sm">UGX ${fmt(tithes)}</p></div>
+        <div class="bg-purple-50 rounded-xl p-3 text-center"><p class="text-[10px] text-slate-400 uppercase font-semibold">Offerings</p><p class="font-bold text-purple-700 text-sm">UGX ${fmt(offerings)}</p></div>
+        <div class="bg-teal-50 rounded-xl p-3 text-center"><p class="text-[10px] text-slate-400 uppercase font-semibold">Donations</p><p class="font-bold text-teal-700 text-sm">UGX ${fmt(donations)}</p></div>`;
+    const tl=document.getElementById('mh-timeline');tl.innerHTML='';
+    if(!records.length){tl.innerHTML='<p class="text-slate-400 text-xs text-center py-8">No records</p>';}
+    else{records.forEach(([,r])=>{const tc={tithes:'bg-amber-100 text-amber-700',offerings:'bg-purple-100 text-purple-700',donations:'bg-teal-100 text-teal-700'};tl.innerHTML+=`<div class="flex items-center justify-between py-3 border-b border-slate-100 last:border-0"><div class="flex items-center gap-3"><span class="text-xs text-slate-400">${r.date||'—'}</span><span class="px-2 py-0.5 text-[10px] font-semibold rounded-lg capitalize ${tc[r.type]||''}">${r.type}</span></div><span class="font-semibold text-sm text-emerald-600">UGX ${fmt(parseInt(r.amount)||0)}</span></div>`;});}
+    document.getElementById('member-history-modal').classList.remove('hidden');
+}
+
+/* ===== FINANCE TABS ===== */
+function switchFinTab(tab){document.querySelectorAll('.fin-tab').forEach(t=>t.classList.remove('active'));document.getElementById('fin-tab-'+tab).classList.add('active');document.getElementById('fin-view-records').classList.toggle('hidden',tab!=='records');document.getElementById('fin-view-members').classList.toggle('hidden',tab!=='members');document.getElementById('fin-view-expenses').classList.toggle('hidden',tab!=='expenses');if(tab==='members')renderContribSummary();if(tab==='expenses')renderExpenses();}
+
+/* ===== FINANCE MEMBER DROPDOWN ===== */
+function populateFinanceMemberDropdown(){
+    const sel=document.getElementById('finance-member');sel.innerHTML='<option value="">— Anonymous —</option>';let c=0;
+    Object.entries(membersData).forEach(([id,m])=>{if(!m.name)return;const o=document.createElement('option');o.value=id;o.textContent=m.name+(m.phone?' ('+m.phone+')':'');sel.appendChild(o);c++;});
+    document.getElementById('finance-member-count').textContent=c+' members loaded';
+}
+
+/* ===== DUPLICATE CHECK ===== */
+function checkDuplicate(){
+    const type=document.getElementById('finance-type').value;
+    const amount=document.getElementById('finance-amount').value;
+    const date=document.getElementById('finance-date').value;
+    const memberId=document.getElementById('finance-member').value;
+    const memberName=memberId&&membersData[memberId]?membersData[memberId].name:'';
+    const warn=document.getElementById('dup-warning');
+    if(!type||!amount||!date||!memberName){warn.classList.add('hidden');return;}
+    const dup=Object.values(financesData).some(r=>r.type===type&&String(r.amount)===amount&&r.date===date&&r.memberName===memberName);
+    warn.classList.toggle('hidden',!dup);
+}
+
+/* ===== FINANCES ===== */
+function renderFinances(){
+    const tbody=document.getElementById('finances-table');tbody.innerHTML='';
+    let entries=Object.entries(financesData);
+    if(financeFilterMode!=='all')entries=entries.filter(([,r])=>r.type===financeFilterMode);
+    const df=document.getElementById('finance-date-filter').value;
+    const dt=document.getElementById('finance-date-filter-to').value;
+    if(df)entries=entries.filter(([,r])=>r.date&&r.date>=df);
+    if(dt)entries=entries.filter(([,r])=>r.date&&r.date<=dt);
+    entries.sort((a,b)=>(b[1].date||'')>(a[1].date||'')?1:-1);
+    let total=0;
+    if(!entries.length)tbody.innerHTML='<tr><td colspan="5" class="py-16 text-center text-slate-400 text-sm">No records. Try clearing filters.</td></tr>';
+    else entries.forEach(([id,r])=>{const amt=parseInt(r.amount)||0;total+=amt;const tc={tithes:'bg-amber-100 text-amber-700',offerings:'bg-purple-100 text-purple-700',donations:'bg-teal-100 text-teal-700'};const row=document.createElement('tr');row.className='table-row';row.innerHTML=`<td class="px-6 py-4 text-sm">${r.date||'—'}</td><td class="px-6 py-4"><span class="px-2.5 py-1 text-[11px] font-semibold rounded-lg capitalize ${tc[r.type]||''}">${r.type}</span></td><td class="px-6 py-4 text-sm">${r.memberName?esc(r.memberName):'<span class="text-slate-300">Anonymous</span>'}</td><td class="px-6 py-4 text-right font-semibold text-emerald-600 text-sm">UGX ${fmt(amt)} <button onclick="showReceipt('${id}')" class="ml-1 text-blue-400 hover:text-blue-600" title="Receipt">📄</button></td><td class="px-6 py-4 text-right"><button onclick="editFinance('${id}')" class="text-blue-500 hover:text-blue-700 mx-0.5">✏️</button><button onclick="deleteFinance('${id}')" class="text-red-400 hover:text-red-600 mx-0.5">🗑️</button></td>`;tbody.appendChild(row);});
+    document.getElementById('finance-total-display').textContent='UGX '+fmt(total);
+    document.getElementById('finance-count').textContent=entries.length+' records';
+}
+function setFinanceFilter(mode){financeFilterMode=mode;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));const btn=document.getElementById('filter-'+mode);if(btn)btn.classList.add('active');renderFinances();}
+function filterFinances(){renderFinances();}
+function clearFinanceFilters(){financeFilterMode='all';document.getElementById('finance-date-filter').value='';document.getElementById('finance-date-filter-to').value='';document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));document.getElementById('filter-all').classList.add('active');renderFinances();}
+
+function showAddFinanceModal(){currentEditId=null;document.getElementById('finance-modal-title').textContent='Record Contribution';document.getElementById('finance-type').value='tithes';document.getElementById('finance-amount').value='';document.getElementById('finance-date').value=todayStr();document.getElementById('finance-member').value='';document.getElementById('finance-bulk').checked=false;document.getElementById('dup-warning').classList.add('hidden');populateFinanceMemberDropdown();document.getElementById('finance-modal').classList.remove('hidden');}
+function editFinance(id){currentEditId=id;const r=financesData[id];if(!r)return;document.getElementById('finance-modal-title').textContent='Edit Record';document.getElementById('finance-type').value=r.type||'tithes';document.getElementById('finance-amount').value=r.amount||'';document.getElementById('finance-date').value=r.date||'';document.getElementById('finance-bulk').checked=false;document.getElementById('dup-warning').classList.add('hidden');populateFinanceMemberDropdown();if(r.memberName){Object.entries(membersData).forEach(([mid,m])=>{if(m.name===r.memberName){document.getElementById('finance-member').value=mid;}});}document.getElementById('finance-modal').classList.remove('hidden');}
+function saveFinance(){
+    const type=document.getElementById('finance-type').value,amount=parseFloat(document.getElementById('finance-amount').value),date=document.getElementById('finance-date').value;
+    if(!amount||amount<=0||!date)return alert("Valid amount and date required");
+    const memberId=document.getElementById('finance-member').value;const memberName=memberId&&membersData[memberId]?membersData[memberId].name:'';
+    const data={type,amount,date,memberName,lastUpdated:firebase.database.ServerValue.TIMESTAMP};
+    const ref=database.ref('finances');
+    const bulk=document.getElementById('finance-bulk').checked;
+    if(currentEditId)ref.child(currentEditId).update(data).then(()=>{if(!bulk)hideModals();else{document.getElementById('finance-amount').value='';checkDuplicate();}});
+    else ref.push({...data,createdAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>{if(!bulk)hideModals();else{document.getElementById('finance-amount').value='';checkDuplicate();}});
+}
+function deleteFinance(id){deleteTarget=id;deleteType='finances';const r=financesData[id];document.getElementById('delete-message').innerHTML=`Delete this ${r?.type||''} of UGX ${fmt(parseInt(r?.amount)||0)}?`;document.getElementById('delete-modal').classList.remove('hidden');}
+
+/* ===== RECEIPT ===== */
+function showReceipt(id){const r=financesData[id];if(!r)return;const el=document.getElementById('receipt-content');el.innerHTML=`<div class="receipt-box text-center"><p class="font-bold text-lg">PLC CHURCH</p><p class="text-[10px] text-slate-400">Kulambiro Kisaasi, Kampala</p><hr><p class="font-semibold text-sm mt-2">RECEIPT</p><hr><p class="text-left text-xs mt-2"><strong>Date:</strong> ${r.date||'—'}</p><p class="text-left text-xs"><strong>Type:</strong> ${r.type||'—'}</p><p class="text-left text-xs"><strong>Member:</strong> ${r.memberName||'Anonymous'}</p><hr><p class="text-2xl font-bold mt-2">UGX ${fmt(parseInt(r.amount)||0)}</p><hr><p class="text-[10px] text-slate-400 mt-2">Thank you for your generous contribution!<br>God bless you.</p></div>`;document.getElementById('receipt-modal').classList.remove('hidden');}
+function downloadReceipt(){const {jsPDF}=window.jspdf;const doc=new jsPDF();doc.html(document.getElementById('receipt-content').innerHTML,{callback:function(d){doc.save('receipt.pdf');},x:15,y:15,width:170,windowWidth:320});}
+
+/* ===== CONTRIBUTION SUMMARY ===== */
+function renderContribSummary(){
+    const tbody=document.getElementById('contrib-table');tbody.innerHTML='';
+    const search=(document.getElementById('contrib-search')?.value||'').toLowerCase();
+    const mm={};Object.entries(membersData).forEach(([,m])=>{if(!m.name)return;mm[m.name]={tithes:0,offerings:0,donations:0,total:0};});
+    Object.values(financesData).forEach(r=>{if(!r.memberName||!mm[r.memberName])return;const a=parseInt(r.amount)||0;if(r.type==='tithes')mm[r.memberName].tithes+=a;else if(r.type==='offerings')mm[r.memberName].offerings+=a;else if(r.type==='donations')mm[r.memberName].donations+=a;mm[r.memberName].total+=a;});
+    let entries=Object.entries(mm).filter(([,m])=>m.total>0);if(search)entries=entries.filter(([n])=>n.toLowerCase().includes(search));entries.sort((a,b)=>b[1].total-a[1].total);let gt=0;
+    if(!entries.length)tbody.innerHTML='<tr><td colspan="6" class="py-12 text-center text-slate-400 text-sm">No contributions</td></tr>';
+    else{const mx=entries[0]?.[1].total||1;entries.forEach(([name,m],i)=>{gt+=m.total;const p=((m.total/mx)*100).toFixed(0);tbody.innerHTML+=`<tr class="table-row"><td class="px-6 py-4 text-sm text-slate-400">${i+1}</td><td class="px-6 py-4"><div class="font-medium text-sm">${esc(name)}</div></td><td class="px-6 py-4 text-right text-sm">${m.tithes>0?'UGX '+fmt(m.tithes):'—'}</td><td class="px-6 py-4 text-right text-sm">${m.offerings>0?'UGX '+fmt(m.offerings):'—'}</td><td class="px-6 py-4 text-right text-sm">${m.donations>0?'UGX '+fmt(m.donations):'—'}</td><td class="px-6 py-4 text-right"><div class="font-bold text-sm text-emerald-600">UGX ${fmt(m.total)}</div><div class="contrib-bar mt-1"><div class="contrib-bar-fill" style="width:${p}%"></div></div></td></tr>`;});}
+    document.getElementById('contrib-total-display').textContent='UGX '+fmt(gt);
+}
+
+/* ===== EXPENSES ===== */
+function renderExpenses(){
+    const tbody=document.getElementById('expenses-table');tbody.innerHTML='';
+    const df=document.getElementById('exp-date-filter').value;
+    let entries=Object.entries(expensesData);if(df)entries=entries.filter(([,r])=>r.date&&r.date>=df);
+    entries.sort((a,b)=>(b[1].date||'')>(a[1].date||'')?1:-1);
+    let total=0;const catColors={rent:'bg-blue-100 text-blue-700',utilities:'bg-cyan-100 text-cyan-700',supplies:'bg-amber-100 text-amber-700',transport:'bg-purple-100 text-purple-700',events:'bg-pink-100 text-pink-700',maintenance:'bg-orange-100 text-orange-700',salary:'bg-red-100 text-red-700',other:'bg-slate-100 text-slate-600'};
+    if(!entries.length)tbody.innerHTML='<tr><td colspan="5" class="py-16 text-center text-slate-400 text-sm">No expenses</td></tr>';
+    else entries.forEach(([id,r])=>{total+=parseInt(r.amount)||0;const row=document.createElement('tr');row.className='table-row';row.innerHTML=`<td class="px-6 py-4 text-sm">${r.date||'—'}</td><td class="px-6 py-4"><span class="px-2.5 py-1 text-[11px] font-semibold rounded-lg capitalize ${catColors[r.category]||catColors.other}">${r.category||'other'}</span></td><td class="px-6 py-4 text-sm">${esc(r.description||'—')}</td><td class="px-6 py-4 text-right font-semibold text-red-600 text-sm">UGX ${fmt(parseInt(r.amount)||0)}</td><td class="px-6 py-4 text-right"><button onclick="deleteExpense('${id}')" class="text-red-400 hover:text-red-600">🗑️</button></td>`;tbody.appendChild(row);});
+    document.getElementById('expense-total-display').textContent='UGX '+fmt(total);
+}
+function showExpenseModal(){document.getElementById('expense-category').value='rent';document.getElementById('expense-desc').value='';document.getElementById('expense-amount').value='';document.getElementById('expense-date').value=todayStr();document.getElementById('expense-modal').classList.remove('hidden');}
+function saveExpense(){const cat=document.getElementById('expense-category').value,desc=document.getElementById('expense-desc').value.trim(),amount=parseFloat(document.getElementById('expense-amount').value),date=document.getElementById('expense-date').value;if(!amount||amount<=0||!date)return alert("Valid amount and date required");database.ref('expenses').push({category:cat,description:desc,amount,date,createdAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>hideModals());}
+function deleteExpense(id){deleteTarget=id;deleteType='expenses';document.getElementById('delete-message').textContent='Delete this expense?';document.getElementById('delete-modal').classList.remove('hidden');}
+function confirmDelete(){if(!deleteTarget)return;database.ref(deleteType).child(deleteTarget).remove().then(()=>hideModals());}
+
+/* ===== EXPORT ===== */
+function exportCSV(){const e=Object.entries(financesData);if(!e.length)return alert("No data");let csv="Date,Type,Member,Amount\n";e.forEach(([,r])=>{csv+=`"${r.date||''}","${r.type||''}","${r.memberName||''}",${r.amount||0}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`finances-${todayStr()}.csv`;a.click();}
+function exportPDF(){const {jsPDF}=window.jspdf;const doc=new jsPDF();let y=20;doc.setFontSize(14);doc.setFont('helvetica','bold');doc.text('PLC Church - Financial Report',14,y);y+=12;doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(100);doc.text('Generated: '+new Date().toLocaleString(),14,y);y+=15;doc.setDrawColor(200);doc.line(14,y,196,y);y+=10;doc.setFontSize(10);doc.setTextColor(30);doc.text('Date',14,y);doc.text('Type',80,y);doc.text('Member',120,y);doc.text('Amount',180,y);y+=6;const entries=Object.entries(financesData).sort((a,b)=>(b[1].date||'')>(a[1].date||'')?1:-1);entries.forEach(([,r])=>{if(y>270){doc.addPage();y=20;}doc.setTextColor(60);doc.text(r.date||'—',14,y);doc.text(r.type||'—',80,y);doc.text(r.memberName||'Anonymous',120,y);doc.text('UGX '+(parseInt(r.amount)||0).toLocaleString(),180,y);y+=8;});doc.save('plc-finances-'+todayStr()+'.pdf');}
+
+function generateMonthlyReport(){const {jsPDF}=window.jspdf;const doc=new jsPDF();let y=20;const now=new Date();const mn=now.toLocaleDateString('en',{month:'long',year:'numeric'});
+doc.setFontSize(16);doc.setFont('helvetica','bold');doc.text('PLC Church',14,y);y+=10;doc.setFontSize(12);doc.text('Monthly Financial Report',14,y);y+=8;doc.setFontSize(10);doc.setTextColor(100);doc.text(mn,14,y);y+=15;doc.setDrawColor(200);doc.line(14,y,196,y);y+=12;
+    /* Income */
+    const ms=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+    let inc=0,exp=0;const incByType={tithes:0,offerings:0,donations:0};const expByCat={};
+    Object.values(financesData).forEach(r=>{if(r.date&&r.date.startsWith(ms)){const a=parseInt(r.amount)||0;inc+=a;if(incByType[r.type]!==undefined)incByType[r.type]+=a;}});
+    Object.values(expensesData).forEach(r=>{if(r.date&&r.date.startsWith(ms)){const a=parseInt(r.amount)||0;exp+=a;expByCat[r.category]=(expByCat[r.category]||0)+a;}});
+    doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(30);doc.text('INCOME',14,y);y+=8;doc.setFont('helvetica','normal');doc.setTextColor(60);
+    Object.entries(incByType).forEach(([t,a])=>{doc.text(t+': UGX '+a.toLocaleString(),20,y);y+=6;});y+=3;doc.text('Total Income: UGX '+inc.toLocaleString(),20,y);y+=12;
+    doc.setFont('helvetica','bold');doc.setTextColor(30);doc.text('EXPENSES',14,y);y+=8;doc.setFont('helvetica','normal');doc.setTextColor(60);
+    if(Object.keys(expByCat).length)Object.entries(expByCat).forEach(([c,a])=>{doc.text(c+': UGX '+a.toLocaleString(),20,y);y+=6;});else{doc.text('No expenses',20,y);y+=6;}
+    y+=3;doc.text('Total Expenses: UGX '+exp.toLocaleString(),20,y);y+=12;
+    doc.setDrawColor(200);doc.line(14,y,196,y);y+=12;
+    doc.setFont('helvetica','bold');doc.setTextColor(30);doc.text('NET INCOME: UGX '+(inc-exp).toLocaleString(),14,y);
+    doc.save('plc-monthly-report-'+ms+'.pdf');
+}
+
+/* ===== SMS ===== */
+function selectSMSMode(mode){smsSelectedMode=mode;document.querySelectorAll('.sms-mode-btn').forEach(b=>{b.classList.remove('bg-emerald-100','text-emerald-700');b.classList.add('bg-slate-100');});document.getElementById('group-selector').classList.add('hidden');document.getElementById('individual-selector').classList.add('hidden');if(mode==='all')document.getElementById('sms-mode-all').classList.add('bg-emerald-100','text-emerald-700');else if(mode==='group'){document.getElementById('sms-mode-group').classList.add('bg-emerald-100','text-emerald-700');document.getElementById('group-selector').classList.remove('hidden');populateGroupSel('sms-group-select');}else{document.getElementById('sms-mode-individual').classList.add('bg-emerald-100','text-emerald-700');document.getElementById('individual-selector').classList.remove('hidden');}}
+function populateGroupSel(sid){const s=document.getElementById(sid);s.innerHTML='';new Set(Object.values(membersData).map(m=>m.group).filter(Boolean)).forEach(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;s.appendChild(o);});}
+function renderSMSMemberList(){const c=document.getElementById('sms-member-list');c.innerHTML='';Object.entries(membersData).forEach(([,m])=>{if(!m.phone)return;const d=document.createElement('label');d.className='flex items-center gap-2 px-2 py-1.5 hover:bg-slate-50 rounded-xl cursor-pointer text-xs';d.innerHTML=`<input type="checkbox" onchange="togglePhone('${m.phone}',this.checked)"> <span class="truncate">${esc(m.name)}</span>`;c.appendChild(d);});}
+function togglePhone(p,c){if(c){if(!selectedIndividualPhones.includes(p))selectedIndividualPhones.push(p);}else selectedIndividualPhones=selectedIndividualPhones.filter(x=>x!==p);}
+function sendSMS(){const msg=document.getElementById('sms-message').value.trim();if(!msg)return alert("Message required");let phones=[];if(smsSelectedMode==='all')phones=Object.values(membersData).map(m=>m.phone).filter(Boolean);else if(smsSelectedMode==='group'){const g=document.getElementById('sms-group-select').value;phones=Object.values(membersData).filter(m=>m.group===g).map(m=>m.phone).filter(Boolean);}else phones=selectedIndividualPhones;if(!phones.length)return alert("No recipients");database.ref('smsLogs').push({message:msg,recipientsCount:phones.length,date:new Date().toISOString(),mode:smsSelectedMode});alert('SMS queued for '+phones.length+' recipients');document.getElementById('sms-message').value='';}
+function renderSMSHistory(){const c=document.getElementById('sms-history');c.innerHTML='';const logs=Object.entries(smsLogsData).sort((a,b)=>new Date(b[1].date)-new Date(a[1].date));if(!logs.length){c.innerHTML='<div class="text-center py-12 text-slate-400 text-sm">No history</div>';return;}logs.forEach(([,l])=>{c.innerHTML+=`<div class="bg-slate-50 rounded-xl p-3 text-xs"><div class="font-medium truncate">${esc(l.message)}</div><div class="text-slate-400 mt-1">${new Date(l.date).toLocaleString()} • ${l.recipientsCount} recipients</div></div>`;});}
+function clearSMSHistory(){if(confirm("Clear?"))database.ref('smsLogs').remove();}
+function showQuickSMSModal(){document.getElementById('quick-sms-modal').classList.remove('hidden');}
+function sendQuickSMS(){const m=document.getElementById('quick-sms-text').value.trim();if(!m)return;database.ref('smsLogs').push({message:m,recipientsCount:Object.keys(membersData).length,date:new Date().toISOString(),mode:'quick'});alert('Quick SMS queued');hideModals();document.getElementById('quick-sms-text').value='';}
+
+/* ===== EMAIL ===== */
+function selectEmailMode(mode){emailSelectedMode=mode;document.querySelectorAll('.email-mode-btn').forEach(b=>{b.classList.remove('bg-indigo-100','text-indigo-700');b.classList.add('bg-slate-100');});document.getElementById('email-group-selector').classList.add('hidden');document.getElementById('email-individual-selector').classList.add('hidden');if(mode==='all')document.getElementById('email-mode-all').classList.add('bg-indigo-100','text-indigo-700');else if(mode==='group'){document.getElementById('email-mode-group').classList.add('bg-indigo-100','text-indigo-700');document.getElementById('email-group-selector').classList.remove('hidden');populateGroupSel('email-group-select');}else{document.getElementById('email-mode-individual').classList.add('bg-indigo-100','text-indigo-700');document.getElementById('email-individual-selector').classList.remove('hidden');}}
+function renderEmailMemberList(){const c=document.getElementById('email-member-list');c.innerHTML='';Object.entries(membersData).forEach(([,m])=>{if(!m.email)return;const d=document.createElement('label');d.className='flex items-center gap-2 px-2 py-1.5 hover:bg-slate-50 rounded-xl cursor-pointer text-xs';d.innerHTML=`<input type="checkbox" onchange="toggleEmail('${m.email}',this.checked)"> <span class="truncate">${esc(m.name)}</span><span class="text-slate-400 ml-auto truncate">${esc(m.email)}</span>`;c.appendChild(d);});}
+function toggleEmail(e,c){if(c){if(!selectedIndividualEmails.includes(e))selectedIndividualEmails.push(e);}else selectedIndividualEmails=selectedIndividualEmails.filter(x=>x!==e);}
+async function sendEmail(){const subj=document.getElementById('email-subject').value.trim(),body=document.getElementById('email-message').value.trim();if(!subj||!body)return alert("Subject and message required");let emails=[];if(emailSelectedMode==='all')emails=Object.values(membersData).map(m=>m.email).filter(Boolean);else if(emailSelectedMode==='group'){const g=document.getElementById('email-group-select').value;emails=Object.values(membersData).filter(m=>m.group===g).map(m=>m.email).filter(Boolean);}else emails=selectedIndividualEmails;if(!emails.length)return alert("No recipients with emails");database.ref('emailLogs').push({subject:subj,message:body,recipientsCount:emails.length,date:new Date().toISOString(),mode:emailSelectedMode});try{for(const to of emails){await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{to_email:to,subject:subj,message:body,from_name:"PLC Church"});}alert('Sent to '+emails.length+' recipient(s)');document.getElementById('email-subject').value='';document.getElementById('email-message').value='';selectedIndividualEmails=[];}catch(e){console.error(e);alert('Failed. Check EmailJS config.');}}
+function renderEmailHistory(){const c=document.getElementById('email-history');c.innerHTML='';const logs=Object.entries(emailLogsData).sort((a,b)=>new Date(b[1].date)-new Date(a[1].date));if(!logs.length){c.innerHTML='<div class="text-center py-12 text-slate-400 text-sm">No history</div>';return;}logs.forEach(([,l])=>{c.innerHTML+=`<div class="bg-slate-50 rounded-xl p-3 text-xs"><div class="font-medium truncate">${esc(l.subject)}</div><div class="text-slate-400 mt-1">${new Date(l.date).toLocaleString()} • ${l.recipientsCount} recipients</div></div>`;});}
+function clearEmailHistory(){if(confirm("Clear?"))database.ref('emailLogs').remove();}
+
+function hideModals(){document.querySelectorAll('#member-modal,#finance-modal,#expense-modal,#contact-modal,#receipt-modal,#delete-modal,#quick-sms-modal,#member-history-modal').forEach(m=>m.classList.add('hidden'));currentEditId=null;deleteTarget=null;}
+
+window.onload=function(){initFirebase();auth.onAuthStateChanged(u=>{if(u){document.getElementById('login-screen').classList.add('hidden');document.getElementById('main-app').classList.remove('hidden');document.getElementById('user-avatar').textContent=u.email[0].toUpperCase();initApp();}});};
+</script>
+</body>
+</html>
